@@ -3,7 +3,12 @@ from typing import Any, Dict
 import torch
 
 import isaac_arena
-from isaac_arena.scene.instances.kitchen_mug_pick_and_place_scene import KitchenPickAndPlaceScene
+# from isaac_arena.scene.instances.kitchen_mug_pick_and_place_scene import KitchenPickAndPlaceScene
+
+print('hello world')
+
+import isaac_arena.old_isaaclab_tasks
+
 
 # Define the policy under test
 # class MyStupidPolicy(isaac_arena.policies.Policy):
@@ -18,12 +23,12 @@ from isaac_arena.scene.instances.kitchen_mug_pick_and_place_scene import Kitchen
 # my_stupid_policy = MyStupidPolicy(params={})
 
 # Describe the tasks
-embodiment = isaac_arena.embodiments.HumanoidEmbodiment()
+# embodiment = isaac_arena.embodiments.HumanoidEmbodiment()
 # tasks = isaac_arena.tasks.get_all_tasks_of_type(
 #     task_type=isaac_arena.tasks.TaskType.PICK_AND_PLACE,
 #     randomization=True,
 # )
-task = KitchenPickAndPlaceScene()
+# task = KitchenPickAndPlaceScene()
 
 # print()
 
