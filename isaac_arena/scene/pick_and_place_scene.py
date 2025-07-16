@@ -1,8 +1,7 @@
+from isaac_arena.scene.scene import SceneBase
 from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.utils import configclass
-
-from isaac_arena.scene.scene import SceneBase
 
 
 @configclass

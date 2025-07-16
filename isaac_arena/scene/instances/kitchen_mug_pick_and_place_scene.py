@@ -1,8 +1,7 @@
-from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
 import isaaclab.sim as sim_utils
-from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
-
 from isaac_arena.scene.pick_and_place_scene import PickAndPlaceSceneBase, SceneCfg
+from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
+from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
 
 class KitchenPickAndPlaceScene(PickAndPlaceSceneBase):

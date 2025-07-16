@@ -11,11 +11,11 @@
 
 # Config-based workflow environments. Package containing the core framework.
 
-import os
-
 import gymnasium as gym
-from isaaclab_tasks.utils import import_packages
+import os
 import toml  # type: ignore[import-untyped]
+
+from isaaclab_tasks.utils import import_packages
 
 ##
 # Register Gym environments.

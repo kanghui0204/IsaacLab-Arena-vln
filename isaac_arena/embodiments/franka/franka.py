@@ -1,11 +1,12 @@
 from dataclasses import MISSING
 
-from isaaclab.assets.articulation import ArticulationCfg
-from isaaclab.managers import ObservationGroupCfg as ObsGroup, ObservationTermCfg as ObsTerm
-from isaaclab.utils import configclass
 from isaaclab_assets.robots.franka import FRANKA_PANDA_HIGH_PD_CFG
 
 from isaac_arena.embodiments.embodiment import EmbodimentBase
+from isaaclab.assets.articulation import ArticulationCfg
+from isaaclab.managers import ObservationGroupCfg as ObsGroup
+from isaaclab.managers import ObservationTermCfg as ObsTerm
+from isaaclab.utils import configclass
 
 from . import mdp
 
