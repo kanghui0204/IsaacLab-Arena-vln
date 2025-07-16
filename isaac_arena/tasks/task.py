@@ -1,7 +1,6 @@
 from abc import ABC
-from typing import Any, Dict
 
-from isaac_arena.scene.scene import PickAndPlaceScene, SceneBase
+from isaac_arena.scene.scene import SceneBase
 
 
 class TaskBase(ABC):

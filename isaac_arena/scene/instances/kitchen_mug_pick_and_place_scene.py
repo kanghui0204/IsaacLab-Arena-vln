@@ -1,6 +1,7 @@
 from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
 import isaaclab.sim as sim_utils
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
+
 from isaac_arena.scene.pick_and_place_scene import PickAndPlaceSceneBase, SceneCfg
 
 
@@ -10,21 +11,17 @@ class KitchenPickAndPlaceScene(PickAndPlaceSceneBase):
         self.background_scene = AssetBaseCfg(
             prim_path="{ENV_REGEX_NS}/Kitchen",
             # These positions are hardcoded for the kitchen scene. Its important to keep them.
-            init_state=AssetBaseCfg.InitialStateCfg(
-                pos=[0.772, 3.39, -0.895], rot=[0.70711, 0, 0, -0.70711]
-            ),
+            init_state=AssetBaseCfg.InitialStateCfg(pos=[0.772, 3.39, -0.895], rot=[0.70711, 0, 0, -0.70711]),
             spawn=UsdFileCfg(
-                usd_path=f"omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/Collected_kitchen_scene/kitchen_scene_teleop_v3.usd"
+                usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/Collected_kitchen_scene/kitchen_scene_teleop_v3.usd"
             ),
         )
 
         self.pick_up_object = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/target_mug",
-            init_state=RigidObjectCfg.InitialStateCfg(
-                pos=[0.35, 0.0, 0.094], rot=[0.0, 0.0, 0.0, 1.0]
-            ),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.35, 0.0, 0.094], rot=[0.0, 0.0, 0.0, 1.0]),
             spawn=UsdFileCfg(
-                usd_path=f"omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/Collected_kitchen_scene/mug_physics.usd",
+                usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/Collected_kitchen_scene/mug_physics.usd",
                 scale=(0.0125, 0.0125, 0.0125),
                 activate_contact_sensors=True,
             ),
@@ -47,7 +44,9 @@ class KitchenPickAndPlaceScene(PickAndPlaceSceneBase):
         )
 
     def get_scene_cfg(self) -> SceneCfg:
-        return SceneCfg(background_scene=self.background_scene, object=self.destination_object, pick_up_object=self.pick_up_object)
+        return SceneCfg(
+            background_scene=self.background_scene, object=self.destination_object, pick_up_object=self.pick_up_object
+        )
 
     # TODO decide on how we do randomization.
     # def get_events_cfg(self) -> Dict[str, Any]:

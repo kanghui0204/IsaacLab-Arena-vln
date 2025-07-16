@@ -44,7 +44,7 @@ def compile_env(
         def _add_robot_to_scene_cfg(self):
             self.scene_cfg.robot = embodiment.get_robot_cfg()
 
-    return ArenaEnvBase(
+    return ArenaEnv(
         isaac_lab_env_cfg=IsaacLabEnvCfg(),
         metrics_cfg=metrics.get_metrics_cfg(),
     )

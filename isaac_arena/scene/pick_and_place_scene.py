@@ -1,10 +1,9 @@
-from typing import Any, Dict
-
 from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.utils import configclass
 
 from isaac_arena.scene.scene import SceneBase
+
 
 @configclass
 class SceneCfg(InteractiveSceneCfg):
@@ -25,9 +24,11 @@ class PickAndPlaceSceneBase(SceneBase):
         self.destination_object = destination_object
 
     def get_scene_cfg(self) -> SceneCfg:
-        return SceneCfg(background_scene=self.background_scene,
-                        pick_up_object=self.pick_up_object,
-                        destination_object=self.destination_object)
+        return SceneCfg(
+            background_scene=self.background_scene,
+            pick_up_object=self.pick_up_object,
+            destination_object=self.destination_object,
+        )
 
     # def get_observation_cfg(self) -> Any:
     #     class ObservationCfg:

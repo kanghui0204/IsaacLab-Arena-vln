@@ -1,4 +1,4 @@
-from dataclasses import MISSING
+from abc import ABC
 
 
 class MetricsBase(ABC):

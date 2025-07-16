@@ -12,54 +12,51 @@
 
 import itertools
 import os
-import platform
-import toml    # type: ignore[import-untyped]
-from typing import Dict, List
 
 from setuptools import setup
+import toml  # type: ignore[import-untyped]
 
 # Obtain the extension data from the extension.toml file
 EXTENSION_PATH = os.path.dirname(os.path.realpath(__file__))
 # Read the extension.toml file
-EXTENSION_TOML_DATA = toml.load(os.path.join(EXTENSION_PATH, 'extension.toml'))
+EXTENSION_TOML_DATA = toml.load(os.path.join(EXTENSION_PATH, "extension.toml"))
 
 # Minimum dependencies required prior to installation
 INSTALL_REQUIRES = [
     # generic
-    'numpy',
-    'h5py',
+    "numpy",
+    "h5py",
 ]
 
 # PYTORCH_INDEX_URL = ['https://downkload.pytorch.org/whl/cu118']
 
 # Extra dependencies for RL agents
-EXTRAS_REQUIRE: Dict[str, List[str]] = {
-}
+EXTRAS_REQUIRE: dict[str, list[str]] = {}
 
 # Cumulation of all extra-requires
 all_requirements = list(itertools.chain.from_iterable(EXTRAS_REQUIRE.values()))
 # Remove duplicates in the all list to avoid double installations
-EXTRAS_REQUIRE['all'] = list(set(all_requirements))
+EXTRAS_REQUIRE["all"] = list(set(all_requirements))
 
 # Installation operation
 setup(
-    name='isaac_arena',
-    author='Isaac Lab Project Developers',
-    maintainer='Isaac Lab Project Developers',
-    url=EXTENSION_TOML_DATA['package']['repository'],
-    version=EXTENSION_TOML_DATA['package']['version'],
-    description=EXTENSION_TOML_DATA['package']['description'],
-    keywords=EXTENSION_TOML_DATA['package']['keywords'],
+    name="isaac_arena",
+    author="Isaac Lab Project Developers",
+    maintainer="Isaac Lab Project Developers",
+    url=EXTENSION_TOML_DATA["package"]["repository"],
+    version=EXTENSION_TOML_DATA["package"]["version"],
+    description=EXTENSION_TOML_DATA["package"]["description"],
+    keywords=EXTENSION_TOML_DATA["package"]["keywords"],
     include_package_data=True,
-    python_requires='>=3.10',
+    python_requires=">=3.10",
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
-    packages=['isaac_arena'],
+    packages=["isaac_arena"],
     classifiers=[
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3.10',
-        'Isaac Sim :: 4.2.0',
-        'Isaac Sim :: 4.1.0',
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3.10",
+        "Isaac Sim :: 4.2.0",
+        "Isaac Sim :: 4.1.0",
     ],
     zip_safe=False,
 )
