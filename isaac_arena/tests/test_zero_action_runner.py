@@ -8,16 +8,23 @@
 # its affiliates is strictly prohibited.
 #
 
-from isaac_arena.tests.utils.subprocess import run_subprocess
 from isaac_arena.tests.utils.constants import TestDataLocations
+from isaac_arena.tests.utils.subprocess import run_subprocess
 
 
 def test_zero_action_runner():
-    run_subprocess([TestDataLocations.python_path,
-                    f"{TestDataLocations.examples_dir}/zero_action_runner.py",
-                    "--headless",
-                    "--embodiment", "franka",
-                    "--scene", "kitchen",
-                    "--arena_task", "pick_and_place",
-                    "--task", "test",
-                    "--num_steps", "2"])
+    run_subprocess([
+        TestDataLocations.python_path,
+        f"{TestDataLocations.examples_dir}/zero_action_runner.py",
+        "--headless",
+        "--embodiment",
+        "franka",
+        "--scene",
+        "kitchen",
+        "--arena_task",
+        "pick_and_place",
+        "--task",
+        "test",
+        "--num_steps",
+        "2",
+    ])
