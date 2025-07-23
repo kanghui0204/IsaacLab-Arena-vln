@@ -1,7 +1,7 @@
 stages:
-  - lint
-pre-commit:
-  stage: lint
+  - test
+run_tests:
+  stage: test
   tags: ["os/linux", "gpu"]
   # Set as an environment variable in the CI/CD settings.
   # https://docs.gitlab.com/ee/ci/variables/index.html#override-variables-from-the-ui
