@@ -102,12 +102,16 @@ then
     # Allow sudo without password
     echo "$DOCKER_RUN_USER_NAME ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-    # Install isaaclab
+    # Re-install isaaclab (note that the deps have been installed in the Dockerfile)
     echo "Re-installing isaaclab packages from mounted repo"
     for DIR in /workspaces/isaac_arena/submodules/IsaacLab-Internal/source/isaaclab*/; do
         echo "Installing $DIR"
         pip install --no-deps -e "$DIR"
     done
+    # Re-doing symlink (we do this in the Dockerfile, but we overwrite with the mapping).
+    if [ ! -d "/workspaces/isaac_arena/submodules/IsaacLab-Internal/_isaac_sim" ]; then
+        ln -s /isaac-sim/ /workspaces/isaac_arena/submodules/IsaacLab-Internal/_isaac_sim
+    fi
 
     set +x
 

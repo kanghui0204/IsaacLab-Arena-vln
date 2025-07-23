@@ -11,11 +11,10 @@ RUN if [ -e "/usr/share/vulkan" ] && [ -e "/etc/vulkan" ]; then \
 # INSTALL APT DEPS
 ################################
 RUN apt-get update && apt-get install -y \
-python3-pip \
-git \
-cmake
-
-RUN ln -s /usr/bin/python3 /usr/bin/python
+  git \
+  cmake \
+  sudo \
+  python3-pip
 
 WORKDIR /workspaces/isaac_arena
 
@@ -31,16 +30,26 @@ RUN ln -s /isaac-sim/ /workspaces/isaac_arena/submodules/IsaacLab-Internal/_isaa
 # Logs and other stuff appear under dist-packages per default, so this dir has to be writeable.
 RUN chmod 777 -R /isaac-sim/kit/
 
+# Install isaaclab
 RUN ${ISAACLAB_PATH}/isaaclab.sh -i
 
+################################
+# INSTALL PIP DEPS
+################################
+# NOTE(alexmillane, 2025-07-22): Dependencies are installed in the IsaacSim version of python.
+RUN /isaac-sim/python.sh -m pip install --upgrade pip && \
+  /isaac-sim/python.sh -m pip install pytest
+
 # Install isaac-arena
-RUN pip install -e /workspaces/isaac_arena/
+RUN /isaac-sim/python.sh -m pip install -e /workspaces/isaac_arena/
 
 # Install usdcode helper functions
-RUN pip install /workspaces/isaac_arena/third_party/usdcode_helper_function_package_1.0.0/usdcode-0.1.2-py3-none-any.whl "usd-core>=22.11" numpy==1.26.4 pillow==11.0.0
+RUN /isaac-sim/python.sh -m pip install /workspaces/isaac_arena/third_party/usdcode_helper_function_package_1.0.0/usdcode-0.1.2-py3-none-any.whl "usd-core>=22.11" numpy==1.26.4 pillow==11.0.0
 
 # Set an alias to run the isaac lab python interpreter.
-RUN echo "alias isaac_python='/workspaces/isaac_arena/submodules/IsaacLab-Internal/_isaac_sim/python.sh'" >> /etc/bash.bashrc
+RUN echo "alias python='/isaac-sim/python.sh'" >> /etc/bash.bashrc
+RUN echo "alias pip3='/isaac-sim/python.sh -m pip'" >> /etc/bash.bashrc
+RUN echo "alias pytest='/isaac-sim/python.sh -m pytest'" >> /etc/bash.bashrc
 
 # Set the entrypoint to bash
 ENTRYPOINT ["bash"]
