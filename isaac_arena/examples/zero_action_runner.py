@@ -55,10 +55,8 @@ def main():
                 actions = torch.zeros(env.action_space.shape, device=env.unwrapped.device)
                 env.step(actions)
 
-        assert False, "Fail!"
-
-    # Close the environment.
-    env.close()
+        # Close the environment.
+        env.close()
 
 
 if __name__ == "__main__":
