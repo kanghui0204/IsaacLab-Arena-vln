@@ -10,6 +10,7 @@
 
 import argparse
 import os
+import sys
 import traceback
 
 import omni.kit.app
@@ -46,7 +47,7 @@ class SimulationAppContext:
         # From the slack thread, the issue appears to be fixed internally, but the fix is not yet released.
         # Remove this function once the issue is fixed in a released version of Isaac Sim.
         # We warn if IsaacSim has been upgraded.
-        if self.args.enable_pinocchio:
+        if hasattr(self.args, "enable_pinocchio") and self.args.enable_pinocchio:
             import pinocchio  # noqa: F401
 
         self.app_launcher = AppLauncher(self.args)
@@ -68,4 +69,6 @@ class SimulationAppContext:
             print("Traceback:")
             traceback.print_tb(exc_tb)
             print("Killing the process without cleaning up")
+            sys.stdout.flush()
+            sys.stderr.flush()
             os._exit(1)
