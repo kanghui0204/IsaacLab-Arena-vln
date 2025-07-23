@@ -1,3 +1,13 @@
+# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+# NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
+# property and proprietary rights in and to this material, related
+# documentation and any modifications thereto. Any use, reproduction,
+# disclosure or distribution of this material and related documentation
+# without an express license agreement from NVIDIA CORPORATION or
+# its affiliates is strictly prohibited.
+#
+
 from isaac_arena.embodiments.embodiment_base import ActionsCfg, EventCfg, ObservationsCfg
 from isaac_arena.tasks.pick_and_place_task import TerminationsCfg
 from isaaclab.envs import ManagerBasedRLEnvCfg
@@ -6,6 +16,9 @@ from isaaclab.sensors.frame_transformer.frame_transformer_cfg import FrameTransf
 from isaaclab.utils import configclass
 
 from isaaclab.markers.config import FRAME_MARKER_CFG  # isort: skip
+
+
+# TODO(alex.millane, 2025-07-23): Consider if we actually need this. What is missing from the base class?
 
 
 @configclass

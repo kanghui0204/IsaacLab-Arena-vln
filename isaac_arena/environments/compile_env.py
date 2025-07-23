@@ -18,6 +18,16 @@ from isaaclab_tasks.utils import parse_env_cfg
 
 
 def compile_arena_env_cfg(isaac_arena_environment: IsaacArenaEnvironment, args_cli: argparse.Namespace) -> gym.Env:
+    """Compile the arena environment configuration to a gymnasium environment.
+
+    Args:
+        isaac_arena_environment (IsaacArenaEnvironment): The arena environment configuration.
+        args_cli (argparse.Namespace): The command line arguments.
+
+    Returns:
+        gym.Env: The compiled gymnasium environment.
+    """
+
     # NOTE(cvolk): The scene apparently needs to hold a robot.
     # TODO(alex.millane, 2025-07-23): We're running into composition issues here.
     # move to using a more composable approach.

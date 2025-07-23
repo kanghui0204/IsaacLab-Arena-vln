@@ -15,8 +15,8 @@ from isaac_arena.scene.scene import SceneBase
 from isaac_arena.tasks.task import TaskBase
 from isaaclab.utils import configclass
 
-# TODO(alexmillane, 2025-07-23): For some reason, missing values are not being detected.
-# We need to fix this as it's unsafe.
+# TODO(alexmillane, 2025-07-23): For some reason, missing values are not being detected,
+# if not set during configclass initialization. We need to fix this.
 
 
 @configclass
