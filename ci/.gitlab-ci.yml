@@ -12,28 +12,19 @@ pre-commit:
     IMAGE: nvcr.io/nvstaging/isaac-amr/isaac_arena:latest
   image: "${IMAGE}"
   before_script:
-    # - apt-get update && apt-get install -y --no-install-recommends git clang-format
-    # - pip install --no-cache-dir --upgrade pip
-    # - pip install --no-cache-dir pre-commit
+    - apt-get update && apt-get install -y --no-install-recommends git clang-format
+    - pip install --no-cache-dir --upgrade pip
+    - pip install --no-cache-dir pre-commit
     - pip install -e .
-    - source /etc/bash.bashrc
     # Link the docker isaac-sim into the checkout isaac_arena
     # NOTE(alex.millane, 2025-07-23): We use the version of isaac-sim that is installed
     # in the docker image. If an MR updates the isaac-sim version, you will not get that
     # version in the CI pipeline.
-    # - ln -s /isaac-sim/ ./submodules/IsaacLab-Internal/_isaac_sim
+    # NOTE(alex.millane, 2025-07-23): We use a conditional to avoid the case where the
+    # isaac-sim directory already exists due to a previous CI run.
     - '[ -e ./submodules/IsaacLab-Internal/_isaac_sim ] || ln -s /isaac-sim ./submodules/IsaacLab-Internal/_isaac_sim'
   script:
-    - alias python='/isaac-sim/python.sh'
-    - alias pip3='/isaac-sim/python.sh -m pip'
-    - alias pytest='/isaac-sim/python.sh -m pytest'
-    # - pre-commit run --all-files
-    # - pytest -sv isaac_arena/tests
-    - ls /isaac-sim/
-    - ls /builds/nvblox/isaac_arena
-    - ls /builds/nvblox/isaac_arena/submodules
-    - ls /builds/nvblox/isaac_arena/submodules/IsaacLab-Internal
-    - ls /builds/nvblox/isaac_arena/submodules/IsaacLab-Internal/_isaac_sim/
+    - pre-commit run --all-files
     - /isaac-sim/python.sh -m pytest -sv isaac_arena/tests
   cache:
     key: "${CI_PROJECT_ID}"
