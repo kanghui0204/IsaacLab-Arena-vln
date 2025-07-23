@@ -22,7 +22,7 @@ pre-commit:
     # in the docker image. If an MR updates the isaac-sim version, you will not get that
     # version in the CI pipeline.
     # - ln -s /isaac-sim/ ./submodules/IsaacLab-Internal/_isaac_sim
-    - [ -e ./submodules/IsaacLab-Internal/_isaac_sim ] || ln -s /isaac-sim ./submodules/IsaacLab-Internal/_isaac_sim
+    - '[ -e ./submodules/IsaacLab-Internal/_isaac_sim ] || ln -s /isaac-sim ./submodules/IsaacLab-Internal/_isaac_sim'
   script:
     - alias python='/isaac-sim/python.sh'
     - alias pip3='/isaac-sim/python.sh -m pip'
