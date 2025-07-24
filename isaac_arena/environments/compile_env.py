@@ -11,10 +11,12 @@
 import argparse
 import gymnasium as gym
 
+from isaaclab.scene import InteractiveSceneCfg
+from isaaclab_tasks.utils import parse_env_cfg
+
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
 from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaManagerBasedRLEnvCfg
-
-from isaaclab_tasks.utils import parse_env_cfg
+from isaac_arena.utils.configclass import combine_configclass_instances
 
 
 def run_environment(isaac_arena_environment: IsaacArenaEnvironment, args_cli: argparse.Namespace) -> gym.Env:
@@ -27,12 +29,20 @@ def run_environment(isaac_arena_environment: IsaacArenaEnvironment, args_cli: ar
     Returns:
         gym.Env: The compiled gymnasium environment.
     """
-
-    # NOTE(cvolk): The scene apparently needs to hold a robot.
-    # TODO(alex.millane, 2025-07-23): We're running into composition issues here.
-    # move to using a more composable approach.
-    scene_cfg = isaac_arena_environment.scene.get_scene_cfg()
-    scene_cfg.robot = isaac_arena_environment.embodiment.get_robot_cfg()
+    # The scene is composed of:
+    # - Base IsaacLab config
+    # - Contributions from the (background) scene
+    # - Contributions from the embodiment
+    scene_cfg = combine_configclass_instances(
+        "SceneCfg",
+        InteractiveSceneCfg(
+            num_envs=4096,
+            env_spacing=30.0,
+            replicate_physics=False,
+        ),
+        isaac_arena_environment.scene.get_scene_cfg(),
+        isaac_arena_environment.embodiment.get_scene_cfg(),
+    )
 
     # Build the manager-based environment configuration.
     arena_env_cfg = IsaacArenaManagerBasedRLEnvCfg(

@@ -22,7 +22,8 @@ class EventCfg:
 
 class EmbodimentBase(ABC):
 
-    robot: ArticulationCfg | None = None
+    # robot: ArticulationCfg | None = None
+    scene_config: Any | None = None
     action_config: ActionsCfg | None = None
     observation_config: ObservationsCfg | None = None
     event_config: EventCfg | None = None
@@ -30,8 +31,11 @@ class EmbodimentBase(ABC):
     def __init__(self):
         pass
 
-    def get_robot_cfg(self) -> Any:
-        return self.robot
+    # def get_robot_cfg(self) -> Any:
+    #     return self.robot
+
+    def get_scene_cfg(self) -> Any:
+        return self.scene_config
 
     def get_action_cfg(self) -> Any:
         return self.action_config
