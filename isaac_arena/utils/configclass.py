@@ -1,12 +1,21 @@
-# TODO: Check the license of the configclass
+# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+# NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
+# property and proprietary rights in and to this material, related
+# documentation and any modifications thereto. Any use, reproduction,
+# disclosure or distribution of this material and related documentation
+# without an express license agreement from NVIDIA CORPORATION or
+# its affiliates is strictly prohibited.
+#
 
-from isaaclab.utils import configclass
 import keyword
 import types
 
+from isaaclab.utils import configclass
 
-# NOTE: This is copied from dataclasses.py, but altered in the final line
+# NOTE(alexmillane, 2025-07-24): This is copied from dataclasses.py, but altered in the final line
 # to produce a configclass instead of a dataclass
+# NOTE(alexmillane, 2025-07-24): The file this was taken from has no license header.
 def make_configclass(cls_name, fields, *, bases=(), namespace=None, init=True,
                      repr=True, eq=True, order=False, unsafe_hash=False,
                      frozen=False, match_args=True, kw_only=False, slots=False):
@@ -105,17 +114,32 @@ def get_field_info(config_class: configclass) -> List[Tuple[str, type, Any]]:
     return field_info_list
 
 
-# DOX
 def combine_configclasses(name: str, *input_configclasses: configclass) -> configclass:
+    """Combine a list of configclasses into a single configclass.
+
+    Args:
+        name: The name of the new configclass.
+        input_configclasses: The configclasses to combine.
+
+    Returns:
+        A new configclass that is the combination of the input configclasses.
+    """
     field_info_list = []
     for d in input_configclasses:
         field_info_list.extend(get_field_info(d))
     return make_configclass(name, field_info_list)
 
 
-# DOX
 def combine_configclass_instances(name: str,*input_configclass_instances: configclass) -> configclass:
-    # Create the combined type
+    """Combine a list of configclass instances into a single configclass instance.
+
+    Args:
+        name: The name of the new configclass.
+        input_configclass_instances: The configclass instances to combine.
+
+    Returns:
+        A new configclass instance that is the combination of the input configclass instances.
+    """
     input_configclasses: List[type] = [type(i) for i in input_configclass_instances]
     combined_configclass = combine_configclasses(name, *input_configclasses)
     # Create an instance of the combined type
@@ -125,9 +149,3 @@ def combine_configclass_instances(name: str,*input_configclass_instances: config
         for field in dataclasses.fields(configclass_instance):
             setattr(combined_configclass_instance, field.name, getattr(configclass_instance, field.name))
     return combined_configclass_instance
-
-
-# def extend_configclass(config_class: configclass, name: str, field_info: List[Tuple[str, type, Any]]) -> configclass:
-#     base_field_info = KitchenPickAndPlaceScene.get_field_info(InteractiveSceneCfg)
-#     combined_field_info = base_field_info + field_info
-#     return make_configclass(name, combined_field_info)

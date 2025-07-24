@@ -29,7 +29,7 @@ def run_environment(isaac_arena_environment: IsaacArenaEnvironment, args_cli: ar
     Returns:
         gym.Env: The compiled gymnasium environment.
     """
-    # The scene is composed of:
+    # Scene composition - The scene is composed of:
     # - Base IsaacLab config
     # - Contributions from the (background) scene
     # - Contributions from the embodiment

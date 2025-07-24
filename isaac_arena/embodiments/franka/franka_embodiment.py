@@ -19,19 +19,18 @@ from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
 
 class FrankaEmbodiment(EmbodimentBase):
     def __init__(self):
-        # self.robot = FRANKA_PANDA_HIGH_PD_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene_config = FrankaSceneCfg()
         self.action_config = FrankaActionsCfg()
         self.observation_config = FrankaObservationsCfg()
         self.event_config = FrankaEventCfg()
-        # self.robot.spawn.semantic_tags = [("class", "robot_arm")]
 
 
 @configclass
 class FrankaSceneCfg:
+    """Additions to the scene configuration coming from the Franka embodiment."""
+
     robot: ArticulationCfg = FRANKA_PANDA_HIGH_PD_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
-    # def __pose_init__(self):
-    #     self.robot.spawn.semantic_tags = [("class", "robot_arm")]
+
 
 @configclass
 class FrankaActionsCfg(ActionsCfg):
