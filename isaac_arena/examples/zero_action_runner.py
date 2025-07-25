@@ -45,9 +45,7 @@ def main():
         isaac_arena_environment = IsaacArenaEnvironment(
             name="kitchen_pick_and_place",
             embodiment=FrankaEmbodiment(),
-            scene=PickAndPlaceScene(
-                scene_details["background"], scene_details["pick_up_object"], scene_details["destination_object"]
-            ),
+            scene=PickAndPlaceScene(scene_details["background"], scene_details["pick_up_object"]),
             task=PickAndPlaceTaskCfg(),
         )
 

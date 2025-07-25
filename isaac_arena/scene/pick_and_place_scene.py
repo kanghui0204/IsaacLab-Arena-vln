@@ -20,17 +20,17 @@ class PickAndPlaceSceneCfg:
 
 
 class PickAndPlaceScene(SceneBase):
-    def __init__(
-        self, background_scene: AssetBaseCfg, pick_up_object: RigidObjectCfg, destination_object: RigidObjectCfg
-    ):
+    def __init__(self, background_scene: Any, pick_up_object: Any):
         super().__init__()
         # The background scene
-        self.background_scene = background_scene
+        self.background_scene = background_scene.get_background()
         # An object, which has to be placed on/into the target object
-        self.pick_up_object = pick_up_object
+        self.pick_up_object = pick_up_object.get_pick_up_object()
+        # Set the location of the pick up object
+        self.pick_up_object.init_state = background_scene.get_pick_up_object_location()
 
         # An object, which has to be placed on/into the target object
-        self.destination_object = destination_object
+        self.destination_object = background_scene.get_destination()
 
     def get_scene_cfg(self) -> PickAndPlaceSceneCfg:
         return PickAndPlaceSceneCfg(
