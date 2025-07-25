@@ -28,7 +28,7 @@ def main():
         "--embodiment",
         type=str,
         default="franka",
-        choices=["gr1t2", "franka"],
+        choices=["gr1", "franka"],
         help="Embodiment to use. Default to franka.",
     )
 
@@ -48,7 +48,7 @@ def main():
 
         # Embodiment
         embodiments = {
-            "gr1t2": GR1T2Embodiment,
+            "gr1": GR1T2Embodiment,
             "franka": FrankaEmbodiment,
         }
         embodiment = embodiments[args_cli.embodiment]()
