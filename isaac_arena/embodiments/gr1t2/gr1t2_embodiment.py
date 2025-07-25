@@ -23,7 +23,7 @@ import isaaclab.envs.mdp as base_mdp
 import isaaclab_tasks.manager_based.manipulation.pick_place.mdp as mdp
 
 
-from isaac_arena.embodiments.embodiment_base import EmbodimentBase
+from isaac_arena.embodiments.embodiment_base import EmbodimentBase, EventCfg, ObservationsCfg
 
 
 class GR1T2Embodiment(EmbodimentBase):
@@ -95,7 +95,7 @@ class GR1T2SceneCfg:
 # the scene e.g. object positions. So here we copy out just the robot observations
 # to allow composition with other scenes.
 @configclass
-class GR1T2ObservationsCfg:
+class GR1T2ObservationsCfg(ObservationsCfg):
     """Observation specifications for the MDP."""
 
     @configclass
@@ -132,7 +132,7 @@ class GR1T2ObservationsCfg:
 # the scene e.g. object randomization. So here we copy out just the robot events
 # to allow composition with other scenes.
 @configclass
-class GR1T2EventCfg:
+class GR1T2EventCfg(EventCfg):
     """Configuration for events."""
 
     reset_all = EventTerm(func=mdp.reset_scene_to_default, mode="reset")

@@ -30,7 +30,7 @@ def test_zero_action_runner_gr1():
         f"{TestConstants.examples_dir}/zero_action_runner.py",
         "--headless",
         "--embodiment",
-        "gr1t2",
+        "gr1",
         "--num_steps",
         "2",
     ])
