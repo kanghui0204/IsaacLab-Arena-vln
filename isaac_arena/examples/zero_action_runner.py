@@ -46,7 +46,7 @@ def main():
             name="kitchen_pick_and_place",
             embodiment=FrankaEmbodiment(),
             scene=PickAndPlaceScene(
-                scene_details["background_scene"], scene_details["pick_up_object"], scene_details["destination_object"]
+                scene_details["background"], scene_details["pick_up_object"], scene_details["destination_object"]
             ),
             task=PickAndPlaceTaskCfg(),
         )
