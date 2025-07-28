@@ -29,6 +29,10 @@ def run_environment(isaac_arena_environment: IsaacArenaEnvironment, args_cli: ar
     Returns:
         gym.Env: The compiled gymnasium environment.
     """
+
+    # Set the robot position
+    isaac_arena_environment.embodiment.set_robot_initial_pose(isaac_arena_environment.scene.get_robot_initial_pose())
+
     # Scene composition - The scene is composed of:
     # - Base IsaacLab config
     # - Contributions from the (background) scene

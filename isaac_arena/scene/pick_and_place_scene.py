@@ -2,6 +2,7 @@ from dataclasses import MISSING
 from typing import Any
 
 import isaaclab.sim as sim_utils
+from isaac_arena.geometry.pose import Pose
 from isaac_arena.scene.scene import SceneBase
 from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
 from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
@@ -44,6 +45,9 @@ class KitchenPickAndPlaceScene(SceneBase):
 
         # Robot configuration
         self.robot: ArticulationCfg = robot
+
+        # The position of the robot
+        self.robot_initial_pose = Pose.identity()
 
     def get_scene_cfg(self) -> PickAndPlaceSceneCfg:
         return PickAndPlaceSceneCfg(

@@ -11,10 +11,16 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+from isaac_arena.geometry.pose import Pose
+
 
 class SceneBase(ABC):
     def __init__(self):
-        pass
+        # The default initial position of the robot
+        self.robot_initial_pose = Pose.identity()
+
+    def get_robot_initial_pose(self) -> Pose:
+        return self.robot_initial_pose
 
     @abstractmethod
     def get_scene_cfg(self) -> Any:

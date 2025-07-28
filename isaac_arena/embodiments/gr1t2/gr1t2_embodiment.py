@@ -22,7 +22,6 @@ from isaaclab.managers import EventTermCfg as EventTerm
 import isaaclab.envs.mdp as base_mdp
 import isaaclab_tasks.manager_based.manipulation.pick_place.mdp as mdp
 
-
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase, EventCfg, ObservationsCfg
 
 
@@ -57,8 +56,6 @@ class GR1T2SceneCfg:
     robot: ArticulationCfg = GR1T2_CFG.replace(
         prim_path="/World/envs/env_.*/Robot",
         init_state=ArticulationCfg.InitialStateCfg(
-            pos=(0, 0, 0.93),
-            rot=(0.7071, 0, 0, 0.7071),
             joint_pos={
                 # right-arm
                 "right_shoulder_pitch_joint": 0.0,
