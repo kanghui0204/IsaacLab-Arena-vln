@@ -14,6 +14,7 @@ import isaaclab.envs.mdp as mdp_isaac_lab
 from isaac_arena.embodiments.embodiment_base import ActionsCfg, EmbodimentBase, EventCfg, ObservationsCfg
 from isaac_arena.embodiments.mdp import franka_stack_events
 from isaac_arena.embodiments.mdp.observations import ee_frame_pos, ee_frame_quat, gripper_pos
+from isaac_arena.geometry.pose import Pose
 from isaac_arena.scene.pick_and_place_scene import AssetBaseCfg
 from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
 from isaaclab.controllers.differential_ik_cfg import DifferentialIKControllerCfg
@@ -35,6 +36,14 @@ class FrankaEmbodiment(EmbodimentBase):
         self.action_config = FrankaActionsCfg()
         self.observation_config = FrankaObservationsCfg()
         self.event_config = FrankaEventCfg()
+
+    def set_robot_initial_pose(self, pose: Pose):
+        # We override the default initial pose setting function in order to also set
+        # the initial pose of the stand.
+        self.scene_config.robot.init_state.pos = pose.position_xyz
+        self.scene_config.robot.init_state.rot = pose.rotation_wxyz
+        self.scene_config.stand.init_state.pos = pose.position_xyz
+        self.scene_config.stand.init_state.rot = pose.rotation_wxyz
 
 
 @configclass
