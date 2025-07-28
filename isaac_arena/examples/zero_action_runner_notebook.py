@@ -38,10 +38,10 @@ if simulation_app is None:
 print("Running in notebook mode")
 args_parser = argparse.ArgumentParser(description="Isaac Arena CLI parser.")
 args = args_parser.parse_args([])
-args.task = "Isaac-Arena-Kitchen-v0"
+args.task = "Isaac-Arena-Kitchen-Pick-And-Place-v0"
 args.embodiment = "franka"
 args.arena_task = "pick_and_place"
-args.scene = "kitchen"
+args.scene = "kitchen_pick_and_place"
 args.device = "cuda:0"
 args.num_envs = 1
 args.disable_fabric = True

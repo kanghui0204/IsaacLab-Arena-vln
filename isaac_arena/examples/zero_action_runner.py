@@ -13,6 +13,22 @@ import tqdm
 
 from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
 from isaac_arena.isaaclab_utils.simulation_app import SimulationAppContext
+from isaac_arena.scene.scene_registry import ObjectRegistry
+
+
+def get_scene_configuration_from_registry(background_name: str, pick_up_object_name: str):
+    object_registry = ObjectRegistry()
+    if background_name:
+        background = object_registry.get_object_by_name(background_name)
+    else:
+        background = object_registry.get_random_object_by_tag("background")
+    if pick_up_object_name:
+        pick_up_object = object_registry.get_object_by_name(pick_up_object_name)
+    else:
+        pick_up_object = object_registry.get_random_object_by_tag("pick_up_object")
+
+    scene_configuration = {"background": background, "pick_up_object": pick_up_object}
+    return scene_configuration
 
 
 def main():
@@ -35,17 +51,16 @@ def main():
         from isaac_arena.embodiments.franka.franka_embodiment import FrankaEmbodiment
         from isaac_arena.environments.compile_env import run_environment
         from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
-        from isaac_arena.scene.get_scene_details import get_scene_details
         from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
         from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTaskCfg
 
-        scene_details = get_scene_details(args_cli.background, args_cli.pick_up_object)
+        scene_configuration = get_scene_configuration_from_registry(args_cli.background, args_cli.pick_up_object)
 
         # Arena Environment
         isaac_arena_environment = IsaacArenaEnvironment(
             name="kitchen_pick_and_place",
             embodiment=FrankaEmbodiment(),
-            scene=PickAndPlaceScene(scene_details["background"], scene_details["pick_up_object"]),
+            scene=PickAndPlaceScene(scene_configuration["background"], scene_configuration["pick_up_object"]),
             task=PickAndPlaceTaskCfg(),
         )
 
