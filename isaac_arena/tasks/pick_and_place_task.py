@@ -1,6 +1,16 @@
+# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+# NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
+# property and proprietary rights in and to this material, related
+# documentation and any modifications thereto. Any use, reproduction,
+# disclosure or distribution of this material and related documentation
+# without an express license agreement from NVIDIA CORPORATION or
+# its affiliates is strictly prohibited.
+#
+
 import isaaclab.envs.mdp as mdp_isaac_lab
-from isaac_arena.embodiments.mdp.terminations import object_in_drawer
 from isaac_arena.tasks.task import TaskBase
+from isaac_arena.terminations.object_in_drawer import object_in_drawer
 from isaaclab.managers import SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
