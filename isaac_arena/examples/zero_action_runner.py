@@ -38,12 +38,12 @@ def get_environment_configuration_from_args(args_cli: argparse.Namespace):
     }
     embodiment = embodiments[args_cli.embodiment]()
 
-    scene_configuration = {
+    environment_configuration = {
         "background": background,
         "pick_up_object": pick_up_object,
         "embodiment": embodiment,
     }
-    return scene_configuration
+    return environment_configuration
 
 
 def main():
@@ -76,15 +76,15 @@ def main():
         from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTaskCfg
 
         # Scene variation
-        scene_configuration = get_environment_configuration_from_args(args_cli)
+        environment_configuration = get_environment_configuration_from_args(args_cli)
 
         # Arena Environment
         isaac_arena_environment = IsaacArenaEnvironment(
             name="kitchen_pick_and_place",
-            embodiment=scene_configuration["embodiment"],
+            embodiment=environment_configuration["embodiment"],
             scene=PickAndPlaceScene(
-                scene_configuration["background"],
-                scene_configuration["pick_up_object"],
+                environment_configuration["background"],
+                environment_configuration["pick_up_object"],
             ),
             task=PickAndPlaceTaskCfg(),
         )

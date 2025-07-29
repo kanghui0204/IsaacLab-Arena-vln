@@ -32,17 +32,11 @@ def run_zero_action_runner(embodiment: str, background: str):
     run_subprocess(args)
 
 
-def test_zero_action_runner_franka_kitchen():
-    run_zero_action_runner("franka", "kitchen_pick_and_place")
-
-
-def test_zero_action_runner_gr1_kitchen():
-    run_zero_action_runner("gr1", "kitchen_pick_and_place")
-
-
-def test_zero_action_runner_franka_packing_table():
-    run_zero_action_runner("franka", "packing_table_pick_and_place")
-
-
-def test_zero_action_runner_gr1_packing_table():
-    run_zero_action_runner("gr1", "packing_table_pick_and_place")
+def test_zero_action_runner():
+    # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
+    # from a registry when we have one.
+    embodiments = ["franka", "gr1"]
+    backgrounds = ["kitchen_pick_and_place", "packing_table_pick_and_place"]
+    for embodiment in embodiments:
+        for background in backgrounds:
+            run_zero_action_runner(embodiment, background)
