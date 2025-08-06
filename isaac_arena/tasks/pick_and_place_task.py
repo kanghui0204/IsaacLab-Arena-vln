@@ -9,10 +9,13 @@
 #
 
 import isaaclab.envs.mdp as mdp_isaac_lab
-from isaac_arena.tasks.task import TaskBase
-from isaac_arena.tasks.terminations.object_in_drawer import object_in_drawer
 from isaaclab.managers import SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
+
+from isaac_arena.tasks.task import TaskBase
+
+# from isaac_arena.tasks.terminations.object_in_drawer import object_in_drawer
+from isaac_arena.tasks.terminations import object_on_destination
 
 
 class PickAndPlaceTask(TaskBase):
@@ -36,11 +39,12 @@ class TerminationsCfg:
     # success: TerminationTermCfg = MISSING
     time_out = TerminationTermCfg(func=mdp_isaac_lab.time_out, time_out=False)
 
-    # TODO(alex.millane, 2025.07.22): This is specific to the drawer scene. Make this generic.
-    object_dropped = TerminationTermCfg(
-        func=mdp_isaac_lab.root_height_below_minimum,
-        params={"minimum_height": 0.5, "asset_cfg": SceneEntityCfg("pick_up_object")},
+    success = TerminationTermCfg(
+        func=object_on_destination,
+        params={
+            "object_cfg": SceneEntityCfg("pick_up_object"),
+            "contact_sensor_cfg": SceneEntityCfg("pick_up_object_contact_sensor"),
+            "force_threshold": 1.0,
+            "velocity_threshold": 0.01,
+        },
     )
-    # TODO(alex.millane, 2025.07.22): This is specific to the drawer scene. Make this generic
-    # to support other destination objects.
-    success = TerminationTermCfg(func=object_in_drawer)

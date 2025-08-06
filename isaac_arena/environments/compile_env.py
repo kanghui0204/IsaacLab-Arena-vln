@@ -11,13 +11,13 @@
 import argparse
 import gymnasium as gym
 
+from isaaclab.envs import ManagerBasedRLEnvCfg
+from isaaclab.scene import InteractiveSceneCfg
+from isaaclab_tasks.utils import parse_env_cfg
+
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
 from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaManagerBasedRLEnvCfg
 from isaac_arena.utils.configclass import combine_configclass_instances
-from isaaclab.envs import ManagerBasedRLEnvCfg
-from isaaclab.scene import InteractiveSceneCfg
-
-from isaaclab_tasks.utils import parse_env_cfg
 
 
 def compile_environment(
@@ -73,13 +73,19 @@ def compile_manager_based_env_cfg(isaac_arena_environment: IsaacArenaEnvironment
         isaac_arena_environment.scene.get_events_cfg(),
     )
 
+    termination_cfg = combine_configclass_instances(
+        "TerminationCfg",
+        isaac_arena_environment.task.get_termination_cfg(),
+        isaac_arena_environment.scene.get_termination_cfg(),
+    )
+
     # Build the manager-based environment configuration.
     arena_env_cfg = IsaacArenaManagerBasedRLEnvCfg(
         observations=isaac_arena_environment.embodiment.get_observation_cfg(),
         actions=isaac_arena_environment.embodiment.get_action_cfg(),
         events=events_cfg,
         scene=scene_cfg,
-        terminations=isaac_arena_environment.task.get_termination_cfg(),
+        terminations=termination_cfg,
     )
     return arena_env_cfg
 

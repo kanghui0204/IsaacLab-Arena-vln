@@ -9,11 +9,12 @@
 #
 
 import isaaclab.sim as sim_utils
+from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
+from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
+
 from isaac_arena.assets.asset import Asset
 from isaac_arena.assets.register_asset import registerasset
 from isaac_arena.geometry.pose import Pose
-from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
-from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
 
 class Background(Asset):
@@ -77,6 +78,7 @@ class KitchenPickAndPlaceBackground(PickAndPlaceBackground):
         position_xyz=(0.35, 0.0, 0.094),
         rotation_wxyz=(0.0, 0.0, 0.0, 1.0),
     )
+    object_min_z = -0.2
 
     def __init__(self, robot_initial_pose: Pose = default_robot_initial_pose):
         super().__init__(robot_initial_pose)
@@ -111,6 +113,7 @@ class PackingTablePickAndPlaceBackground(PickAndPlaceBackground):
         position_xyz=(-0.35, 0.40, 1.0413),
         rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
     )
+    object_min_z = 0.5
 
     def __init__(self, robot_initial_pose: Pose = default_robot_initial_pose):
         super().__init__(robot_initial_pose)

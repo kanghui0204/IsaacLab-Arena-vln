@@ -11,15 +11,17 @@
 from dataclasses import MISSING
 from typing import Any
 
+import isaaclab.envs.mdp as mdp_isaac_lab
+from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
+from isaaclab.managers import EventTermCfg as EventTerm
+from isaaclab.managers import SceneEntityCfg, TerminationTermCfg
+from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
+from isaaclab.utils import configclass
+from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_events
+
 from isaac_arena.assets.asset import Asset
 from isaac_arena.geometry.pose import Pose
 from isaac_arena.scene.scene import SceneBase
-from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
-from isaaclab.managers import EventTermCfg as EventTerm
-from isaaclab.managers import SceneEntityCfg
-from isaaclab.utils import configclass
-
-from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_events
 
 
 @configclass
@@ -30,6 +32,9 @@ class PickAndPlaceSceneCfg:
 
     # The object to pick up
     pick_up_object: RigidObjectCfg = MISSING
+
+    # The contact sensor on the pick up object
+    pick_up_object_contact_sensor: ContactSensorCfg = MISSING
 
     # The object to place the object on/into
     destination_object: RigidObjectCfg = MISSING
@@ -50,6 +55,9 @@ class PickAndPlaceScene(SceneBase):
         return PickAndPlaceSceneCfg(
             background_scene=self.background_scene.get_background_cfg(),
             pick_up_object=self.pick_up_object.get_object_cfg(),
+            pick_up_object_contact_sensor=self.pick_up_object.get_contact_sensor_cfg(
+                contact_against_prim_paths=[self.background_scene.get_destination_cfg().prim_path],
+            ),
             destination_object=self.background_scene.get_destination_cfg(),
         )
 
@@ -61,6 +69,9 @@ class PickAndPlaceScene(SceneBase):
 
     def get_events_cfg(self) -> Any:
         return PickAndPlaceEventCfg(object_pose=self.background_scene.object_pose)
+
+    def get_termination_cfg(self) -> Any:
+        return PickAndPlaceTerminationCfg(minimum_height=self.background_scene.object_min_z)
 
 
 @configclass
@@ -82,4 +93,17 @@ class PickAndPlaceEventCfg:
                 },
                 "asset_cfgs": [SceneEntityCfg("pick_up_object")],
             },
+        )
+
+
+@configclass
+class PickAndPlaceTerminationCfg:
+    """Configuration for Pick and Place."""
+
+    object_dropped: TerminationTermCfg = MISSING
+
+    def __init__(self, minimum_height: float = 0.5):
+        self.object_dropped = TerminationTermCfg(
+            func=mdp_isaac_lab.root_height_below_minimum,
+            params={"minimum_height": minimum_height, "asset_cfg": SceneEntityCfg("pick_up_object")},
         )

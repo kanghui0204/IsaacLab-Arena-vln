@@ -33,3 +33,7 @@ class SceneBase(ABC):
     @abstractmethod
     def get_events_cfg(self) -> Any:
         raise NotImplementedError
+
+    @abstractmethod
+    def get_termination_cfg(self) -> Any:
+        raise NotImplementedError

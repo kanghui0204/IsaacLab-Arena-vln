@@ -52,7 +52,6 @@ class AssetRegistry(metaclass=SingletonMeta):
         Returns:
             Asset: The asset.
         """
-
         return self.assets[name]
 
     def get_assets_by_tag(self, tag: str) -> list[type["Asset"]]:
