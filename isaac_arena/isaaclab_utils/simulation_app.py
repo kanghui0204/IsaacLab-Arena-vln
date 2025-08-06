@@ -14,7 +14,6 @@ import sys
 import traceback
 
 import omni.kit.app
-
 from isaaclab.app import AppLauncher
 
 

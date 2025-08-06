@@ -7,12 +7,13 @@
 # without an express license agreement from NVIDIA CORPORATION or
 # its affiliates is strictly prohibited.
 #
+from isaaclab.assets import RigidObjectCfg
+from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
+from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
 from isaac_arena.assets.asset import Asset
 from isaac_arena.assets.register_asset import registerasset
 from isaac_arena.geometry.pose import Pose
-from isaaclab.assets import RigidObjectCfg
-from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
 
 class Object(Asset):
@@ -41,6 +42,14 @@ class Object(Asset):
     def get_object_cfg(self) -> RigidObjectCfg:
         """Return the configured pick-up object asset."""
         return self._generate_cfg()
+
+    def get_contact_sensor_cfg(self, contact_against_prim_paths: list[str] | None = None) -> ContactSensorCfg:
+        if contact_against_prim_paths is None:
+            contact_against_prim_paths = []
+        return ContactSensorCfg(
+            prim_path=self.prim_path,
+            filter_prim_paths_expr=contact_against_prim_paths,
+        )
 
     def _generate_cfg(self) -> RigidObjectCfg:
         object_cfg = RigidObjectCfg(

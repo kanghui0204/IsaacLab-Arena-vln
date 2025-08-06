@@ -15,8 +15,9 @@ import sys
 from collections.abc import Callable
 from typing import Any
 
-from isaac_arena.isaaclab_utils.simulation_app import SimulationAppContext
 from isaaclab.app import AppLauncher
+
+from isaac_arena.isaaclab_utils.simulation_app import SimulationAppContext
 
 
 def run_subprocess(cmd, env=None):

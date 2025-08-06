@@ -48,9 +48,9 @@ args.disable_fabric = True
 args.num_steps = 10
 if first_run:
     # Post simulation app launch imports
-    from isaac_arena.environments.compile_env import compile_arena_env_cfg
-
     from isaaclab_tasks.utils import parse_env_cfg
+
+    from isaac_arena.environments.compile_env import compile_arena_env_cfg
 
     # Compile an isaac arena environment configuration from existing isaac arena registry.
     arena_env_cfg = compile_arena_env_cfg(args)
