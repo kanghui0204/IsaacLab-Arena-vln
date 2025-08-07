@@ -40,7 +40,7 @@ def main():
 
         # Imports have to follow simulation startup.
         from isaac_arena.assets.asset_registry import get_environment_configuration_from_registry
-        from isaac_arena.environments.compile_env import compile_environment
+        from isaac_arena.environments.compile_env import compile_environment_config, make_gym_env
         from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
         from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
         from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
@@ -62,7 +62,8 @@ def main():
         )
 
         # Compile an IsaacLab compatible arena environment configuration
-        env, _ = compile_environment(isaac_arena_environment, args_cli)
+        env_cfg = compile_environment_config(isaac_arena_environment, args_cli)
+        env = make_gym_env(isaac_arena_environment.name, env_cfg)
 
         # Run some zero actions.
         for _ in tqdm.tqdm(range(args_cli.num_steps)):

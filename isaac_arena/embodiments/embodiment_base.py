@@ -11,6 +11,8 @@
 from abc import ABC
 from typing import Any
 
+from isaaclab.envs import ManagerBasedRLMimicEnv
+
 from isaac_arena.geometry.pose import Pose
 
 
@@ -21,6 +23,7 @@ class EmbodimentBase(ABC):
         self.action_config: Any | None = None
         self.observation_config: Any | None = None
         self.event_config: Any | None = None
+        self.mimic_env: Any | None = None
 
     def get_scene_cfg(self) -> Any:
         return self.scene_config
@@ -33,6 +36,9 @@ class EmbodimentBase(ABC):
 
     def get_event_cfg(self) -> Any:
         return self.event_config
+
+    def get_mimic_env(self) -> ManagerBasedRLMimicEnv:
+        return self.mimic_env
 
     def set_robot_initial_pose(self, pose: Pose):
         if self.scene_config is None or not hasattr(self.scene_config, "robot"):

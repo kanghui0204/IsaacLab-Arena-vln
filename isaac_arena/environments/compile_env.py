@@ -11,7 +11,7 @@
 import argparse
 import gymnasium as gym
 
-from isaaclab.envs import ManagerBasedRLEnvCfg
+from isaaclab.envs import ManagerBasedRLEnvCfg, ManagerBasedRLMimicEnv
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab_tasks.utils import parse_env_cfg
 
@@ -20,9 +20,9 @@ from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaMan
 from isaac_arena.utils.configclass import combine_configclass_instances
 
 
-def compile_environment(
+def compile_environment_config(
     isaac_arena_environment: IsaacArenaEnvironment, args_cli: argparse.Namespace
-) -> tuple[gym.Env, ManagerBasedRLEnvCfg]:
+) -> ManagerBasedRLEnvCfg:
     """Compile the arena environment configuration to a gymnasium environment.
 
     Args:
@@ -33,10 +33,21 @@ def compile_environment(
         gym.Env: The compiled gymnasium environment.
     """
     # Get the manager-based environment configuration.
-    arena_env_cfg = compile_manager_based_env_cfg(isaac_arena_environment)
-    env, env_cfg = compile_gym_env(isaac_arena_environment.name, arena_env_cfg, args_cli)
+    arena_env_cfg = compile_manager_based_env_cfg(isaac_arena_environment=isaac_arena_environment)
+    if args_cli.mimic:
+        # We compile the mimic env configuration now. This is a combination of the arena env cfg and the task mimic env cfg.
+        env_cfg = _compile_mimic_env_cfg(arena_env_cfg=arena_env_cfg, isaac_arena_environment=isaac_arena_environment)
+        # We also point to the mimic env entry point which is a inherited class of ManagerBasedRLEnv.
+        entry_point = _combine_mimic_env_from_embodiment_and_task(isaac_arena_environment=isaac_arena_environment)
+    else:
+        env_cfg = arena_env_cfg
+        entry_point = "isaaclab.envs:ManagerBasedRLEnv"
 
-    return env, env_cfg
+    env_cfg = compile_gym_env_cfg(
+        name=isaac_arena_environment.name, entry_point=entry_point, arena_env_cfg=env_cfg, args_cli=args_cli
+    )
+
+    return env_cfg
 
 
 def compile_manager_based_env_cfg(isaac_arena_environment: IsaacArenaEnvironment) -> IsaacArenaManagerBasedRLEnvCfg:
@@ -90,9 +101,54 @@ def compile_manager_based_env_cfg(isaac_arena_environment: IsaacArenaEnvironment
     return arena_env_cfg
 
 
-def compile_gym_env(
-    name: str, arena_env_cfg: IsaacArenaManagerBasedRLEnvCfg, args_cli: argparse.Namespace
-) -> tuple[gym.Env, ManagerBasedRLEnvCfg]:
+def _compile_mimic_env_cfg(
+    arena_env_cfg: IsaacArenaManagerBasedRLEnvCfg, isaac_arena_environment: IsaacArenaEnvironment
+) -> IsaacArenaManagerBasedRLEnvCfg:
+    """Compile the mimic env configuration.
+
+    Args:
+        arena_env_cfg (IsaacArenaManagerBasedRLEnvCfg): The manager-based environment configuration.
+        isaac_arena_environment (IsaacArenaEnvironment): The arena environment configuration.
+
+    Returns:
+        IsaacArenaManagerBasedRLEnvCfg: The mimic env configuration.
+    """
+    # We combine the mimic env and the arena env together
+    task_mimic_env_cfg = isaac_arena_environment.task.get_mimic_env_cfg()
+    mimic_env_cfg = combine_configclass_instances(
+        "MimicEnvCfg",
+        arena_env_cfg,
+        task_mimic_env_cfg,
+    )
+
+    return mimic_env_cfg
+
+
+def _combine_mimic_env_from_embodiment_and_task(
+    isaac_arena_environment: IsaacArenaEnvironment,
+) -> ManagerBasedRLMimicEnv:
+    """Combine the mimic env from the embodiment and the task.
+
+    Args:
+        isaac_arena_environment (IsaacArenaEnvironment): The arena environment configuration.
+
+    Returns:
+        ManagerBasedRLMimicEnv: The combined mimic env.
+    """
+    embodiment_mimic_env = isaac_arena_environment.embodiment.get_mimic_env()
+    task_mimic_env = isaac_arena_environment.task.get_mimic_env()
+
+    # We combine the mimic env and the arena env together
+    mimic_env = type("CombinedMimicEnv", (embodiment_mimic_env, task_mimic_env), {})
+    return mimic_env
+
+
+def compile_gym_env_cfg(
+    name: str,
+    entry_point: str | ManagerBasedRLMimicEnv,
+    arena_env_cfg: IsaacArenaManagerBasedRLEnvCfg,
+    args_cli: argparse.Namespace,
+) -> ManagerBasedRLEnvCfg:
     """Compile the arena environment configuration to a gymnasium environment.
 
     Args:
@@ -105,7 +161,7 @@ def compile_gym_env(
     """
     gym.register(
         id=name,
-        entry_point="isaaclab.envs:ManagerBasedRLEnv",
+        entry_point=entry_point,
         kwargs={
             "env_cfg_entry_point": arena_env_cfg,
         },
@@ -117,9 +173,23 @@ def compile_gym_env(
         num_envs=args_cli.num_envs,
         use_fabric=not args_cli.disable_fabric,
     )
-    env = gym.make(name, cfg=env_cfg)
 
+    return env_cfg
+
+
+def make_gym_env(name: str, env_cfg: ManagerBasedRLEnvCfg) -> gym.Env:
+    """Make the gymnasium environment.
+
+    Args:
+        name (str): The name of the environment.
+        env_cfg (ManagerBasedRLEnvCfg): The environment configuration.
+
+    Returns:
+        gym.Env: The gymnasium environment.
+    """
+
+    env = gym.make(name, cfg=env_cfg)
     # Reset for good measure.
     env.reset()
 
-    return env, env_cfg
+    return env

@@ -21,7 +21,7 @@ def object_on_destination(
     object_cfg: SceneEntityCfg = SceneEntityCfg("pick_up_object"),
     contact_sensor_cfg: SceneEntityCfg = SceneEntityCfg("pick_up_object_contact_sensor"),
     force_threshold: float = 1.0,
-    velocity_threshold: float = 0.01,
+    velocity_threshold: float = 0.05,
 ) -> torch.Tensor:
     object: RigidObject = env.scene[object_cfg.name]
     sensor: ContactSensor = env.scene[contact_sensor_cfg.name]

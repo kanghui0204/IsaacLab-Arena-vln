@@ -21,3 +21,11 @@ class TaskBase(ABC):
     @abstractmethod
     def get_prompt(self) -> str:
         raise NotImplementedError("Function not implemented yet.")
+
+    @abstractmethod
+    def get_mimic_env_cfg(self) -> Any:
+        raise NotImplementedError("Function not implemented yet.")
+
+    @abstractmethod
+    def get_mimic_env(self) -> Any:
+        raise NotImplementedError("Function not implemented yet.")

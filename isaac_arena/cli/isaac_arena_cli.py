@@ -39,6 +39,7 @@ def add_isaac_lab_cli_args(parser: argparse.ArgumentParser) -> None:
         action="store_false",
         help="Disable Pinocchio.",
     )
+    isaac_lab_group.add_argument("--mimic", action="store_true", default=False, help="Enable mimic environment.")
 
 
 def add_isaac_arena_cli_args(parser: argparse.ArgumentParser) -> None:
