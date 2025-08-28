@@ -174,8 +174,8 @@ def combine_configclass_instances(name: str, *input_configclass_instances: confi
         A new configclass instance that is the combination of the input configclass instances.
     """
     input_configclass_instances_not_none = [i for i in input_configclass_instances if i is not None]
-    input_configclasses: list[type] = [type(i) for i in input_configclass_instances]
-    combined_configclass = combine_configclasses(name, *input_configclass_instances_not_none)
+    input_configclasses_not_none: list[type] = [type(i) for i in input_configclass_instances_not_none]
+    combined_configclass = combine_configclasses(name, *input_configclasses_not_none)
     # Create an instance of the combined type
     combined_configclass_instance = combined_configclass()
     # Copy in the values from the input configclass instances

@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from isaaclab.assets import RigidObjectCfg
+from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
 from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
+from isaac_arena.assets.affordances import Openable
 from isaac_arena.assets.asset import Asset
 from isaac_arena.assets.register_asset import registerasset
 from isaac_arena.geometry.pose import Pose
@@ -47,7 +49,7 @@ class Object(Asset):
 
     def set_initial_pose(self, pose: Pose) -> None:
         self.initial_pose = pose
-    
+
     def is_initial_pose_set(self) -> bool:
         return self.initial_pose is not None
 
@@ -177,3 +179,48 @@ class SketchFabSprayCan3(Object):
 
     def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
+
+
+# TODO(alexmillane, 2025.08.28): Cleanup. Push this override here into the object base class.
+@registerasset
+class Microwave(Object, Openable):
+    """A microwave oven."""
+
+    name = "microwave"
+    tags = ["object", "openable"]
+    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/interactable_objects/microwave.usd"
+    default_prim_path = "{ENV_REGEX_NS}/target_microwave"
+
+    # Openable affordance parameters
+    openable_joint_name = "microjoint"
+    openable_open_threshold = 0.5
+
+    def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
+        super().__init__(
+            prim_path=prim_path,
+            initial_pose=initial_pose,
+            openable_joint_name=self.openable_joint_name,
+            openable_open_threshold=self.openable_open_threshold,
+        )
+
+    def get_object_cfg(self) -> ArticulationCfg:
+        # TODO(alexmillane, 2025.08.28): This is a hack. Fix.
+        # We're overriding the get_object_cfg method in the object base class.
+        # We need to move this to the object base class, and detect the correct type of
+        # cfg to return.
+        # The problem is that all the other objects return a RigidObjectCfg,
+        # but this one returns an ArticulationCfg. So we're abusing things here.
+        object_cfg = ArticulationCfg(
+            prim_path=self.prim_path,
+            spawn=UsdFileCfg(
+                usd_path=self.usd_path,
+                scale=self.scale,
+                activate_contact_sensors=True,
+            ),
+            actuators={},
+        )
+        # Optionally specify initial pose
+        if self.initial_pose is not None:
+            object_cfg.init_state.pos = self.initial_pose.position_xyz
+            object_cfg.init_state.rot = self.initial_pose.rotation_wxyz
+        return object_cfg
