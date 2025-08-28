@@ -1,24 +1,52 @@
-name: Lint
+name: Isaac Arena CI
 
 on:
   pull_request:
   push:
-    branches: [ "main" ]   # adjust default branch if needed
+    branches: [ "main" ]
+
+# Concurrency control to prevent parallel runs on the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  issues: read
+
+env:
+  NGC_API_KEY: ${{ secrets.NGC_API_KEY }}
 
 jobs:
-  pre-commit:
-    name: Run pre-commit
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
+
+    container:
+      image: nvcr.io/nvstaging/isaac-amr/isaac_arena:latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
             fetch-depth: 0
+      
+      # Cache pre-commit
+      - name: Cache pre-commit
+        uses: actions/cache@v4
+        with:
+          path: .cache/pre-commit
+          key: precommit-${{ github.sha }}
+          restore-keys: |
+            precommit-
 
       - name: Setup Python
         uses: actions/setup-python@v3
 
-
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.0
+
+      - name: Run pytest
+        run: /isaac-sim/python.sh -m pytest -sv isaac_arena/tests
