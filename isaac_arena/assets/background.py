@@ -111,7 +111,7 @@ class PackingTablePickAndPlaceBackground(PickAndPlaceBackground):
         prim_path="{ENV_REGEX_NS}/PackingTable/container_h20",
     )
     object_pose = Pose(
-        position_xyz=(0.32623, -0.00586, 0.08186 + 2.0),
+        position_xyz=(0.32623, -0.00586, 0.08186),
         rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
     )
     object_min_z = -0.2

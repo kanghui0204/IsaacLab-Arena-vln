@@ -31,7 +31,6 @@ class Object(Asset):
     # name: str | None = None
     # tags: list[str] | None = None
     usd_path: str | None = None
-    # scale: tuple[float, float, float] | None = None # REMOVE IF WORKS
     scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
     def __init__(
@@ -106,7 +105,6 @@ class MustardBottle(Object):
     name = "mustard_bottle"
     tags = ["object"]
     usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/006_mustard_bottle.usd"
-    # scale = (1.0, 1.0, 1.0)
     default_prim_path = "{ENV_REGEX_NS}/target_mustard_bottle"
 
     def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
@@ -123,7 +121,6 @@ class SugarBox(Object):
     tags = ["object"]
     prim_path = ("{ENV_REGEX_NS}/target_sugar_box",)
     usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/004_sugar_box.usd"
-    # scale = (1.0, 1.0, 1.0)
     default_prim_path = "{ENV_REGEX_NS}/target_sugar_box"
 
     def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
@@ -140,7 +137,6 @@ class TomatoSoupCan(Object):
     tags = ["object"]
     prim_path = ("{ENV_REGEX_NS}/target_tomato_soup_can",)
     usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/005_tomato_soup_can.usd"
-    # scale = (1.0, 1.0, 1.0)
     default_prim_path = "{ENV_REGEX_NS}/target_tomato_soup_can"
 
     def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
@@ -157,7 +153,6 @@ class LightWheelKettle21(Object):
     tags = ["object"]
     prim_path = ("{ENV_REGEX_NS}/target_lightwheel_kettle_21",)
     usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/sample_assets/lightwheel/kettle/Kettle021/Kettle021.usd"
-    # scale = (1.0, 1.0, 1.0)
     default_prim_path = "{ENV_REGEX_NS}/target_lightwheel_kettle_21"
 
     def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
@@ -174,7 +169,6 @@ class SketchFabSprayCan3(Object):
     tags = ["object"]
     prim_path = ("{ENV_REGEX_NS}/target_sketchfab_spray_can_3",)
     usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/sample_assets/sketchfab/spray_bottle/spray_bottle_3/spray_bottle_3.usd"
-    # scale = (1.0, 1.0, 1.0)
     default_prim_path = "{ENV_REGEX_NS}/target_sketchfab_spray_can_3"
 
     def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):

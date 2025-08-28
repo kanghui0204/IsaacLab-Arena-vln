@@ -92,7 +92,6 @@ class PickAndPlaceEventCfg:
     reset_pick_up_object_pose: EventTerm = MISSING
 
     def __init__(self, object_pose: Pose):
-        print(f"HERE: object_pose: {object_pose}")
         self.reset_pick_up_object_pose = EventTerm(
             func=franka_stack_events.randomize_object_pose,
             mode="reset",

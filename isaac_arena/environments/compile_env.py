@@ -105,7 +105,6 @@ class ArenaEnvBuilder:
         """Register Gym env and parse runtime cfg."""
         name = self.arena_env.name
         _, cfg_entry, entry_point = self.build_unregistered()
-        print(f"Registering env {name}")
         gym.register(
             id=name,
             entry_point=entry_point,
