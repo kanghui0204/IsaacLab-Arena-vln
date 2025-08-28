@@ -33,16 +33,9 @@ jobs:
     steps:
       # Checkout Code
       - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # Cache pre-commit
-      - name: Cache pre-commit
-        uses: actions/cache@v3
+        uses: actions/checkout@v4
         with:
-          path: .cache/pre-commit
-          key: precommit-${{ github.sha }}
-          restore-keys: |
-            precommit-
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v3
