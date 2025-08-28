@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import torch
-from abc import ABC
 
 from isaaclab.envs.manager_based_env import ManagerBasedEnv
 
@@ -52,7 +51,7 @@ def set_joint_position(env: ManagerBasedEnv, object_name: str, joint_name: str, 
     )
 
 
-class Openable(ABC):
+class Openable:
     """Interface for openable objects."""
 
     def __init__(self, openable_joint_name: str, openable_open_threshold: float, **kwargs):
