@@ -22,7 +22,7 @@ env:
 jobs:
   test:
     name: Run tests
-    runs-on: self-hosted
+    runs-on: [self-hosted, zurich]
 
     container:
       image: nvcr.io/nvstaging/isaac-amr/isaac_arena:latest
