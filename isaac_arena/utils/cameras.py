@@ -13,18 +13,19 @@
 # limitations under the License.
 
 from copy import deepcopy
-from dataclasses import is_dataclass, fields
-from typing import Any, Dict, Iterable, List, Tuple
+from typing import Any
+
+from isaaclab import mdp
+from isaaclab.envs.mdp import ObsTerm
+from isaaclab.managers import ObservationGroupCfg as ObsGroup
+from isaaclab.managers import SceneEntityCfg
 
 # if you already have these utilities in your repo, reuse them
 from isaac_arena.utils.configclass import make_configclass
-from isaaclab.managers import SceneEntityCfg
-from isaaclab.envs.mdp import ObsTerm
-from isaaclab.managers import ObservationGroupCfg as ObsGroup
-from isaaclab import mdp
+
 
 def add_camera_to_environment_cfg(
-    camera_defs: Dict[str, Dict[str, Any]],
+    camera_defs: dict[str, dict[str, Any]],
     enable_cameras: bool,
     tag: str,
 ):
@@ -38,7 +39,7 @@ def add_camera_to_environment_cfg(
 
     fields_spec = []
     for name, meta in camera_defs.items():
-        tags: List[str] = meta.get("tags", [])
+        tags: list[str] = meta.get("tags", [])
         if tag not in tags:
             continue
         cam_cfg = deepcopy(meta["camera_cfg"])
@@ -52,8 +53,9 @@ def add_camera_to_environment_cfg(
 
     return CamerasSceneCfg(), make_camera_observations_cfg(registered_cameras=fields_spec)
 
+
 def make_camera_observations_cfg(
-    registered_cameras: Dict[str, Any],
+    registered_cameras: dict[str, Any],
     normalize: bool = False,
 ):
     """
@@ -63,7 +65,7 @@ def make_camera_observations_cfg(
 
     obs_fields = []
     for name, meta in registered_cameras.items():
-        data_type: List[str] = meta.get("data_types", ["rgb"])
+        data_type: list[str] = meta.get("data_types", ["rgb"])
         term = ObsTerm(
             func=mdp.image,
             params={"sensor_cfg": SceneEntityCfg(name), "data_type": data_type, "normalize": normalize},
@@ -80,8 +82,12 @@ def make_camera_observations_cfg(
         self.concatenate_terms = False
 
     # Has to inherit from ObsGroup
-    AutoCameraObsCfg = make_configclass("AutoCameraObsCfg", obs_fields, bases=(ObsGroup,), namespace={"__post_init__": post_init})
+    AutoCameraObsCfg = make_configclass(
+        "AutoCameraObsCfg", obs_fields, bases=(ObsGroup,), namespace={"__post_init__": post_init}
+    )
     # Now wrap the observation group in an observation class
-    WrappedCameraObsCfg = make_configclass("WrappedCameraObsCfg", [("camera_obs", type(AutoCameraObsCfg), AutoCameraObsCfg)])
+    WrappedCameraObsCfg = make_configclass(
+        "WrappedCameraObsCfg", [("camera_obs", type(AutoCameraObsCfg), AutoCameraObsCfg)]
+    )
 
     return WrappedCameraObsCfg()
