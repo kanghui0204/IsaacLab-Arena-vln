@@ -27,6 +27,7 @@ from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironme
 from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaManagerBasedRLEnvCfg
 from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
 from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
+from isaac_arena.utils.cameras import add_camera_to_environment_cfg
 from isaac_arena.utils.configclass import combine_configclass_instances
 
 
@@ -57,6 +58,17 @@ class ArenaEnvBuilder:
         robot_pose = self.arena_env.scene.get_robot_initial_pose()
         self.arena_env.embodiment.set_robot_initial_pose(robot_pose)
 
+        # Add cameras to the scene along with the observation cfg if requested
+        camera_scene_cfg, camera_observation_cfg = add_camera_to_environment_cfg(
+            self.arena_env.embodiment.get_scene_cfg().observation_cameras,
+            enable_cameras=self.args.enable_cameras,
+            tag=self.args.camera_tag,
+        )
+        observation_cfg = combine_configclass_instances(
+            "ObservationCfg",
+            self.arena_env.embodiment.get_observation_cfg(),
+            camera_observation_cfg,
+        )
         scene_cfg = combine_configclass_instances(
             "SceneCfg",
             self.DEFAULT_SCENE_CFG,
@@ -74,7 +86,7 @@ class ArenaEnvBuilder:
             self.arena_env.scene.get_termination_cfg(),
         )
         return IsaacArenaManagerBasedRLEnvCfg(
-            observations=self.arena_env.embodiment.get_observation_cfg(),
+            observations=observation_cfg,
             actions=self.arena_env.embodiment.get_action_cfg(),
             events=events_cfg,
             scene=scene_cfg,

@@ -114,20 +114,24 @@ class GR1T2SceneCfg:
         ),
     )
 
-    # TODO(vik: Fix camera and xr issues)
-    # robot_pov_cam: CameraCfg = CameraCfg(
-    #         prim_path="{ENV_REGEX_NS}/Robot/head_yaw_link/RobotPOVCam",
-    #         update_period=0.0,
-    #         height=512,
-    #         width=512,
-    #         data_types=["rgb", "distance_to_image_plane", "semantic_segmentation"],
-    #         spawn=sim_utils.PinholeCameraCfg(focal_length=18.15, clipping_range=(0.01, 1.0e5)),
-    #         offset=CameraCfg.OffsetCfg(
-    #             pos=(0.12515, 0.0, 0.06776),
-    #             rot=(0.62, 0.32, -0.32, -0.63),
-    #             convention="opengl",
-    #         ),
-    #     )
+    observation_cameras: dict = {
+        "robot_pov_cam": {
+            "camera_cfg": CameraCfg(
+                prim_path="{ENV_REGEX_NS}/Robot/head_yaw_link/RobotPOVCam",
+                update_period=0.0,
+                height=512,
+                width=512,
+                data_types=["rgb", "distance_to_image_plane", "semantic_segmentation"],
+                spawn=sim_utils.PinholeCameraCfg(focal_length=18.15, clipping_range=(0.01, 1.0e5)),
+                offset=CameraCfg.OffsetCfg(
+                    pos=(0.12515, 0.0, 0.06776),
+                    rot=(0.62, 0.32, -0.32, -0.63),
+                    convention="opengl",
+                ),
+            ),
+            "tags": ["teleop"],
+        },
+    }
 
 
 # NOTE(alexmillane, 2025.07.25): This is partially copied from pickplace_gr1t2_env_cfg.py
