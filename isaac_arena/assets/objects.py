@@ -89,7 +89,6 @@ class CrackerBox(Object):
     name = "cracker_box"
     tags = ["object"]
     usd_path = "omniverse://isaac-dev.ov.nvidia.com/NVIDIA/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/003_cracker_box.usd"
-    # scale = (1.0, 1.0, 1.0)
     default_prim_path = "{ENV_REGEX_NS}/target_cracker_box"
 
     def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):

@@ -34,7 +34,7 @@ def _test_open_door_microwave(simulation_app) -> bool:
     from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
     from isaac_arena.geometry.pose import Pose
     from isaac_arena.scene.open_door_scene import OpenDoorScene
-    from isaac_arena.tasks.open_door import OpenDoorTask
+    from isaac_arena.tasks.open_door_task import OpenDoorTask
 
     args_parser = get_isaac_arena_cli_parser()
     args_cli = args_parser.parse_args([])

@@ -25,7 +25,7 @@ def unnormalize_value(value: float, min_value: float, max_value: float):
     return min_value + (max_value - min_value) * value
 
 
-def get_joint_state(env: ManagerBasedEnv, object_name: str, joint_name: str):
+def get_normalized_joint_position(env: ManagerBasedEnv, object_name: str, joint_name: str):
     articulation = env.unwrapped.scene.articulations[object_name]
     joint_index = articulation.data.joint_names.index(joint_name)
     joint_position = articulation.data.joint_pos[:, joint_index]
@@ -37,7 +37,9 @@ def get_joint_state(env: ManagerBasedEnv, object_name: str, joint_name: str):
     return normalized_position
 
 
-def set_joint_position(env: ManagerBasedEnv, object_name: str, joint_name: str, target_joint_position: float):
+def set_normalized_joint_position(
+    env: ManagerBasedEnv, object_name: str, joint_name: str, target_joint_position: float
+):
     articulation = env.unwrapped.scene.articulations[object_name]
     joint_index = articulation.data.joint_names.index(joint_name)
     joint_position_limits = articulation.data.joint_pos_limits[0, joint_index, :]
@@ -61,13 +63,13 @@ class Openable:
         self.openable_open_threshold = openable_open_threshold
 
     def is_open(self, env: ManagerBasedEnv, object_name: str) -> torch.Tensor:
-        """Open the object."""
-        return get_joint_state(env, object_name, self.openable_joint_name) > self.openable_open_threshold
+        """Returns a boolean tensor of whether the object is open."""
+        return get_normalized_joint_position(env, object_name, self.openable_joint_name) > self.openable_open_threshold
 
     def open(self, env: ManagerBasedEnv, object_name: str, percentage: float = 1.0):
-        """Open the object."""
-        set_joint_position(env, object_name, self.openable_joint_name, percentage)
+        """Open the object (in all the environments)."""
+        set_normalized_joint_position(env, object_name, self.openable_joint_name, percentage)
 
     def close(self, env: ManagerBasedEnv, object_name: str, percentage: float = 0.0):
-        """Close the object."""
-        set_joint_position(env, object_name, self.openable_joint_name, percentage)
+        """Close the object (in all the environments)."""
+        set_normalized_joint_position(env, object_name, self.openable_joint_name, percentage)
