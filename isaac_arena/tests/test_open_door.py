@@ -62,7 +62,9 @@ def _test_open_door_microwave(simulation_app) -> bool:
     env = env_builder.make_registered()
     env.reset()
 
-    def step_zeros_and_call(env: ManagerBasedEnv, function: Callable[[ManagerBasedEnv, torch.Tensor], None], num_steps: int):
+    def step_zeros_and_call(
+        env: ManagerBasedEnv, function: Callable[[ManagerBasedEnv, torch.Tensor], None], num_steps: int
+    ):
         for _ in tqdm.tqdm(range(NUM_STEPS)):
             with torch.inference_mode():
                 actions = torch.zeros(env.action_space.shape, device=env.device)
