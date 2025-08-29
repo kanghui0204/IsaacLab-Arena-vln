@@ -12,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections.abc import Callable
-
 import gymnasium as gym
 import torch
 import tqdm
+from collections.abc import Callable
 
 from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
 
@@ -96,7 +95,7 @@ def _test_open_door_microwave(simulation_app) -> bool:
         if terminated.item():
             print("Open door task is completed")
 
-    try: 
+    try:
 
         print("Closing microwave")
         microwave.close(env, SceneEntityCfg("interactable_object"))
@@ -104,7 +103,7 @@ def _test_open_door_microwave(simulation_app) -> bool:
         print("Opening microwave")
         microwave.open(env, SceneEntityCfg("interactable_object"))
         step_zeros_and_call(env, assert_open, NUM_STEPS)
-    
+
     except Exception as e:
         print(f"Error: {e}")
         return False

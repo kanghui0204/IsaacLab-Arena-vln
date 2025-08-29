@@ -39,9 +39,7 @@ def get_normalized_joint_position(env: ManagerBasedEnv, asset_cfg: SceneEntityCf
     return normalized_position
 
 
-def set_normalized_joint_position(
-    env: ManagerBasedEnv, asset_cfg: SceneEntityCfg, target_joint_position: float
-):
+def set_normalized_joint_position(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg, target_joint_position: float):
     articulation = env.unwrapped.scene.articulations[asset_cfg.name]
     assert len(asset_cfg.joint_names) == 1, "Only one joint name is supported for now."
     joint_index = articulation.data.joint_names.index(asset_cfg.joint_names[0])
