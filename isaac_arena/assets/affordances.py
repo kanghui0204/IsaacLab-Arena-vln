@@ -26,7 +26,7 @@ def unnormalize_value(value: float, min_value: float, max_value: float):
 
 
 def get_normalized_joint_position(env: ManagerBasedEnv, object_name: str, joint_name: str):
-    articulation = env.unwrapped.scene.articulations[object_name]
+    articulation = env.scene.articulations[object_name]
     joint_index = articulation.data.joint_names.index(joint_name)
     joint_position = articulation.data.joint_pos[:, joint_index]
     joint_position_limits = articulation.data.joint_pos_limits[0, joint_index, :]
