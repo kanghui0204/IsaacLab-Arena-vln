@@ -40,3 +40,11 @@ class IsaacArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
         # simulation settings
         self.sim.dt = 0.01  # 100Hz
         self.sim.render_interval = 2
+
+        # Add teleop device here as we need access to xr and sim device.
+        if self.teleop_devices is not None:
+            self.teleop_devices = self.teleop_devices.get_teleop_device_cfg(
+                sim_device=self.sim.device,
+                actions=self.actions,
+                xr_cfg=self.xr,
+            )

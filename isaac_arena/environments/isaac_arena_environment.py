@@ -19,6 +19,7 @@ from isaaclab.utils import configclass
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase
 from isaac_arena.scene.scene import SceneBase
 from isaac_arena.tasks.task import TaskBase
+from isaac_arena.teleop_devices.teleop_device_base import TeleopDeviceBase
 
 # TODO(alexmillane, 2025-07-23): For some reason, missing values are not being detected,
 # if not set during configclass initialization. We need to fix this.
@@ -39,3 +40,9 @@ class IsaacArenaEnvironment:
 
     task: TaskBase = MISSING
     """The task to use in the environment."""
+
+    teleop_device: TeleopDeviceBase = MISSING
+    """The teleop device to use in the environment."""
+
+    retargeter_name: str = MISSING
+    """The retargeter to use in the environment."""

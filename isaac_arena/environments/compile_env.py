@@ -43,12 +43,16 @@ class ArenaEnvBuilder:
 
     @classmethod
     def from_args(cls, args: argparse.Namespace) -> ArenaEnvBuilder:
-        cfgs = get_environment_configuration_from_registry(args.background, args.object, args.embodiment)
+        cfgs = get_environment_configuration_from_registry(
+            args.background, args.object, args.embodiment, args.teleop_device
+        )
         arena_env = IsaacArenaEnvironment(
             name=f"pick_and_place_{args.embodiment}_{args.background}_{args.object}",
             embodiment=cfgs["embodiment"],
             scene=PickAndPlaceScene(cfgs["background"], cfgs["object"]),
             task=PickAndPlaceTask(),
+            teleop_device=cfgs["teleop_device"],
+            retargeter_name=args.retargeter_name,
         )
         return cls(arena_env, args)
 
@@ -73,13 +77,31 @@ class ArenaEnvBuilder:
             self.arena_env.task.get_termination_cfg(),
             self.arena_env.scene.get_termination_cfg(),
         )
+        observation_cfg = self.arena_env.embodiment.get_observation_cfg()
+        actions_cfg = self.arena_env.embodiment.get_action_cfg()
+        xr_cfg = self.arena_env.embodiment.get_xr_cfg()
+        teleop_device = self.arena_env.teleop_device
+        # We add retargeters to action cfg if teleop is enabled
+        if self.arena_env.teleop_device is not None:
+            retargeters_cfg = self.arena_env.embodiment.get_retargeters_cfg(
+                retargeter_name=self.arena_env.retargeter_name
+            )
+            actions_cfg = combine_configclass_instances(
+                "ActionsCfg",
+                retargeters_cfg,
+                actions_cfg,
+            )
         return IsaacArenaManagerBasedRLEnvCfg(
             observations=self.arena_env.embodiment.get_observation_cfg(),
             actions=self.arena_env.embodiment.get_action_cfg(),
+            observations=observation_cfg,
+            actions=actions_cfg,
             events=events_cfg,
             scene=scene_cfg,
             terminations=termination_cfg,
             xr=self.arena_env.embodiment.get_xr_cfg(),
+            xr=xr_cfg,
+            teleop_devices=teleop_device,
         )
 
     def compose_mimic_cfg(

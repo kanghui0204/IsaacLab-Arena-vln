@@ -85,7 +85,10 @@ class AssetRegistry(metaclass=SingletonMeta):
 
 
 def get_environment_configuration_from_registry(
-    background_name: str | None = None, object_name: str | None = None, embodiment_name: str | None = None
+    background_name: str | None = None,
+    object_name: str | None = None,
+    embodiment_name: str | None = None,
+    teleop_device_name: str | None = None,
 ) -> dict[str, type["Asset"]]:
     from isaac_arena.assets.asset_registry import AssetRegistry
 
@@ -102,11 +105,16 @@ def get_environment_configuration_from_registry(
         embodiment = asset_registry.get_asset_by_name(embodiment_name)()
     else:
         embodiment = asset_registry.get_random_asset_by_tag("embodiment")()
+    if teleop_device_name:
+        teleop_device = asset_registry.get_asset_by_name(teleop_device_name)()
+    else:
+        teleop_device = None
 
     environment_configuration = {
         "background": background,
         "object": pick_up_object,
         "embodiment": embodiment,
+        "teleop_device": teleop_device,
     }
 
     return environment_configuration
@@ -119,3 +127,4 @@ from isaac_arena.assets.background import *  # noqa: F403, F401
 from isaac_arena.assets.objects import *  # noqa: F403, F401
 from isaac_arena.embodiments.franka import *  # noqa: F403, F401
 from isaac_arena.embodiments.gr1t2 import *  # noqa: F403, F401
+from isaac_arena.teleop_devices.handtracking import *  # noqa: F403, F401

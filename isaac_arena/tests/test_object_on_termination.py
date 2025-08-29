@@ -47,6 +47,7 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
         embodiment=FrankaEmbodiment(),
         scene=PickAndPlaceScene(background, object),
         task=PickAndPlaceTask(),
+        teleop_device=None,
     )
 
     # Set the initial pose of the object above the drawer, such that it falls in

@@ -71,6 +71,7 @@ def _test_all_assets_in_registry(simulation_app):
         embodiment=FrankaEmbodiment(),
         scene=PickAndPlaceScene(background, asset),
         task=PickAndPlaceTask(),
+        teleop_device=None,
     )
 
     # Compile the environment.
