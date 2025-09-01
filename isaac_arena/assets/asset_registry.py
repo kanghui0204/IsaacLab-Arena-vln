@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 class AssetRegistry(metaclass=SingletonMeta):
 
     def __init__(self):
-        self.assets = {}
+        self.assets: dict[str, type["Asset"]] = {}
 
     def register(self, asset: type["Asset"]):
         """Register an asset with a name.

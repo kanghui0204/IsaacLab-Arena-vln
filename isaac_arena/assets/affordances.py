@@ -39,7 +39,9 @@ def get_normalized_joint_position(env: ManagerBasedEnv, asset_cfg: SceneEntityCf
     return normalized_position
 
 
-def set_normalized_joint_position(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg, target_joint_position: float):
+def set_normalized_joint_position(
+    env: ManagerBasedEnv, asset_cfg: SceneEntityCfg, target_joint_position: float, env_ids: torch.Tensor | None = None
+):
     articulation = env.scene.articulations[asset_cfg.name]
     assert len(asset_cfg.joint_names) == 1, "Only one joint name is supported for now."
     joint_index = articulation.data.joint_names.index(asset_cfg.joint_names[0])
@@ -48,9 +50,10 @@ def set_normalized_joint_position(env: ManagerBasedEnv, asset_cfg: SceneEntityCf
     if joint_min < 0.0:
         target_joint_position = 1 - target_joint_position
     target_joint_position_unnormlized = unnormalize_value(target_joint_position, joint_min, joint_max)
-    # TODO(alexmillane, 2025.08.28): Sets to all envs unconditionally for now.
     articulation.write_joint_position_to_sim(
-        torch.tensor([[target_joint_position_unnormlized]]).to(env.device), torch.tensor([joint_index]).to(env.device)
+        torch.tensor([[target_joint_position_unnormlized]]).to(env.device),
+        torch.tensor([joint_index]).to(env.device),
+        env_ids=env_ids.to(env.device) if env_ids is not None else None,
     )
 
 
@@ -68,15 +71,19 @@ class Openable:
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
         return get_normalized_joint_position(env, asset_cfg) > self.openable_open_threshold
 
-    def open(self, env: ManagerBasedEnv, asset_cfg: SceneEntityCfg, percentage: float = 1.0):
+    def open(
+        self, env: ManagerBasedEnv, env_ids: torch.Tensor | None, asset_cfg: SceneEntityCfg, percentage: float = 1.0
+    ):
         """Open the object (in all the environments)."""
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
-        set_normalized_joint_position(env, asset_cfg, percentage)
+        set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
 
-    def close(self, env: ManagerBasedEnv, asset_cfg: SceneEntityCfg, percentage: float = 0.0):
+    def close(
+        self, env: ManagerBasedEnv, env_ids: torch.Tensor | None, asset_cfg: SceneEntityCfg, percentage: float = 0.0
+    ):
         """Close the object (in all the environments)."""
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
-        set_normalized_joint_position(env, asset_cfg, percentage)
+        set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
 
     def _add_joint_name_to_scene_entity_cfg(self, asset_cfg: SceneEntityCfg) -> SceneEntityCfg:
         asset_cfg.joint_names = [self.openable_joint_name]
