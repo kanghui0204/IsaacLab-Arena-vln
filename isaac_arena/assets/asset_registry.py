@@ -15,48 +15,17 @@
 import random
 from typing import TYPE_CHECKING
 
-from isaac_arena.utils.singleton import SingletonMeta
+from isaac_arena.assets.registry import Registry
 
 # NOTE(alexmillane): Avoid circular import.
 if TYPE_CHECKING:
     from isaac_arena.assets.asset import Asset  # only imported for type checking
 
 
-class AssetRegistry(metaclass=SingletonMeta):
+class AssetRegistry(Registry):
 
     def __init__(self):
-        self.assets = {}
-
-    def register(self, asset: type["Asset"]):
-        """Register an asset with a name.
-
-        Args:
-            name (str): The name of the asset.
-            asset (Asset): The asset to register.
-        """
-        assert asset.name not in self.assets, f"Asset {asset.name} already registered"
-        assert asset.name is not None, "Asset name is not set"
-        assert asset.tags is not None, "Asset tags are not set"
-        self.assets[asset.name] = asset
-
-    def is_registered(self, name: str) -> bool:
-        """Check if an asset is registered.
-
-        Args:
-            name (str): The name of the asset.
-        """
-        return name in self.assets
-
-    def get_asset_by_name(self, name: str) -> type["Asset"]:
-        """Get an asset by name.
-
-        Args:
-            name (str): The name of the asset.
-
-        Returns:
-            Asset: The asset.
-        """
-        return self.assets[name]
+        super().__init__()
 
     def get_assets_by_tag(self, tag: str) -> list[type["Asset"]]:
         """Gets a list of assets by tag.
@@ -84,11 +53,11 @@ class AssetRegistry(metaclass=SingletonMeta):
         return random.choice(assets)
 
 
-def get_environment_configuration_from_registry(
+def get_environment_configuration_from_asset_registry(
+    asset_registry: AssetRegistry,
     background_name: str | None = None,
     object_name: str | None = None,
     embodiment_name: str | None = None,
-    teleop_device_name: str | None = None,
 ) -> dict[str, type["Asset"]]:
     from isaac_arena.assets.asset_registry import AssetRegistry
 
@@ -105,16 +74,11 @@ def get_environment_configuration_from_registry(
         embodiment = asset_registry.get_asset_by_name(embodiment_name)()
     else:
         embodiment = asset_registry.get_random_asset_by_tag("embodiment")()
-    if teleop_device_name:
-        teleop_device = asset_registry.get_asset_by_name(teleop_device_name)()
-    else:
-        teleop_device = None
 
     environment_configuration = {
         "background": background,
         "object": pick_up_object,
         "embodiment": embodiment,
-        "teleop_device": teleop_device,
     }
 
     return environment_configuration
@@ -127,4 +91,3 @@ from isaac_arena.assets.background import *  # noqa: F403, F401
 from isaac_arena.assets.objects import *  # noqa: F403, F401
 from isaac_arena.embodiments.franka import *  # noqa: F403, F401
 from isaac_arena.embodiments.gr1t2 import *  # noqa: F403, F401
-from isaac_arena.teleop_devices.handtracking import *  # noqa: F403, F401

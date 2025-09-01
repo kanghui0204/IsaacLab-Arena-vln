@@ -60,25 +60,6 @@ class FrankaEmbodiment(EmbodimentBase):
         super().set_robot_initial_pose(pose)
         self.scene_config.stand.init_state.pos = pose.position_xyz
         self.scene_config.stand.init_state.rot = pose.rotation_wxyz
-    
-    def get_retargeters_cfg(self, retargeter_name: str):
-        return FrankaRetargeters(retargeter_name=retargeter_name)
-
-
-@configclass
-class FrankaRetargeters:
-    """Retargeters for the Franka robot."""
-
-    retargeter_name: str = "keyboard"
-
-    def __post_init__(self):
-        choices = {
-            "keyboard": None,  # KeyboardFrankaCfg(),
-            "spacemouse": None,  # SpacemouseFrankaCfg(),
-        }
-        if self.retargeter_name not in choices:
-            raise ValueError(f"Invalid retargeter name: {self.retargeter_name}")
-        self.retargeter_cfg = choices[self.retargeter_name]
 
 
 @configclass

@@ -24,7 +24,7 @@ class TeleopDeviceBase(Asset):
 
     def __init__(self):
         self._teleop_device_cfg: Any | None = None
-    
+
     def build_cfg(self, *, sim_device: str | None = None, xr_cfg: object | None = None):
         raise NotImplementedError
 

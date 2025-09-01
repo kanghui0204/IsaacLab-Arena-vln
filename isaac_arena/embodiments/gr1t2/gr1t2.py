@@ -73,25 +73,6 @@ class GR1T2Embodiment(EmbodimentBase):
         self.action_config.pink_ik_cfg.controller.urdf_path = temp_urdf_output_path
         self.action_config.pink_ik_cfg.controller.mesh_path = temp_urdf_meshes_output_path
 
-    def get_retargeters_cfg(self, retargeter_name: str):
-        return GR1T2Retargeters(retargeter_name=retargeter_name)
-
-
-@configclass
-class GR1T2Retargeters:
-    """Retargeters for the GR1T2 robot."""
-
-    retargeter_name: str = "avp"
-
-    def __post_init__(self):
-        choices = {
-            "avp": None,  # AVPGR1T2RetargeterCfg(),
-            "spacemouse": None,  # SpacemouseGR1T2RetargeterCfg(),
-        }
-        if self.retargeter_name not in choices:
-            raise ValueError(f"Invalid retargeter name: {self.retargeter_name}")
-        self.retargeter_cfg = choices[self.retargeter_name]
-
 
 # NOTE(alexmillane, 2025.07.25): This is partially copied from pickplace_gr1t2_env_cfg.py
 # The SceneCfg definition in that file contains both the robot and the scene. So here

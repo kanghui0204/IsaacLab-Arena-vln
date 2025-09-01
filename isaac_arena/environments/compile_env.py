@@ -22,7 +22,8 @@ from isaaclab.envs.manager_based_env import ManagerBasedEnv
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab_tasks.utils import parse_env_cfg
 
-from isaac_arena.assets.asset_registry import get_environment_configuration_from_registry
+from isaac_arena.assets.asset_registry import get_environment_configuration_from_asset_registry
+from isaac_arena.assets.device_registry import get_environment_configuration_from_device_registry
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
 from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaManagerBasedRLEnvCfg
 from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
@@ -43,15 +44,15 @@ class ArenaEnvBuilder:
 
     @classmethod
     def from_args(cls, args: argparse.Namespace) -> ArenaEnvBuilder:
-        cfgs = get_environment_configuration_from_registry(
-            args.background, args.object, args.embodiment, args.teleop_device
-        )
+        cfgs = get_environment_configuration_from_asset_registry(args.background, args.object, args.embodiment)
+        if args.teleop_device is not None:
+            cfgs.update(get_environment_configuration_from_device_registry(args.teleop_device))
         arena_env = IsaacArenaEnvironment(
             name=f"pick_and_place_{args.embodiment}_{args.background}_{args.object}",
             embodiment=cfgs["embodiment"],
             scene=PickAndPlaceScene(cfgs["background"], cfgs["object"]),
             task=PickAndPlaceTask(),
-            teleop_device=cfgs["teleop_device"],
+            teleop_device=cfgs["device"],
             retargeter_name=args.retargeter_name,
         )
         return cls(arena_env, args)
@@ -81,25 +82,13 @@ class ArenaEnvBuilder:
         actions_cfg = self.arena_env.embodiment.get_action_cfg()
         xr_cfg = self.arena_env.embodiment.get_xr_cfg()
         teleop_device = self.arena_env.teleop_device
-        # We add retargeters to action cfg if teleop is enabled
-        if self.arena_env.teleop_device is not None:
-            retargeters_cfg = self.arena_env.embodiment.get_retargeters_cfg(
-                retargeter_name=self.arena_env.retargeter_name
-            )
-            actions_cfg = combine_configclass_instances(
-                "ActionsCfg",
-                retargeters_cfg,
-                actions_cfg,
-            )
+
         return IsaacArenaManagerBasedRLEnvCfg(
-            observations=self.arena_env.embodiment.get_observation_cfg(),
-            actions=self.arena_env.embodiment.get_action_cfg(),
             observations=observation_cfg,
             actions=actions_cfg,
             events=events_cfg,
             scene=scene_cfg,
             terminations=termination_cfg,
-            xr=self.arena_env.embodiment.get_xr_cfg(),
             xr=xr_cfg,
             teleop_devices=teleop_device,
         )
