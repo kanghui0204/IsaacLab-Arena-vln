@@ -25,15 +25,15 @@ PLOT = False
 
 def _test_object_on_destination_termination(simulation_app) -> bool:
 
+    from isaaclab.managers import SceneEntityCfg
+
     from isaac_arena.assets.asset_registry import AssetRegistry
     from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
     from isaac_arena.embodiments.franka import FrankaEmbodiment
     from isaac_arena.environments.compile_env import ArenaEnvBuilder
     from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
     from isaac_arena.geometry.pose import Pose
-    # from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
-    from isaaclab.managers import SceneEntityCfg
-    from isaac_arena.scene.scene_2 import Scene2
+    from isaac_arena.scene.scene import Scene
     from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
     from isaac_arena.tasks.terminations import object_on_destination
 
@@ -51,7 +51,7 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
         )
     )
 
-    scene = Scene2(assets=[background, cracker_box])
+    scene = Scene(assets=[background, cracker_box])
 
     isaac_arena_environment = IsaacArenaEnvironment(
         name="kitchen_pick_and_place",
@@ -92,7 +92,7 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
                     )
                 )
                 terminated_vec.append(terminated.item())
- 
+
     except Exception as e:
         print(f"Error: {e}")
         return False

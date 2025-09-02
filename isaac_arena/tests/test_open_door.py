@@ -31,7 +31,7 @@ def get_test_environment(remove_reset_door_state_event: bool, num_envs: int):
     from isaac_arena.environments.compile_env import ArenaEnvBuilder
     from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
     from isaac_arena.geometry.pose import Pose
-    from isaac_arena.scene.scene_2 import Scene2
+    from isaac_arena.scene.scene import Scene
     from isaac_arena.tasks.open_door_task import OpenDoorTask
 
     args_parser = get_isaac_arena_cli_parser()
@@ -49,7 +49,7 @@ def get_test_environment(remove_reset_door_state_event: bool, num_envs: int):
         )
     )
 
-    scene = Scene2(assets=[background, microwave])
+    scene = Scene(assets=[background, microwave])
 
     isaac_arena_environment = IsaacArenaEnvironment(
         name="open_door",

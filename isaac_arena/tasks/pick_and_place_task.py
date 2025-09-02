@@ -16,16 +16,14 @@ from dataclasses import MISSING
 
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg, SubTaskConfig
-from isaaclab.managers import SceneEntityCfg, TerminationTermCfg
+from isaaclab.managers import EventTermCfg, SceneEntityCfg, TerminationTermCfg
 from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
-from isaaclab.managers import EventTermCfg
 from isaaclab.utils import configclass
 from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_events
 
+from isaac_arena.assets.asset import Asset
 from isaac_arena.tasks.task import TaskBase
 from isaac_arena.tasks.terminations import object_on_destination
-from isaac_arena.assets.asset import Asset
-from isaac_arena.geometry.pose import Pose
 
 
 class PickAndPlaceTask(TaskBase):
@@ -49,19 +47,19 @@ class PickAndPlaceTask(TaskBase):
 
     def get_termination_cfg(self):
         success = TerminationTermCfg(
-                func=object_on_destination,
-                params={
-                    "object_cfg": SceneEntityCfg(self.pick_up_object.name),
-                    "contact_sensor_cfg": SceneEntityCfg("pick_up_object_contact_sensor"),
-                    "force_threshold": 1.0,
-                    "velocity_threshold": 0.1,
-                },
-            )
+            func=object_on_destination,
+            params={
+                "object_cfg": SceneEntityCfg(self.pick_up_object.name),
+                "contact_sensor_cfg": SceneEntityCfg("pick_up_object_contact_sensor"),
+                "force_threshold": 1.0,
+                "velocity_threshold": 0.1,
+            },
+        )
         object_dropped = TerminationTermCfg(
             func=mdp_isaac_lab.root_height_below_minimum,
             params={
                 "minimum_height": self.background_scene.object_min_z,
-                "asset_cfg": SceneEntityCfg(self.pick_up_object.name)
+                "asset_cfg": SceneEntityCfg(self.pick_up_object.name),
             },
         )
         return TerminationsCfg(
@@ -122,7 +120,7 @@ class EventsCfg:
     reset_pick_up_object_pose: EventTermCfg = MISSING
 
     def __init__(self, pick_up_object: Asset):
-        initial_pose=pick_up_object.get_initial_pose()
+        initial_pose = pick_up_object.get_initial_pose()
         if initial_pose is not None:
             self.reset_pick_up_object_pose = EventTermCfg(
                 func=franka_stack_events.randomize_object_pose,
@@ -139,7 +137,10 @@ class EventsCfg:
                 },
             )
         else:
-            print(f"Pick up object {pick_up_object.name} has no initial pose. Not setting reset pick up object pose event.")
+            print(
+                f"Pick up object {pick_up_object.name} has no initial pose. Not setting reset pick up object pose"
+                " event."
+            )
             self.reset_pick_up_object_pose = None
 
 

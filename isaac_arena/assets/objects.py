@@ -51,7 +51,7 @@ class Object(Asset):
 
     def set_initial_pose(self, pose: Pose) -> None:
         self.initial_pose = pose
-    
+
     def get_initial_pose(self) -> Pose:
         return self.initial_pose
 

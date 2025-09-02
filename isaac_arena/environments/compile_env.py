@@ -25,8 +25,7 @@ from isaaclab_tasks.utils import parse_env_cfg
 from isaac_arena.assets.asset_registry import get_environment_configuration_from_registry
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
 from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaManagerBasedRLEnvCfg
-# from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
-from isaac_arena.scene.scene_2 import Scene2
+from isaac_arena.scene.scene import Scene
 from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
 from isaac_arena.utils.configclass import combine_configclass_instances
 
@@ -47,7 +46,7 @@ class ArenaEnvBuilder:
     @classmethod
     def from_args(cls, args: argparse.Namespace) -> ArenaEnvBuilder:
         cfgs = get_environment_configuration_from_registry(args.background, args.object, args.embodiment)
-        scene = Scene2(assets=[cfgs["background"], cfgs["object"]])
+        scene = Scene(assets=[cfgs["background"], cfgs["object"]])
         arena_env = IsaacArenaEnvironment(
             name=f"pick_and_place_{args.embodiment}_{args.background}_{args.object}",
             embodiment=cfgs["embodiment"],

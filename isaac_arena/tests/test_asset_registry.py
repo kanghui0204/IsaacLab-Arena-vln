@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import gymnasium as gym
 import torch
 import tqdm
 
@@ -21,7 +20,7 @@ from isaac_arena.geometry.pose import Pose
 from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
 
 NUM_STEPS = 10
-HEADLESS = False
+HEADLESS = True
 OBJECT_SEPARATION = 0.5
 
 
@@ -57,8 +56,8 @@ def _test_all_assets_in_registry(simulation_app):
     from isaac_arena.embodiments.franka import FrankaEmbodiment
     from isaac_arena.environments.compile_env import ArenaEnvBuilder
     from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
+    from isaac_arena.scene.scene import Scene
     from isaac_arena.tasks.dummy_task import DummyTask
-    from isaac_arena.scene.scene_2 import Scene2
 
     # Base Environment
     asset_registry = AssetRegistry()
@@ -84,7 +83,7 @@ def _test_all_assets_in_registry(simulation_app):
         objects_in_registry_names.append(asset.name)
     assert len(objects_in_registry) > 0
 
-    scene = Scene2(assets=[background, *objects_in_registry])
+    scene = Scene(assets=[background, *objects_in_registry])
 
     isaac_arena_environment = IsaacArenaEnvironment(
         name="dummy_task",

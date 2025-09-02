@@ -12,18 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
-from typing import Any
 
-
-class Asset(ABC):
+class Asset:
     """
     Base class for all assets.
     """
 
     name: str | None = None
     tags: list[str] | None = None
-
-    # @abstractmethod
-    # def get_cfgs(self) -> dict[str, Any]:
-    #     raise NotImplementedError
