@@ -25,7 +25,7 @@ from isaac_arena.utils.configclass import make_configclass
 
 
 def add_camera_to_environment_cfg(
-    camera_defs: dict[str, dict[str, Any]],
+    scene_cfg: Any,
     enable_cameras: bool,
     tag: str,
 ):
@@ -37,11 +37,15 @@ def add_camera_to_environment_cfg(
     if not enable_cameras:
         return make_configclass("EmptyCamerasSceneCfg", [])(), make_configclass("EmptyCameraObsCfg", [])()
 
+    camera_defs: dict[str, dict[str, Any]] = scene_cfg.observation_cameras
     fields_spec = []
     for name, meta in camera_defs.items():
         tags: list[str] = meta.get("tags", [])
-        if tag not in tags:
-            continue
+        # If a tag is provided, only add the camera if it has that tag.
+        # If no tag is provided, add all cameras.
+        if tag is not None:
+            if tag not in tags:
+                continue
         cam_cfg = deepcopy(meta["camera_cfg"])
         # each camera becomes a field on the Scene config
         fields_spec.append((name, type(cam_cfg), cam_cfg))
