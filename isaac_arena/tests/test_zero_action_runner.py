@@ -15,35 +15,70 @@
 from isaac_arena.tests.utils.constants import TestConstants
 from isaac_arena.tests.utils.subprocess import run_subprocess
 
-HEADLESS = True
+HEADLESS = False
+NUM_STEPS = 2
 
 
-def run_zero_action_runner(embodiment: str, background: str, object_name: str):
+def run_zero_action_runner(
+    example_environment: str,
+    num_steps: int,
+    embodiment: str | None = None,
+    background: str | None = None,
+    object_name: str | None = None,
+):
 
     args = [
         TestConstants.python_path,
         f"{TestConstants.examples_dir}/zero_action_runner.py",
-        "--embodiment",
-        embodiment,
-        "--background",
-        background,
-        "--object",
-        object_name,
-        "--num_steps",
-        "2",
+        "--example_environment",
+        example_environment,
     ]
+    if embodiment is not None:
+        args.append("--embodiment")
+        args.append(embodiment)
+    if background is not None:
+        args.append("--background")
+        args.append(background)
+    if object_name is not None:
+        args.append("--object")
+        args.append(object_name)
+    args.append("--num_steps")
+    args.append(str(num_steps))
     if HEADLESS:
         args.append("--headless")
 
     run_subprocess(args)
 
 
-def test_zero_action_runner():
+def test_zero_action_runner_pick_and_place():
     # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
     # from a registry when we have one.
+    example_environment = "pick_and_place"
+    # example_environment = "gr1_open_microwave"
     embodiments = ["franka", "gr1"]
     backgrounds = ["kitchen_pick_and_place", "packing_table_pick_and_place"]
     object_name = "cracker_box"
     for embodiment in embodiments:
         for background in backgrounds:
-            run_zero_action_runner(embodiment, background, object_name)
+            run_zero_action_runner(
+                example_environment=example_environment,
+                embodiment=embodiment,
+                background=background,
+                object_name=object_name,
+                num_steps=NUM_STEPS,
+            )
+
+
+def test_zero_action_runner_gr1_open_microwave():
+    # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
+    # from a registry when we have one.
+    example_environment = "gr1_open_microwave"
+    object_name = ["cracker_box", "tomato_soup_can", "mustard_bottle"]
+    for object_name in object_name:
+        run_zero_action_runner(
+            example_environment=example_environment,
+            embodiment=None,
+            background=None,
+            object_name=object_name,
+            num_steps=NUM_STEPS,
+        )

@@ -35,7 +35,7 @@ def add_example_environments_cli_args(parser: argparse.ArgumentParser) -> argpar
     return parser
 
 
-def get_env_cfg_from_cli(args_cli: argparse.Namespace):  # -> tuple[ManagerBasedRLEnvCfg, str]:
+def get_arena_builder_from_cli(args_cli: argparse.Namespace):  # -> tuple[ManagerBasedRLEnvCfg, str]:
     from isaac_arena.environments.compile_env import ArenaEnvBuilder
 
     # Get the example environment
@@ -47,5 +47,5 @@ def get_env_cfg_from_cli(args_cli: argparse.Namespace):  # -> tuple[ManagerBased
 
     # Compile the environment
     env_builder = ArenaEnvBuilder(example_env.get_env(args_cli), args_cli)
-    name, cfg = env_builder.build_registered()
-    return cfg, name
+    # name, cfg = env_builder.build_registered()
+    return env_builder

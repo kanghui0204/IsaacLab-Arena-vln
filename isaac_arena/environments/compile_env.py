@@ -22,14 +22,15 @@ from isaaclab.envs.manager_based_env import ManagerBasedEnv
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab_tasks.utils import parse_env_cfg
 
-from isaac_arena.assets.asset_registry import (
-    get_environment_configuration_from_asset_registry,
-    get_environment_configuration_from_device_registry,
-)
+# from isaac_arena.assets.asset_registry import (
+#     get_environment_configuration_from_asset_registry,
+#     get_environment_configuration_from_device_registry,
+# )
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
 from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaManagerBasedRLEnvCfg
-from isaac_arena.scene.scene import Scene
-from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
+
+# from isaac_arena.scene.scene import Scene
+# from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
 from isaac_arena.utils.configclass import combine_configclass_instances
 
 
@@ -44,24 +45,24 @@ class ArenaEnvBuilder:
 
     # ---------- factory ----------
 
-    # TODO(alexmillane, 2025.09.02): Remove this function. It's specific to pick and place and therefore
-    # belongs somewhere else.
-    @classmethod
-    def from_args(cls, args: argparse.Namespace) -> ArenaEnvBuilder:
-        cfgs = get_environment_configuration_from_asset_registry(args.background, args.object, args.embodiment)
-        scene = Scene(assets=[cfgs["background"], cfgs["object"]])
-        if args.teleop_device is not None:
-            cfgs.update(get_environment_configuration_from_device_registry(args.teleop_device))
-        else:
-            cfgs["device"] = None
-        arena_env = IsaacArenaEnvironment(
-            name=f"pick_and_place_{args.embodiment}_{args.background}_{args.object}",
-            embodiment=cfgs["embodiment"],
-            scene=scene,
-            task=PickAndPlaceTask(pick_up_object=cfgs["object"], background_scene=cfgs["background"]),
-            teleop_device=cfgs["device"],
-        )
-        return cls(arena_env, args)
+    # # TODO(alexmillane, 2025.09.02): Remove this function. It's specific to pick and place and therefore
+    # # belongs somewhere else.
+    # @classmethod
+    # def from_args(cls, args: argparse.Namespace) -> ArenaEnvBuilder:
+    #     cfgs = get_environment_configuration_from_asset_registry(args.background, args.object, args.embodiment)
+    #     scene = Scene(assets=[cfgs["background"], cfgs["object"]])
+    #     if args.teleop_device is not None:
+    #         cfgs.update(get_environment_configuration_from_device_registry(args.teleop_device))
+    #     else:
+    #         cfgs["device"] = None
+    #     arena_env = IsaacArenaEnvironment(
+    #         name=f"pick_and_place_{args.embodiment}_{args.background}_{args.object}",
+    #         embodiment=cfgs["embodiment"],
+    #         scene=scene,
+    #         task=PickAndPlaceTask(pick_up_object=cfgs["object"], background_scene=cfgs["background"]),
+    #         teleop_device=cfgs["device"],
+    #     )
+    #     return cls(arena_env, args)
 
     def compose_manager_cfg(self) -> IsaacArenaManagerBasedRLEnvCfg:
         """Return base ManagerBased cfg (scene+events+terminations+xr), no registration."""
@@ -144,8 +145,8 @@ class ArenaEnvBuilder:
         return gym.make(name, cfg=runtime_cfg).unwrapped
 
 
-# TODO(Vik, 2025-08-29): Remove this function.
-def get_arena_env_cfg(args_cli: argparse.Namespace) -> tuple[ManagerBasedRLEnvCfg, str]:
-    builder = ArenaEnvBuilder.from_args(args_cli)
-    name, cfg = builder.build_registered()
-    return cfg, name
+# # TODO(Vik, 2025-08-29): Remove this function.
+# def get_arena_env_cfg(args_cli: argparse.Namespace) -> tuple[ManagerBasedRLEnvCfg, str]:
+#     builder = ArenaEnvBuilder.from_args(args_cli)
+#     name, cfg = builder.build_registered()
+#     return cfg, name

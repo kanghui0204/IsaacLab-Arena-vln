@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import gymnasium as gym
 import torch
 import tqdm
 
 from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
+from isaac_arena.examples.example_environments.cli import get_arena_builder_from_cli
 from isaac_arena.isaaclab_utils.simulation_app import SimulationAppContext
 
 
@@ -36,12 +36,9 @@ def main():
     # Start the simulation app
     with SimulationAppContext(args_cli):
 
-        # Imports have to follow simulation startup.
-        from isaac_arena.environments.compile_env import get_arena_env_cfg
-
-        # Scene variation
-        env_cfg, env_name = get_arena_env_cfg(args_cli)
-        env = gym.make(env_name, cfg=env_cfg)
+        # Build scene
+        arena_builder = get_arena_builder_from_cli(args_cli)
+        env = arena_builder.make_registered()
         env.reset()
 
         # Run some zero actions.

@@ -29,7 +29,7 @@ print("Launching simulation app once in notebook")
 simulation_app = AppLauncher()
 
 
-from isaac_arena.examples.example_environments.cli import get_env_cfg_from_cli
+from isaac_arena.examples.example_environments.cli import get_arena_builder_from_cli
 
 args_parser = get_isaac_arena_cli_parser()
 # args_cli = args_parser.parse_args([
@@ -49,9 +49,11 @@ args_cli = args_parser.parse_args([
     "franka",
 ])
 
-cfg, name = get_env_cfg_from_cli(args_cli)
-env = gym.make(name, cfg=cfg).unwrapped
+arena_builder = get_arena_builder_from_cli(args_cli)
+env = arena_builder.make_registered()
 env.reset()
+# env = gym.make(name, cfg=cfg).unwrapped
+# env.reset()
 
 # %%
 
