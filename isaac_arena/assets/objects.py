@@ -58,7 +58,20 @@ class Object(Asset):
     def is_initial_pose_set(self) -> bool:
         return self.initial_pose is not None
 
-    def get_object_cfg(self) -> RigidObjectCfg:
+    def get_cfgs(self) -> dict[str, Any]:
+        return {
+            self.name: self._generate_cfg(),
+        }
+
+    def get_contact_sensor_cfg(self, contact_against_prim_paths: list[str] | None = None) -> ContactSensorCfg:
+        if contact_against_prim_paths is None:
+            contact_against_prim_paths = []
+        return ContactSensorCfg(
+            prim_path=self.prim_path,
+            filter_prim_paths_expr=contact_against_prim_paths,
+        )
+
+    def _generate_cfg(self) -> RigidObjectCfg:
         object_cfg = RigidObjectCfg(
             prim_path=self.prim_path,
             spawn=UsdFileCfg(
@@ -72,38 +85,6 @@ class Object(Asset):
             object_cfg.init_state.pos = self.initial_pose.position_xyz
             object_cfg.init_state.rot = self.initial_pose.rotation_wxyz
         return object_cfg
-        # return self._generate_cfg()
-
-    def get_contact_sensor_cfg(self, contact_against_prim_paths: list[str] | None = None) -> ContactSensorCfg:
-        if contact_against_prim_paths is None:
-            contact_against_prim_paths = []
-        return ContactSensorCfg(
-            prim_path=self.prim_path,
-            filter_prim_paths_expr=contact_against_prim_paths,
-        )
-
-    # def _generate_cfg(self) -> RigidObjectCfg:
-    #     object_cfg = RigidObjectCfg(
-    #         prim_path=self.prim_path,
-    #         spawn=UsdFileCfg(
-    #             usd_path=self.usd_path,
-    #             scale=self.scale,
-    #             activate_contact_sensors=True,
-    #         ),
-    #     )
-    #     # Optionally specify initial pose
-    #     if self.initial_pose is not None:
-    #         object_cfg.init_state.pos = self.initial_pose.position_xyz
-    #         object_cfg.init_state.rot = self.initial_pose.rotation_wxyz
-    #     return object_cfg
-
-    # WIP
-    # Eventually this should replace the two methods above
-    def get_scene_cfgs(self) -> dict[str, Any]:
-        return {
-            self.name: self.get_object_cfg(),
-            # self.name + "_contact_sensor_cfg": self.get_contact_sensor_cfg(),
-        }
 
 
 @registerasset
@@ -222,7 +203,15 @@ class Microwave(Object, Openable):
             openable_open_threshold=self.openable_open_threshold,
         )
 
-    def get_object_cfg(self) -> ArticulationCfg:
+    def get_cfgs(self) -> dict[str, Any]:
+        # TODO(alexmillane, 2025.08.28): This is a hack. Fix.
+        # Should be relying on the base class method, but we're abusing things here...
+        # for now...
+        return {
+            self.name: self._generate_cfg(),
+        }
+
+    def _generate_cfg(self) -> ArticulationCfg:
         # TODO(alexmillane, 2025.08.28): This is a hack. Fix.
         # We're overriding the get_object_cfg method in the object base class.
         # We need to move this to the object base class, and detect the correct type of
@@ -243,10 +232,3 @@ class Microwave(Object, Openable):
             object_cfg.init_state.pos = self.initial_pose.position_xyz
             object_cfg.init_state.rot = self.initial_pose.rotation_wxyz
         return object_cfg
-
-    def get_scene_cfgs(self) -> dict[str, Any]:
-        # TODO(alexmillane, 2025.08.28): This is a hack. Fix.
-        return {
-            self.name: self.get_object_cfg(),
-            # self.name + "_contact_sensor_cfg": self.get_contact_sensor_cfg(),
-        }

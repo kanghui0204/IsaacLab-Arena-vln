@@ -45,14 +45,16 @@ class Scene:
         # Combine the configs into a configclass.
         fields: list[tuple[str, type, AssetCfg]] = []
         for asset in self.assets.values():
-            for asset_cfg_name, asset_cfg in asset.get_scene_cfgs().items():
+            for asset_cfg_name, asset_cfg in asset.get_cfgs().items():
                 fields.append((asset_cfg_name, type(asset_cfg), asset_cfg))
         NewConfigClass = make_configclass("SceneCfg", fields)
         new_config_class = NewConfigClass()
         return new_config_class
 
     def get_robot_initial_pose(self) -> Pose:
-        # TODO(alexmillane, 2025.09.02): Find out what to do here.
+        # TODO(alexmillane, 2025.09.02): This is a hack. Fix.
+        # We need to make a decision on whether the background should specify
+        # a default robot initial pose.
         return Pose.identity()
 
     def get_observation_cfg(self) -> Any:

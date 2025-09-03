@@ -37,15 +37,11 @@ class Background(Asset):
         super().__init__()
         self.robot_initial_pose = robot_initial_pose
 
-    def get_background_cfg(self) -> AssetBaseCfg:
-        """Return the configured background scene asset."""
-        return self.background_scene_cfg
-
     def get_robot_initial_pose(self) -> Pose:
         """Return the configured robot initial pose."""
         return self.robot_initial_pose
 
-    def get_scene_cfgs(self) -> dict[str, Any]:
+    def get_cfgs(self) -> dict[str, Any]:
         return {
             self.name: self.get_background_cfg(),
         }

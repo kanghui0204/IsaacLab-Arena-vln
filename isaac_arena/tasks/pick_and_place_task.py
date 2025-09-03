@@ -97,21 +97,6 @@ class TerminationsCfg:
 
     object_dropped: TerminationTermCfg = MISSING
 
-    # def __init__(self, pick_up_object: Asset, minimum_height: float = 0.5):
-    #     self.success=TerminationTermCfg(
-    #             func=object_on_destination,
-    #             params={
-    #                 "object_cfg": SceneEntityCfg(pick_up_object.name),
-    #                 "contact_sensor_cfg": SceneEntityCfg("pick_up_object_contact_sensor"),
-    #                 "force_threshold": 1.0,
-    #                 "velocity_threshold": 0.1,
-    #             },
-    #         )
-    #     self.object_dropped = TerminationTermCfg(
-    #         func=mdp_isaac_lab.root_height_below_minimum,
-    #         params={"minimum_height": minimum_height, "asset_cfg": SceneEntityCfg(pick_up_object.name)},
-    #     )
-
 
 @configclass
 class EventsCfg:
@@ -206,7 +191,7 @@ class PickPlaceMimicEnvCfg(MimicEnvCfg):
                 # Each subtask involves manipulation with respect to a single object frame.
                 # TODO(alexmillane, 2025.09.02): This is currently broken. FIX.
                 # We need a way to pass in a reference to an object that exists in the
-                # scene. This is next on my plate to fix.
+                # scene.
                 object_ref="destination_object",
                 # End of final subtask does not need to be detected
                 subtask_term_signal=None,

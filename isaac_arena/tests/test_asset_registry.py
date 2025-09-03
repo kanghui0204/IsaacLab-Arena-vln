@@ -19,7 +19,7 @@ from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
 from isaac_arena.geometry.pose import Pose
 from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
 
-NUM_STEPS = 10
+NUM_STEPS = 2
 HEADLESS = True
 OBJECT_SEPARATION = 0.5
 

@@ -35,7 +35,6 @@ class OpenDoorTask(TaskBase):
         success = TerminationTermCfg(
             func=self.openable_object.is_open,
             params={
-                # "asset_cfg": SceneEntityCfg("interactable_object"),
                 "asset_cfg": SceneEntityCfg(self.openable_object.name),
             },
         )
