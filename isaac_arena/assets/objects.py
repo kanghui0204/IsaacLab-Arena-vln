@@ -28,7 +28,7 @@ from isaac_arena.geometry.pose import Pose
 
 class ObjectType(Enum):
     ARTICULATION = "articulation"
-    RIGID_OBJECT = "rigid_object"
+    RIGID = "rigid"
 
 
 class Object(Asset):
@@ -40,7 +40,7 @@ class Object(Asset):
     # name: str | None = None
     # tags: list[str] | None = None
     usd_path: str | None = None
-    object_type: ObjectType = ObjectType.RIGID_OBJECT
+    object_type: ObjectType = ObjectType.RIGID
     scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
     def __init__(
@@ -66,8 +66,8 @@ class Object(Asset):
         return self.initial_pose is not None
 
     def get_cfgs(self) -> dict[str, Any]:
-        if self.object_type == ObjectType.RIGID_OBJECT:
-            object_cfg = self._generate_rigid_object_cfg()
+        if self.object_type == ObjectType.RIGID:
+            object_cfg = self._generate_RIGID_cfg()
         elif self.object_type == ObjectType.ARTICULATION:
             object_cfg = self._generate_articulation_cfg()
         else:
@@ -77,7 +77,7 @@ class Object(Asset):
         }
 
     def get_contact_sensor_cfg(self, contact_against_prim_paths: list[str] | None = None) -> ContactSensorCfg:
-        assert self.object_type == ObjectType.RIGID_OBJECT, "Contact sensor is only supported for rigid objects"
+        assert self.object_type == ObjectType.RIGID, "Contact sensor is only supported for rigid objects"
         if contact_against_prim_paths is None:
             contact_against_prim_paths = []
         return ContactSensorCfg(
@@ -85,8 +85,8 @@ class Object(Asset):
             filter_prim_paths_expr=contact_against_prim_paths,
         )
 
-    def _generate_rigid_object_cfg(self) -> RigidObjectCfg:
-        assert self.object_type == ObjectType.RIGID_OBJECT
+    def _generate_RIGID_cfg(self) -> RigidObjectCfg:
+        assert self.object_type == ObjectType.RIGID
         object_cfg = RigidObjectCfg(
             prim_path=self.prim_path,
             spawn=UsdFileCfg(
