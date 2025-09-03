@@ -49,7 +49,6 @@ class ArenaEnvBuilder:
     @classmethod
     def from_args(cls, args: argparse.Namespace) -> ArenaEnvBuilder:
         cfgs = get_environment_configuration_from_asset_registry(args.background, args.object, args.embodiment)
-        scene = Scene(assets=[cfgs["background"], cfgs["object"]])
         if args.teleop_device is not None:
             cfgs.update(get_environment_configuration_from_device_registry(args.teleop_device))
         else:
@@ -57,7 +56,7 @@ class ArenaEnvBuilder:
         arena_env = IsaacArenaEnvironment(
             name=f"pick_and_place_{args.embodiment}_{args.background}_{args.object}",
             embodiment=cfgs["embodiment"],
-            scene=scene,
+            scene=Scene(assets=[cfgs["background"], cfgs["object"]]),
             task=PickAndPlaceTask(pick_up_object=cfgs["object"], background_scene=cfgs["background"]),
             teleop_device=cfgs["device"],
         )
