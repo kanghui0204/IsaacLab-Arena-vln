@@ -13,15 +13,17 @@
 # limitations under the License.
 
 import argparse
-from typing import TYPE_CHECKING
 
 from isaac_arena.examples.example_environments.example_environment_base import (
     ExampleEnvironmentBase,
     add_argument_if_missing,
 )
 
-if TYPE_CHECKING:
-    from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
+# NOTE(alexmillane, 2025.09.04): There is an issue with type annotation in this file.
+# We cannot annotate types which require the simulation app to be started in order to
+# import, because this file is used to retrieve CLI arguments, so it must be imported
+# before the simulation app is started.
+# TODO(alexmillane, 2025.09.04): Fix this.
 
 
 class PickAndPlaceEnvironment(ExampleEnvironmentBase):

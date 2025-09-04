@@ -14,10 +14,12 @@
 
 import argparse
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
 
-# if TYPE_CHECKING:
-#     from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
+# NOTE(alexmillane, 2025.09.04): There is an issue with type annotation in this file.
+# We cannot annotate types which require the simulation app to be started in order to
+# import, because this file is used to retrieve CLI arguments, so it must be imported
+# before the simulation app is started.
+# TODO(alexmillane, 2025.09.04): Fix this.
 
 
 def add_argument_if_missing(parser: argparse.ArgumentParser, flag: str, **kwargs):

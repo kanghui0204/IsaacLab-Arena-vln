@@ -13,14 +13,17 @@
 # limitations under the License.
 
 import argparse
-from typing import TYPE_CHECKING
 
 from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
 from isaac_arena.examples.example_environments.gr1_open_microwave_environment import Gr1OpenMicrowaveEnvironment
 from isaac_arena.examples.example_environments.pick_and_place_environment import PickAndPlaceEnvironment
 
-if TYPE_CHECKING:
-    from isaaclab.envs import ManagerBasedRLEnvCfg
+# NOTE(alexmillane, 2025.09.04): There is an issue with type annotation in this file.
+# We cannot annotate types which require the simulation app to be started in order to
+# import, because this file is used to retrieve CLI arguments, so it must be imported
+# before the simulation app is started.
+# TODO(alexmillane, 2025.09.04): Fix this.
+
 
 # Collection of the available example environments
 ExampleEnvironments = {
@@ -58,5 +61,4 @@ def get_arena_builder_from_cli(args_cli: argparse.Namespace):  # -> tuple[Manage
 
     # Compile the environment
     env_builder = ArenaEnvBuilder(example_env.get_env(args_cli), args_cli)
-    # name, cfg = env_builder.build_registered()
     return env_builder
