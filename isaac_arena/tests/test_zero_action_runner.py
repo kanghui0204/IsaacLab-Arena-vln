@@ -15,7 +15,7 @@
 from isaac_arena.tests.utils.constants import TestConstants
 from isaac_arena.tests.utils.subprocess import run_subprocess
 
-HEADLESS = False
+HEADLESS = True
 NUM_STEPS = 2
 
 
@@ -27,12 +27,13 @@ def run_zero_action_runner(
     object_name: str | None = None,
 ):
 
-    args = [
-        TestConstants.python_path,
-        f"{TestConstants.examples_dir}/zero_action_runner.py",
-        "--example_environment",
-        example_environment,
-    ]
+    args = [TestConstants.python_path, f"{TestConstants.examples_dir}/zero_action_runner.py"]
+    args.append("--num_steps")
+    args.append(str(num_steps))
+    if HEADLESS:
+        args.append("--headless")
+
+    args.append(example_environment)
     if embodiment is not None:
         args.append("--embodiment")
         args.append(embodiment)
@@ -42,10 +43,6 @@ def run_zero_action_runner(
     if object_name is not None:
         args.append("--object")
         args.append(object_name)
-    args.append("--num_steps")
-    args.append(str(num_steps))
-    if HEADLESS:
-        args.append("--headless")
 
     run_subprocess(args)
 
@@ -54,7 +51,6 @@ def test_zero_action_runner_pick_and_place():
     # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
     # from a registry when we have one.
     example_environment = "pick_and_place"
-    # example_environment = "gr1_open_microwave"
     embodiments = ["franka", "gr1"]
     backgrounds = ["kitchen_pick_and_place", "packing_table_pick_and_place"]
     object_name = "cracker_box"

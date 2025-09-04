@@ -14,46 +14,45 @@
 
 # %%
 
-import gymnasium as gym
 import torch
 import tqdm
 
 import pinocchio  # noqa: F401
-
-# Launching the simulation app
 from isaaclab.app import AppLauncher
-
-from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
 
 print("Launching simulation app once in notebook")
 simulation_app = AppLauncher()
 
 
-from isaac_arena.examples.example_environments.cli import get_arena_builder_from_cli
+from isaac_arena.examples.example_environments.cli import (
+    get_arena_builder_from_cli,
+    get_isaac_arena_example_environment_cli_parser,
+)
 
-args_parser = get_isaac_arena_cli_parser()
-# args_cli = args_parser.parse_args([
-#     "--example_environment",
-#     "gr1_open_microwave",
-#     "--object",
-#     "cracker_box",
-# ])
+args_parser = get_isaac_arena_example_environment_cli_parser()
+
+# GR1 Open Microwave
 args_cli = args_parser.parse_args([
-    "--example_environment",
-    "pick_and_place",
+    "gr1_open_microwave",
     "--object",
     "cracker_box",
-    "--background",
-    "kitchen_pick_and_place",
-    "--embodiment",
-    "franka",
 ])
+
+# Pick and Place
+# args_cli = args_parser.parse_args([
+#     # "--example_environment",
+#     "pick_and_place",
+#     "--object",
+#     "cracker_box",
+#     "--background",
+#     "kitchen_pick_and_place",
+#     "--embodiment",
+#     "franka",
+# ])
 
 arena_builder = get_arena_builder_from_cli(args_cli)
 env = arena_builder.make_registered()
 env.reset()
-# env = gym.make(name, cfg=cfg).unwrapped
-# env.reset()
 
 # %%
 

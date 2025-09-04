@@ -15,6 +15,7 @@
 import argparse
 from typing import TYPE_CHECKING
 
+from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
 from isaac_arena.examples.example_environments.gr1_open_microwave_environment import Gr1OpenMicrowaveEnvironment
 from isaac_arena.examples.example_environments.pick_and_place_environment import PickAndPlaceEnvironment
 
@@ -29,9 +30,19 @@ ExampleEnvironments = {
 
 
 def add_example_environments_cli_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
-    parser.add_argument("--example_environment", type=str, default=None)
+    subparsers = parser.add_subparsers(dest="example_environment", required=True, help="Example environment to run")
     for example_environment in ExampleEnvironments.values():
-        example_environment.add_cli_args(parser)
+        subparser = subparsers.add_parser(example_environment.name)
+        example_environment.add_cli_args(subparser)
+
+    return parser
+
+
+def get_isaac_arena_example_environment_cli_parser() -> argparse.ArgumentParser:
+    parser = get_isaac_arena_cli_parser()
+    # NOTE(alexmillane, 2025.09.04): This command adds subparsers for each example environment.
+    # So it has to be added last, because the subparser flags are parsed after the others.
+    add_example_environments_cli_args(parser)
     return parser
 
 

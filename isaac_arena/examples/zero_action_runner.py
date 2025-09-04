@@ -15,8 +15,11 @@
 import torch
 import tqdm
 
-from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
-from isaac_arena.examples.example_environments.cli import get_arena_builder_from_cli
+# from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
+from isaac_arena.examples.example_environments.cli import (
+    get_arena_builder_from_cli,
+    get_isaac_arena_example_environment_cli_parser,
+)
 from isaac_arena.isaaclab_utils.simulation_app import SimulationAppContext
 
 
@@ -24,7 +27,8 @@ def main():
     """Script to run an Isaac Arena environment with a zero-action agent."""
 
     # Launch Isaac Sim.
-    args_parser = get_isaac_arena_cli_parser()
+    # args_parser = get_isaac_arena_cli_parser()
+    args_parser = get_isaac_arena_example_environment_cli_parser()
     args_parser.add_argument_group("Zero Action Runner", "Arguments for the zero action runner")
     args_parser.add_argument(
         "--num_steps", type=int, default=100, help="Number of steps to run the policy for. Default to run until "

@@ -66,7 +66,7 @@ class PickAndPlaceEnvironment(ExampleEnvironmentBase):
 
     @staticmethod
     def add_cli_args(parser: argparse.ArgumentParser) -> None:
-        add_argument_if_missing(parser, "--object", type=str, default=None)
-        add_argument_if_missing(parser, "--background", type=str, default=None)
-        add_argument_if_missing(parser, "--embodiment", type=str, default=None)
+        add_argument_if_missing(parser, "--object", type=str, default="cracker_box")
+        add_argument_if_missing(parser, "--background", type=str, default="kitchen_pick_and_place")
+        add_argument_if_missing(parser, "--embodiment", type=str, default="franka")
         add_argument_if_missing(parser, "--teleop_device", type=str, default=None)

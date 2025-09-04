@@ -61,7 +61,7 @@ def _test_all_devices_in_registry(simulation_app):
 
         # Compile the environment.
         args_parser = get_isaac_arena_cli_parser()
-        args_cli = args_parser.parse_args(["--teleop_device", teleop_device.name])
+        args_cli = args_parser.parse_args([])
 
         builder = ArenaEnvBuilder(isaac_arena_environment, args_cli)
 
