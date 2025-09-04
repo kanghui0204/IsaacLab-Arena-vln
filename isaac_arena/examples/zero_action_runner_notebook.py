@@ -40,12 +40,11 @@ args_cli = args_parser.parse_args([
 
 # Pick and Place
 # args_cli = args_parser.parse_args([
-#     # "--example_environment",
-#     "pick_and_place",
+#     "kitchen_pick_and_place",
 #     "--object",
 #     "cracker_box",
 #     "--background",
-#     "kitchen_pick_and_place",
+#     "galileo_pick_and_place",
 #     "--embodiment",
 #     "franka",
 # ])

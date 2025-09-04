@@ -47,10 +47,10 @@ def run_zero_action_runner(
     run_subprocess(args)
 
 
-def test_zero_action_runner_pick_and_place():
+def test_zero_action_runner_kitchen_pick_and_place():
     # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
     # from a registry when we have one.
-    example_environment = "pick_and_place"
+    example_environment = "kitchen_pick_and_place"
     embodiments = ["franka", "gr1"]
     object_names = ["cracker_box", "tomato_soup_can"]
     for embodiment in embodiments:
@@ -61,6 +61,19 @@ def test_zero_action_runner_pick_and_place():
                 object_name=object_name,
                 num_steps=NUM_STEPS,
             )
+
+
+def test_zero_action_runner_galileo_pick_and_place():
+    # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
+    # from a registry when we have one.
+    # NOTE(alexmillane, 2025.09.04): Only test one configuration here to keep
+    # the test fast.
+    run_zero_action_runner(
+        example_environment="galileo_pick_and_place",
+        embodiment="gr1",
+        object_name="power_drill",
+        num_steps=NUM_STEPS,
+    )
 
 
 def test_zero_action_runner_gr1_open_microwave():
