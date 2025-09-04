@@ -39,8 +39,12 @@ class Gr1OpenMicrowaveEnvironment(ExampleEnvironmentBase):
 
         background = self.asset_registry.get_asset_by_name("packing_table_pick_and_place")()
         microwave = self.asset_registry.get_asset_by_name("microwave")()
-        teleop_device = self.device_registry.get_device_by_name("avp")()
         assets = [background, microwave]
+
+        if args_cli.teleop_device is not None:
+            teleop_device = self.device_registry.get_device_by_name(args_cli.teleop_device)()
+        else:
+            teleop_device = None
 
         # Put the microwave on the packing table.
         microwave_pose = Pose(
@@ -75,3 +79,6 @@ class Gr1OpenMicrowaveEnvironment(ExampleEnvironmentBase):
     @staticmethod
     def add_cli_args(parser: argparse.ArgumentParser) -> None:
         add_argument_if_missing(parser, "--object", type=str, default=None)
+        # NOTE(alexmillane, 2025.09.04): We need a teleop device argument in order
+        # to be used in the record_demos.py script.
+        add_argument_if_missing(parser, "--teleop_device", type=str, default=None)

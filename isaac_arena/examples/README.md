@@ -19,3 +19,11 @@ or
 ```bash
 python zero_action_runner gr1_open_microwave --object tomato_soup_can
 ```
+
+**NOTE:** CLI arguments are sensitive to order. They must appear in the following order:
+
+```
+python zero_action_runner <--global flags> <example app name> <--app specific flags>
+```
+
+App specific flags must appear after the first argument with `--` which must be the example app name.

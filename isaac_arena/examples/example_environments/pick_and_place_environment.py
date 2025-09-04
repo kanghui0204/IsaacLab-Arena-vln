@@ -66,4 +66,6 @@ class PickAndPlaceEnvironment(ExampleEnvironmentBase):
     def add_cli_args(parser: argparse.ArgumentParser) -> None:
         add_argument_if_missing(parser, "--object", type=str, default="cracker_box")
         add_argument_if_missing(parser, "--embodiment", type=str, default="franka")
+        # NOTE(alexmillane, 2025.09.04): We need a teleop device argument in order
+        # to be used in the record_demos.py script.
         add_argument_if_missing(parser, "--teleop_device", type=str, default=None)
