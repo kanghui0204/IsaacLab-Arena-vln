@@ -106,7 +106,7 @@ class PackingTablePickAndPlaceBackground(PickAndPlaceBackground):
     default_robot_initial_pose = Pose.identity()
     background_scene_cfg = AssetBaseCfg(
         prim_path="/World/envs/env_.*/PackingTable",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=[0.52193, -0.04727, -0.92512], rot=[0.70711, 0.0, 0.0, -0.70711]),
+        init_state=AssetBaseCfg.InitialStateCfg(pos=[0.72193, -0.04727, -0.92512], rot=[0.70711, 0.0, 0.0, -0.70711]),
         spawn=UsdFileCfg(
             usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/mindmap/packing_table_arena.usd",
             rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
@@ -119,6 +119,38 @@ class PackingTablePickAndPlaceBackground(PickAndPlaceBackground):
     )
     object_pose = Pose(
         position_xyz=(0.32623, -0.00586, 0.08186),
+        rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
+    )
+    object_min_z = -0.2
+
+    def __init__(self, robot_initial_pose: Pose = default_robot_initial_pose):
+        super().__init__(robot_initial_pose)
+
+
+@register_asset
+class GalileoPickAndPlaceBackground(PickAndPlaceBackground):
+    """
+    Encapsulates the background scene and destination-object config for a galileo pick-and-place environment.
+    """
+
+    name = "galileo_pick_and_place"
+    tags = ["background", "pick_and_place"]
+    default_robot_initial_pose = Pose.identity()
+    background_scene_cfg = AssetBaseCfg(
+        prim_path="/World/envs/env_.*/Galileo",
+        init_state=AssetBaseCfg.InitialStateCfg(pos=[4.420, 1.408, -0.795], rot=[1.0, 0.0, 0.0, 0.0]),
+        spawn=UsdFileCfg(
+            usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/galileo_simplified.usd",
+            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
+        ),
+    )
+    # NOTE(alexmillane, 2025.07.31): Eventually we'll likely want to make these dynamic
+    # such that a single background can be used for multiple tasks.
+    destination_object_cfg = RigidObjectCfg(
+        prim_path="{ENV_REGEX_NS}/Galileo/container_h20",
+    )
+    object_pose = Pose(
+        position_xyz=(0.0, 0.0, 0.0),
         rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
     )
     object_min_z = -0.2
