@@ -89,7 +89,9 @@ class KitchenPickAndPlaceBackground(PickAndPlaceBackground):
         position_xyz=(0.45, -0.05, 0.094),
         rotation_wxyz=(0.0, 0.0, 0.0, 1.0),
     )
-    object_min_z = -0.2
+    # FIXME(cvolk, 2025.09.04): Setting this to low level to not hit the termination criteria as a WAR.
+    # We need to fix the spawning position of the object.
+    object_min_z = -10.0
 
     def __init__(self, robot_initial_pose: Pose = default_robot_initial_pose):
         super().__init__(robot_initial_pose)
@@ -121,7 +123,9 @@ class PackingTablePickAndPlaceBackground(PickAndPlaceBackground):
         position_xyz=(0.32623, -0.00586, 0.08186),
         rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
     )
-    object_min_z = -0.2
+    # FIXME(cvolk, 2025.09.04): Setting this to low level to not hit the termination criteria as a WAR.
+    # We need to fix the spawning position of the object.
+    object_min_z = -10.0
 
     def __init__(self, robot_initial_pose: Pose = default_robot_initial_pose):
         super().__init__(robot_initial_pose)
