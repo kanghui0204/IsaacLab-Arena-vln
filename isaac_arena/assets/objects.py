@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from enum import Enum
 from typing import Any
 
 from isaaclab.assets import RigidObjectCfg
@@ -25,6 +26,11 @@ from isaac_arena.assets.register import register_asset
 from isaac_arena.geometry.pose import Pose
 
 
+class ObjectType(Enum):
+    ARTICULATION = "articulation"
+    RIGID = "rigid"
+
+
 class Object(Asset):
     """
     Encapsulates the pick-up object config for a pick-and-place environment.
@@ -34,6 +40,7 @@ class Object(Asset):
     # name: str | None = None
     # tags: list[str] | None = None
     usd_path: str | None = None
+    object_type: ObjectType = ObjectType.RIGID
     scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
     def __init__(
@@ -59,11 +66,18 @@ class Object(Asset):
         return self.initial_pose is not None
 
     def get_cfgs(self) -> dict[str, Any]:
+        if self.object_type == ObjectType.RIGID:
+            object_cfg = self._generate_RIGID_cfg()
+        elif self.object_type == ObjectType.ARTICULATION:
+            object_cfg = self._generate_articulation_cfg()
+        else:
+            raise ValueError(f"Invalid object type: {self.object_type}")
         return {
-            self.name: self._generate_cfg(),
+            self.name: object_cfg,
         }
 
     def get_contact_sensor_cfg(self, contact_against_prim_paths: list[str] | None = None) -> ContactSensorCfg:
+        assert self.object_type == ObjectType.RIGID, "Contact sensor is only supported for rigid objects"
         if contact_against_prim_paths is None:
             contact_against_prim_paths = []
         return ContactSensorCfg(
@@ -71,7 +85,8 @@ class Object(Asset):
             filter_prim_paths_expr=contact_against_prim_paths,
         )
 
-    def _generate_cfg(self) -> RigidObjectCfg:
+    def _generate_RIGID_cfg(self) -> RigidObjectCfg:
+        assert self.object_type == ObjectType.RIGID
         object_cfg = RigidObjectCfg(
             prim_path=self.prim_path,
             spawn=UsdFileCfg(
@@ -80,6 +95,24 @@ class Object(Asset):
                 activate_contact_sensors=True,
             ),
         )
+        object_cfg = self._set_initial_pose(object_cfg)
+        return object_cfg
+
+    def _generate_articulation_cfg(self) -> ArticulationCfg:
+        assert self.object_type == ObjectType.ARTICULATION
+        object_cfg = ArticulationCfg(
+            prim_path=self.prim_path,
+            spawn=UsdFileCfg(
+                usd_path=self.usd_path,
+                scale=self.scale,
+                activate_contact_sensors=True,
+            ),
+            actuators={},
+        )
+        object_cfg = self._set_initial_pose(object_cfg)
+        return object_cfg
+
+    def _set_initial_pose(self, object_cfg: RigidObjectCfg | ArticulationCfg) -> RigidObjectCfg | ArticulationCfg:
         # Optionally specify initial pose
         if self.initial_pose is not None:
             object_cfg.init_state.pos = self.initial_pose.position_xyz
@@ -181,7 +214,6 @@ class SketchFabSprayCan3(Object):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
 
 
-# TODO(alexmillane, 2025.08.28): Cleanup. Push this override here into the object base class.
 @register_asset
 class Microwave(Object, Openable):
     """A microwave oven."""
@@ -190,6 +222,7 @@ class Microwave(Object, Openable):
     tags = ["object", "openable"]
     usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/interactable_objects/microwave.usd"
     default_prim_path = "{ENV_REGEX_NS}/target_microwave"
+    object_type = ObjectType.ARTICULATION
 
     # Openable affordance parameters
     openable_joint_name = "microjoint"
@@ -202,33 +235,3 @@ class Microwave(Object, Openable):
             openable_joint_name=self.openable_joint_name,
             openable_open_threshold=self.openable_open_threshold,
         )
-
-    def get_cfgs(self) -> dict[str, Any]:
-        # TODO(alexmillane, 2025.08.28): This is a hack. Fix.
-        # Should be relying on the base class method, but we're abusing things here...
-        # for now...
-        return {
-            self.name: self._generate_cfg(),
-        }
-
-    def _generate_cfg(self) -> ArticulationCfg:
-        # TODO(alexmillane, 2025.08.28): This is a hack. Fix.
-        # We're overriding the get_object_cfg method in the object base class.
-        # We need to move this to the object base class, and detect the correct type of
-        # cfg to return.
-        # The problem is that all the other objects return a RigidObjectCfg,
-        # but this one returns an ArticulationCfg. So we're abusing things here.
-        object_cfg = ArticulationCfg(
-            prim_path=self.prim_path,
-            spawn=UsdFileCfg(
-                usd_path=self.usd_path,
-                scale=self.scale,
-                activate_contact_sensors=True,
-            ),
-            actuators={},
-        )
-        # Optionally specify initial pose
-        if self.initial_pose is not None:
-            object_cfg.init_state.pos = self.initial_pose.position_xyz
-            object_cfg.init_state.rot = self.initial_pose.rotation_wxyz
-        return object_cfg
