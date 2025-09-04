@@ -22,18 +22,6 @@ from abc import ABC, abstractmethod
 # TODO(alexmillane, 2025.09.04): Fix this.
 
 
-def add_argument_if_missing(parser: argparse.ArgumentParser, flag: str, **kwargs):
-    """Add a --flag argument only if it's not already defined."""
-    assert flag.startswith("--"), "Only long flags are supported"
-    # strip leading dashes to get the dest
-    dest = kwargs.get("dest", flag.lstrip("-").replace("-", "_"))
-    for action in parser._actions:
-        if action.dest == dest:
-            # if argument already exists then return it
-            return action
-    return parser.add_argument(flag, **kwargs)
-
-
 class ExampleEnvironmentBase(ABC):
 
     name: str | None = None

@@ -14,10 +14,7 @@
 
 import argparse
 
-from isaac_arena.examples.example_environments.example_environment_base import (
-    ExampleEnvironmentBase,
-    add_argument_if_missing,
-)
+from isaac_arena.examples.example_environments.example_environment_base import ExampleEnvironmentBase
 
 # NOTE(alexmillane, 2025.09.04): There is an issue with type annotation in this file.
 # We cannot annotate types which require the simulation app to be started in order to
@@ -78,7 +75,7 @@ class Gr1OpenMicrowaveEnvironment(ExampleEnvironmentBase):
 
     @staticmethod
     def add_cli_args(parser: argparse.ArgumentParser) -> None:
-        add_argument_if_missing(parser, "--object", type=str, default=None)
+        parser.add_argument("--object", type=str, default=None)
         # NOTE(alexmillane, 2025.09.04): We need a teleop device argument in order
         # to be used in the record_demos.py script.
-        add_argument_if_missing(parser, "--teleop_device", type=str, default=None)
+        parser.add_argument("--teleop_device", type=str, default=None)
