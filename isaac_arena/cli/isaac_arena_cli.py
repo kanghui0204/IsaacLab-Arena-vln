@@ -16,24 +16,13 @@ import argparse
 
 from isaaclab.app import AppLauncher
 
-# from isaac_arena.examples.example_environments.cli import add_example_environments_cli_args
-
 
 def get_isaac_arena_cli_parser() -> argparse.ArgumentParser:
     """Get a complete argument parser with both Isaac Lab and Isaac Arena arguments."""
     parser = argparse.ArgumentParser(description="Isaac Arena CLI parser.")
     add_isaac_lab_cli_args(parser)
     AppLauncher.add_app_launcher_args(parser)
-    # add_example_environments_cli_args(parser)
     return parser
-
-
-# def get_isaac_arena_example_environment_cli_parser() -> argparse.ArgumentParser:
-#     parser = get_isaac_arena_cli_parser()
-#     # NOTE(alexmillane, 2025.09.04): This command adds subparsers for each example environment.
-#     # So it has to be added last, because the subparser flags are parsed after the others.
-#     add_example_environments_cli_args(parser)
-#     return parser
 
 
 def add_isaac_lab_cli_args(parser: argparse.ArgumentParser) -> None:
