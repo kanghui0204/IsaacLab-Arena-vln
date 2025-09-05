@@ -26,8 +26,9 @@ def run_zero_action_runner(
     background: str | None = None,
     object_name: str | None = None,
 ):
-
-    args = [TestConstants.python_path, f"{TestConstants.examples_dir}/zero_action_runner.py"]
+    args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
+    args.append("--policy_type")
+    args.append("zero_action")
     args.append("--num_steps")
     args.append(str(num_steps))
     if HEADLESS:
