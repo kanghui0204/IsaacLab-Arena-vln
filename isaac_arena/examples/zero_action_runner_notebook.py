@@ -13,65 +13,54 @@
 # limitations under the License.
 
 # %%
-import argparse
-import gymnasium as gym
+
 import torch
+import tqdm
 
-# Global simulation app, initialized only once in notebook
-simulation_app = None
-first_run = True
+import pinocchio  # noqa: F401
+from isaaclab.app import AppLauncher
 
-
-def run_loop(env, num_steps):
-    # Main control loop
-    for x in range(num_steps):
-        print(f"Running loop {x}")
-        with torch.inference_mode():
-            actions = torch.zeros(env.action_space.shape, device=env.unwrapped.device)
-            env.step(actions)
+print("Launching simulation app once in notebook")
+simulation_app = AppLauncher()
 
 
-# Only launch sim app once
-if simulation_app is None:
-    from isaaclab.app import AppLauncher
+from isaac_arena.examples.example_environments.cli import (
+    get_arena_builder_from_cli,
+    get_isaac_arena_example_environment_cli_parser,
+)
 
-    print("Launching simulation app once in notebook")
-    simulation_app = AppLauncher()
+args_parser = get_isaac_arena_example_environment_cli_parser()
+
+# GR1 Open Microwave
+args_cli = args_parser.parse_args([
+    "gr1_open_microwave",
+    "--object",
+    "cracker_box",
+])
+
+# Pick and Place
+# args_cli = args_parser.parse_args([
+#     "kitchen_pick_and_place",
+#     "--object",
+#     "cracker_box",
+#     "--background",
+#     "galileo_pick_and_place",
+#     "--embodiment",
+#     "franka",
+# ])
+
+arena_builder = get_arena_builder_from_cli(args_cli)
+env = arena_builder.make_registered()
+env.reset()
 
 # %%
-print("Running in notebook mode")
-args_parser = argparse.ArgumentParser(description="Isaac Arena CLI parser.")
-args = args_parser.parse_args([])
-args.task = "Isaac-Arena-Kitchen-Pick-And-Place-v0"
-args.embodiment = "franka"
-args.arena_task = "pick_and_place"
-args.scene = "kitchen_pick_and_place"
-args.device = "cuda:0"
-args.num_envs = 1
-args.disable_fabric = True
-args.num_steps = 10
-if first_run:
-    # Post simulation app launch imports
-    from isaaclab_tasks.utils import parse_env_cfg
 
-    from isaac_arena.environments.compile_env import get_arena_env_cfg
+# Run some zero actions.
+NUM_STEPS = 100
+for _ in tqdm.tqdm(range(NUM_STEPS)):
+    with torch.inference_mode():
+        actions = torch.zeros(env.action_space.shape, device=env.unwrapped.device)
+        env.step(actions)
 
-    # Compile an isaac arena environment configuration from existing isaac arena registry.
-    arena_env_cfg = get_arena_env_cfg(args)
-    gym.register(
-        id=args.task,
-        entry_point="isaaclab.envs:ManagerBasedRLEnv",
-        kwargs={
-            "env_cfg_entry_point": arena_env_cfg,
-        },
-        disable_env_checker=True,
-    )
 
-    # Build the environment configuration in gym.
-    env_cfg = parse_env_cfg(args.task, device=args.device, num_envs=args.num_envs, use_fabric=not args.disable_fabric)
-    env = gym.make(args.task, cfg=env_cfg)
-
-    env.reset()
-    first_run = False
-
-run_loop(env, args.num_steps)
+# %%

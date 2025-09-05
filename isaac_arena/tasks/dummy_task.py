@@ -12,14 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from isaac_arena.tasks.task import TaskBase
 
-from isaac_arena.assets.asset_registry import AssetRegistry
 
+class DummyTask(TaskBase):
+    def __init__(self):
+        super().__init__()
 
-# Decorator to register an asset with the AssetRegistry.
-def registerasset(cls):
-    if AssetRegistry().is_registered(cls.name):
-        print(f"WARNING: Asset {cls.name} is already registered. Doing nothing.")
-    else:
-        AssetRegistry().register(cls)
-    return cls
+    def get_scene_cfg(self):
+        pass
+
+    def get_termination_cfg(self):
+        pass
+
+    def get_events_cfg(self):
+        pass
+
+    def get_prompt(self):
+        pass
+
+    def get_mimic_env_cfg(self, embodiment_name: str):
+        pass

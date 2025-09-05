@@ -30,10 +30,10 @@ import contextlib
 from isaaclab.app import AppLauncher
 
 from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
+from isaac_arena.examples.example_environments.cli import add_example_environments_cli_args, get_arena_builder_from_cli
 
 # add argparse arguments
 parser = get_isaac_arena_cli_parser()
-parser.add_argument("--teleop_device", type=str, default="keyboard", help="Device for interacting with environment.")
 parser.add_argument(
     "--dataset_file", type=str, default="./datasets/dataset.hdf5", help="File path to export recorded demos."
 )
@@ -54,12 +54,13 @@ parser.add_argument(
     help="Enable Pinocchio.",
 )
 
+# Add the example environments CLI args
+# NOTE(alexmillane, 2025.09.04): This has to be added last, because
+# of the app specific flags being parsed after the global flags.
+add_example_environments_cli_args(parser)
+
 # parse the arguments
 args_cli = parser.parse_args()
-
-# Validate required arguments
-if args_cli.task is None:
-    parser.error("--task is required")
 
 app_launcher_args = vars(args_cli)
 
@@ -67,7 +68,7 @@ if args_cli.enable_pinocchio:
     # Import pinocchio before AppLauncher to force the use of the version installed by IsaacLab and not the one installed by Isaac Sim
     # pinocchio is required by the Pink IK controllers and the GR1T2 retargeter
     import pinocchio  # noqa: F401
-if "handtracking" in args_cli.teleop_device.lower():
+
     app_launcher_args["xr"] = True
 
 # launch the simulator
@@ -94,7 +95,6 @@ from isaaclab.devices.teleop_device_factory import create_teleop_device
 from isaaclab_mimic.ui.instruction_display import InstructionDisplay, show_subtask_instructions
 
 # Imports have to follow simulation startup.
-from isaac_arena.environments.compile_env import get_arena_env_cfg
 
 if args_cli.enable_pinocchio:
     import isaaclab_tasks.manager_based.manipulation.pick_place  # noqa: F401
@@ -186,8 +186,9 @@ def create_environment_config(
     """
     # parse configuration
     try:
-        env_cfg, env_name = get_arena_env_cfg(args_cli)
-        env_cfg.env_name = env_name
+        arena_builder = get_arena_builder_from_cli(args_cli)
+        env_name, env_cfg = arena_builder.build_registered()
+
     except Exception as e:
         omni.log.error(f"Failed to parse environment configuration: {e}")
         exit(1)
@@ -272,7 +273,7 @@ def setup_teleop_device(callbacks: dict[str, Callable]) -> object:
                 teleop_interface = Se3SpaceMouse(Se3SpaceMouseCfg(pos_sensitivity=0.2, rot_sensitivity=0.5))
             else:
                 omni.log.error(f"Unsupported teleop device: {args_cli.teleop_device}")
-                omni.log.error("Supported devices: keyboard, spacemouse, handtracking")
+                omni.log.error("Supported devices: keyboard, spacemouse, avp_handtracking")
                 exit(1)
 
             # Add callbacks to fallback device

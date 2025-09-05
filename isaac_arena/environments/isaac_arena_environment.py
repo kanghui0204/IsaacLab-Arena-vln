@@ -17,11 +17,9 @@ from dataclasses import MISSING
 from isaaclab.utils import configclass
 
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase
-from isaac_arena.scene.scene import SceneBase
+from isaac_arena.scene.scene import Scene
 from isaac_arena.tasks.task import TaskBase
-
-# TODO(alexmillane, 2025-07-23): For some reason, missing values are not being detected,
-# if not set during configclass initialization. We need to fix this.
+from isaac_arena.teleop_devices.teleop_device_base import TeleopDeviceBase
 
 
 @configclass
@@ -34,8 +32,11 @@ class IsaacArenaEnvironment:
     embodiment: EmbodimentBase = MISSING
     """The embodiment to use in the environment."""
 
-    scene: SceneBase = MISSING
+    scene: Scene = MISSING
     """The scene to use in the environment."""
 
     task: TaskBase = MISSING
     """The task to use in the environment."""
+
+    teleop_device: TeleopDeviceBase | None = None
+    """The teleop device to use in the environment."""

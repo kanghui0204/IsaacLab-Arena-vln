@@ -22,11 +22,8 @@ from isaaclab.envs.manager_based_env import ManagerBasedEnv
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab_tasks.utils import parse_env_cfg
 
-from isaac_arena.assets.asset_registry import get_environment_configuration_from_registry
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
 from isaac_arena.environments.isaac_arena_manager_based_env import IsaacArenaManagerBasedRLEnvCfg
-from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
-from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
 from isaac_arena.utils.configclass import combine_configclass_instances
 
 
@@ -39,19 +36,6 @@ class ArenaEnvBuilder:
         self.arena_env = arena_env
         self.args = args
 
-    # ---------- factory ----------
-
-    @classmethod
-    def from_args(cls, args: argparse.Namespace) -> ArenaEnvBuilder:
-        cfgs = get_environment_configuration_from_registry(args.background, args.object, args.embodiment)
-        arena_env = IsaacArenaEnvironment(
-            name=f"pick_and_place_{args.embodiment}_{args.background}_{args.object}",
-            embodiment=cfgs["embodiment"],
-            scene=PickAndPlaceScene(cfgs["background"], cfgs["object"]),
-            task=PickAndPlaceTask(),
-        )
-        return cls(arena_env, args)
-
     def compose_manager_cfg(self) -> IsaacArenaManagerBasedRLEnvCfg:
         """Return base ManagerBased cfg (scene+events+terminations+xr), no registration."""
         robot_pose = self.arena_env.scene.get_robot_initial_pose()
@@ -62,24 +46,32 @@ class ArenaEnvBuilder:
             self.DEFAULT_SCENE_CFG,
             self.arena_env.scene.get_scene_cfg(),
             self.arena_env.embodiment.get_scene_cfg(),
+            self.arena_env.task.get_scene_cfg(),
         )
         events_cfg = combine_configclass_instances(
             "EventsCfg",
             self.arena_env.embodiment.get_event_cfg(),
             self.arena_env.scene.get_events_cfg(),
+            self.arena_env.task.get_events_cfg(),
         )
         termination_cfg = combine_configclass_instances(
             "TerminationCfg",
             self.arena_env.task.get_termination_cfg(),
             self.arena_env.scene.get_termination_cfg(),
         )
+        observation_cfg = self.arena_env.embodiment.get_observation_cfg()
+        actions_cfg = self.arena_env.embodiment.get_action_cfg()
+        xr_cfg = self.arena_env.embodiment.get_xr_cfg()
+        teleop_device = self.arena_env.teleop_device
+
         return IsaacArenaManagerBasedRLEnvCfg(
-            observations=self.arena_env.embodiment.get_observation_cfg(),
-            actions=self.arena_env.embodiment.get_action_cfg(),
+            observations=observation_cfg,
+            actions=actions_cfg,
             events=events_cfg,
             scene=scene_cfg,
             terminations=termination_cfg,
-            xr=self.arena_env.embodiment.get_xr_cfg(),
+            xr=xr_cfg,
+            teleop_devices=teleop_device,
         )
 
     def compose_mimic_cfg(
@@ -123,10 +115,3 @@ class ArenaEnvBuilder:
     def make_registered(self) -> ManagerBasedEnv:
         name, runtime_cfg = self.build_registered()
         return gym.make(name, cfg=runtime_cfg).unwrapped
-
-
-# TODO(Vik, 2025-08-29): Remove this function.
-def get_arena_env_cfg(args_cli: argparse.Namespace) -> tuple[ManagerBasedRLEnvCfg, str]:
-    builder = ArenaEnvBuilder.from_args(args_cli)
-    name, cfg = builder.build_registered()
-    return cfg, name

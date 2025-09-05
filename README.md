@@ -93,47 +93,26 @@ python scripts/environments/teleoperation/teleop_se3_agent.py \
 
 The following are example commands used for the mimic gen pipeline.
 
-For recording demos with the gr1 robot
+For recording demos with the gr1 robot and the Apple Vision Pro:
+Launch the [CloudXR runtime as explained here](https://isaac-sim.github.io/IsaacLab/main/source/how-to/cloudxr_teleoperation.html#:~:text=container%20with%20Docker-,Isaac%20Lab,-can%20be%20run) in a separate terminal.
+The environment variables `XDG_RUNTIME_DIR` and `XR_RUNTIME_JSON` are already set within the Isaac_arena docker.
+
 ```bash
-python submodules/IsaacLab/scripts/tools/record_demos.py \
-    --teleop_device dualhandtracking_abs \
-    --embodiment gr1 \
-    --background packing_table_pick_and_place \
-    --task PickPlace-GR1T2 \
-    --object tomato_soup_can \
-    --dataset_file /tmp/gr1_table.hdf5 \
-    --num_demos 1 \
-    --mimic \
-    --enable_pinocchio \
-    --num_success_steps 1 \
-    --device cpu
+python scripts/record_demos.py --dataset_file <output_hdf5_file> gr1_open_microwave \
+    --teleop_device avp_handtracking
+    --object tomato_soup_can
 ```
 
 For replaying the recorded demos
 ```bash
-python submodules/IsaacLab/scripts/tools/replay_demos.py \
-    --embodiment gr1 \
-    --background packing_table_pick_and_place \
-    --task PickPlace-GR1T2 \
-    --object tomato_soup_can \
-    --dataset_file /tmp/gr1_table.hdf5 \
-    --mimic \
-    --enable_pinocchio \
-    --device cpu
+python scripts/replay_demos.py --dataset_file <input_hdf5_file> gr1_open_microwave \
+    --object tomato_soup_can
 ```
 
-For annotating them. We only support manual annotation for now.
+We support manual annotation using mimic via the following script:
 ```bash
-python submodules/IsaacLab/scripts/imitation_learning/isaaclab_mimic/annotate_demos.py \
-    --embodiment gr1 \
-    --background packing_table_pick_and_place \
-    --task PickPlace-GR1T2 \
-    --object tomato_soup_can \
-    --input_file /tmp/gr1_table.hdf5 \
-    --output_file /tmp/gr1_annotated.hdf5 \
-    --mimic \
-    --enable_pinocchio \
-    --device cpu
+python scripts/annotate_demos.py --dataset_file <input_hdf5_file> gr1_open_microwave \
+    --object tomato_soup_can
 ```
 
 For generating a dataset
@@ -186,7 +165,7 @@ python your_script.py \
 
 ```python
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
-from isaac_arena.embodiments.franka import FrankaEmbodiment
+from isaac_arena.embodiments.franka.franka import FrankaEmbodiment
 from isaac_arena.scene.pick_and_place_scene import PickAndPlaceScene
 from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
 
@@ -222,7 +201,7 @@ all_objects = registry.get_assets_by_tag("object")
 
 ```python
 from isaac_arena.assets.asset import Asset
-from isaac_arena.assets.register_asset import register_asset
+from isaac_arena.assets.register import register
 
 @register_asset
 class MyCustomObject(Asset):
