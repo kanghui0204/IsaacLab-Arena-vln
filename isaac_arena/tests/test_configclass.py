@@ -14,8 +14,8 @@
 
 
 from isaaclab.utils import configclass
-from isaac_arena.utils.configclass import combine_configclasses
 
+from isaac_arena.utils.configclass import combine_configclasses
 
 
 def test_combine_configclasses_with_inheritance():
@@ -25,6 +25,7 @@ def test_combine_configclasses_with_inheritance():
     class FooCfgBase:
         a: int = 1
         b: int = 2
+
     @configclass
     class FooCfg(FooCfgBase):
         c: int = 3
