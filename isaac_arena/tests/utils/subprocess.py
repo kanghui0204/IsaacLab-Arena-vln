@@ -29,15 +29,35 @@ def run_subprocess(cmd, env=None):
             cmd,
             check=True,
             env=env,
-            # Don't capture output, let it flow through in real-time
-            capture_output=False,
+            # Capture output so we can print it if the command fails
+            capture_output=True,
             text=True,
-            # Explicitly set stdout and stderr to None to use parent process's pipes
-            stdout=None,
-            stderr=None,
         )
         print(f"Command completed with return code: {result.returncode}")
+        # Print stdout/stderr for successful commands too, for debugging
+        if result.stdout:
+            print("STDOUT:")
+            print(result.stdout)
+        if result.stderr:
+            print("STDERR:")
+            print(result.stderr)
     except subprocess.CalledProcessError as e:
+        print(f"Command failed with return code {e.returncode}: {e}")
+        print("=== DEBUG OUTPUT ===")
+        print(f"Command: {' '.join(cmd)}")
+        print(f"Return code: {e.returncode}")
+        print("--- STDOUT ---")
+        if e.stdout:
+            print(e.stdout)
+        else:
+            print("(no stdout)")
+        print("--- STDERR ---")
+        if e.stderr:
+            print(e.stderr)
+        else:
+            print("(no stderr)")
+        print("=== END DEBUG OUTPUT ===")
+
         sys.stderr.write(f"Command failed with return code {e.returncode}: {e}\n")
         raise
 
