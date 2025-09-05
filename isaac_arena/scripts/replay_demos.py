@@ -215,6 +215,9 @@ def main():
                     while is_paused:
                         env.sim.render()
                         continue
+                print("replay_demos-----------------------")
+                print(f"actions shape: {actions.shape}")
+                print("actions", actions)
                 env.step(actions)
 
                 if state_validation_enabled:

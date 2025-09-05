@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import gymnasium as gym
+import numpy as np
 import torch
 
 from isaaclab.utils.datasets import HDF5DatasetFileHandler
@@ -24,7 +26,8 @@ class ReplayActionPolicy(PolicyBase):
     If no episode name is provided, the first episode will be replayed.
     """
 
-    def __init__(self, replay_file_path: str, episode_name: str | None = None):
+    def __init__(self, replay_file_path: str, device: str = "cuda", episode_name: str | None = None):
+        super().__init__()
         self.episode_name = episode_name
         self.dataset_file_handler = HDF5DatasetFileHandler()
         self.dataset_file_handler.open(replay_file_path)
@@ -39,11 +42,21 @@ class ReplayActionPolicy(PolicyBase):
                 f"Available episodes: {self.available_episode_names}"
             )
 
-        self.episode_data = self.dataset_file_handler.load_episode(self.episode_name, device="cuda")
+        self.episode_data = self.dataset_file_handler.load_episode(self.episode_name, device=device)
+        self.current_action_index = 0
 
     def __len__(self) -> int:
         """Return the number of actions in the episode."""
         return len(self.episode_data.data["actions"])
+
+    def get_action(self, env: gym.Env, observation: dict[str, dict[str, np.ndarray]]) -> torch.Tensor | None:
+        """Get the action of the next current index from the dataset."""
+        action = self.get_action_from_index(self.current_action_index)
+        if action.dim() == 1:
+            action = action.unsqueeze(0)  # Add batch dimension
+        if action is not None:
+            self.current_action_index += 1
+        return action
 
     def get_action_from_index(self, action_index: int) -> torch.Tensor | None:
         """Get the action of the specified index from the dataset."""
