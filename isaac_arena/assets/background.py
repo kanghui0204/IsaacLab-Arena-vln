@@ -44,7 +44,7 @@ class Background(Asset):
     def get_cfgs(self) -> dict[str, Any]:
         assert self.name is not None, "Background name is not set"
         background_scene_cfg = AssetBaseCfg(
-            prim_path="{ENV_REGEX_NS}/Kitchen",
+            prim_path="{ENV_REGEX_NS}/" + self.name,
             spawn=UsdFileCfg(usd_path=self.usd_path),
         )
         background_scene_cfg = self._add_initial_pose_to_cfg(background_scene_cfg)

@@ -52,7 +52,7 @@ class KitchenPickAndPlaceEnvironment(ExampleEnvironmentBase):
 
         destination_location = ObjectReference(
             name="destination_location",
-            prim_path="{ENV_REGEX_NS}/Kitchen/Cabinet_B_02",
+            prim_path="{ENV_REGEX_NS}/kitchen/Cabinet_B_02",
             parent_asset=background,
         )
 

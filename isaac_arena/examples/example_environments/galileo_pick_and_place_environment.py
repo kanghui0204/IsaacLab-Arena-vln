@@ -59,7 +59,7 @@ class GalileoPickAndPlaceEnvironment(ExampleEnvironmentBase):
         # the bottom shelf specifically.
         destination_location = ObjectReference(
             name="destination_location",
-            prim_path="{ENV_REGEX_NS}/Galileo/BackgroundAssets/bins/small_bin_grid_01/lid",
+            prim_path="{ENV_REGEX_NS}/galileo/BackgroundAssets/bins/small_bin_grid_01/lid",
             parent_asset=background,
         )
 
