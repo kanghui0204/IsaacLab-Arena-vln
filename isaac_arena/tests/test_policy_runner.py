@@ -57,7 +57,7 @@ def run_policy_runner(
     run_subprocess(args)
 
 
-def test_zero_action_policy_kitchen():
+def test_zero_action_policy_kitchen_pick_and_place():
     # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
     # from a registry when we have one.
     example_environment = "kitchen_pick_and_place"
@@ -74,7 +74,7 @@ def test_zero_action_policy_kitchen():
             )
 
 
-def test_zero_action_policy_galileo():
+def test_zero_action_policy_galileo_pick_and_place():
     # TODO(alexmillane, 2025.07.29): Get an exhaustive list of all scenes and embodiments
     # from a registry when we have one.
     # NOTE(alexmillane, 2025.09.04): Only test one configuration here to keep
