@@ -31,14 +31,14 @@ def run_policy_runner(
 ):
     args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
     args.append("--policy_type")
-    args.append(str(policy_type))
+    args.append(policy_type)
     if policy_type == "replay":
         assert replay_file_path is not None, f"replay_file_path must be provided for policy_type {policy_type}"
         args.append("--replay_file_path")
-        args.append(str(replay_file_path))
+        args.append(replay_file_path)
         if episode_name is not None:
             args.append("--episode_name")
-            args.append(str(episode_name))
+            args.append(episode_name)
     args.append("--num_steps")
     args.append(str(num_steps))
     if HEADLESS:

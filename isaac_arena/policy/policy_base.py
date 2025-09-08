@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import gymnasium as gym
-import numpy as np
 import torch
 from abc import ABC, abstractmethod
+from gymnasium.spaces.dict import Dict as GymSpacesDict
 
 
 class PolicyBase(ABC):
@@ -24,7 +24,7 @@ class PolicyBase(ABC):
         """
 
     @abstractmethod
-    def get_action(self, env: gym.Env, observation: dict[str, dict[str, np.ndarray]]) -> torch.Tensor:
+    def get_action(self, env: gym.Env, observation: GymSpacesDict) -> torch.Tensor:
         """
         Compute an action given the environment and observation.
 

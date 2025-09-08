@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import gymnasium as gym
-import numpy as np
 import torch
+from gymnasium.spaces.dict import Dict as GymSpacesDict
 
 from isaaclab.utils.datasets import HDF5DatasetFileHandler
 
@@ -49,7 +49,7 @@ class ReplayActionPolicy(PolicyBase):
         """Return the number of actions in the episode."""
         return len(self.episode_data.data["actions"])
 
-    def get_action(self, env: gym.Env, observation: dict[str, dict[str, np.ndarray]]) -> torch.Tensor | None:
+    def get_action(self, env: gym.Env, observation: GymSpacesDict) -> torch.Tensor | None:
         """Get the action of the next current index from the dataset."""
         action = self.get_action_from_index(self.current_action_index)
         if action.dim() == 1:

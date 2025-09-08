@@ -38,7 +38,7 @@ def main():
 
         for _ in tqdm.tqdm(range(num_steps)):
             with torch.inference_mode():
-                actions = policy.get_action(env, env.observation_space.sample())
+                actions = policy.get_action(env, env.observation_space)
                 env.step(actions)
 
         # Close the environment.

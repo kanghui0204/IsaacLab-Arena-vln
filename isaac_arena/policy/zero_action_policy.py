@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import gymnasium as gym
-import numpy as np
 import torch
+from gymnasium.spaces.dict import Dict as GymSpacesDict
 
 from isaac_arena.policy.policy_base import PolicyBase
 
@@ -22,7 +22,7 @@ class ZeroActionPolicy(PolicyBase):
     def __init__(self):
         super().__init__()
 
-    def get_action(self, env: gym.Env, observation: dict[str, dict[str, np.ndarray]]) -> torch.Tensor:
+    def get_action(self, env: gym.Env, observation: GymSpacesDict) -> torch.Tensor:
         """
         Always returns a zero action.
         """
