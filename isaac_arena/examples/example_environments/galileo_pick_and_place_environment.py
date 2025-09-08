@@ -28,7 +28,7 @@ class GalileoPickAndPlaceEnvironment(ExampleEnvironmentBase):
     name: str = "galileo_pick_and_place"
 
     def get_env(self, args_cli: argparse.Namespace):  # -> IsaacArenaEnvironment:
-        from isaac_arena.assets.objects import ReferenceObject
+        from isaac_arena.assets.object_reference import ObjectReference
         from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
         from isaac_arena.geometry.pose import Pose
         from isaac_arena.scene.scene import Scene
@@ -57,7 +57,7 @@ class GalileoPickAndPlaceEnvironment(ExampleEnvironmentBase):
         # the lid via the UI.
         # TODO(alexmillane, 2025.09.08): Separate the self into prims so we can reference
         # the bottom shelf specifically.
-        destination_location = ReferenceObject(
+        destination_location = ObjectReference(
             name="destination_location",
             prim_path="{ENV_REGEX_NS}/Galileo/BackgroundAssets/bins/small_bin_grid_01/lid",
             parent_asset=background,

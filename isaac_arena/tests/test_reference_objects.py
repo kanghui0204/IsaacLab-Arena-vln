@@ -31,7 +31,7 @@ def get_test_background():
     from isaac_arena.assets.background import PickAndPlaceBackground
     from isaac_arena.geometry.pose import Pose
 
-    class ReferenceObjectTestKitchenPickAndPlaceBackground(PickAndPlaceBackground):
+    class ObjectReferenceTestKitchenPickAndPlaceBackground(PickAndPlaceBackground):
         """
         Encapsulates the background scene and destination-object config for a kitchen pick-and-place environment.
         """
@@ -53,7 +53,7 @@ def get_test_background():
         def __init__(self):
             super().__init__(robot_initial_pose=self.default_robot_initial_pose)
 
-    return ReferenceObjectTestKitchenPickAndPlaceBackground()
+    return ObjectReferenceTestKitchenPickAndPlaceBackground()
 
 
 def _test_object_on_destination_termination(simulation_app) -> bool:
@@ -61,7 +61,7 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
     from isaaclab.managers import SceneEntityCfg
 
     from isaac_arena.assets.asset_registry import AssetRegistry  # noqa: F401
-    from isaac_arena.assets.objects import OpenableReferenceObject, ReferenceObject
+    from isaac_arena.assets.object_reference import ObjectReference, OpenableObjectReference
     from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
     from isaac_arena.embodiments.franka.franka import FrankaEmbodiment
     from isaac_arena.environments.compile_env import ArenaEnvBuilder
@@ -79,17 +79,17 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
     # - microwave (openable object)
     background = get_test_background()
     embodiment = FrankaEmbodiment()
-    cracker_box = ReferenceObject(
+    cracker_box = ObjectReference(
         name="cracker_box",
         prim_path="{ENV_REGEX_NS}/Kitchen/_03_cracker_box",
         parent_asset=background,
     )
-    destination_location = ReferenceObject(
+    destination_location = ObjectReference(
         name="drawer",
         prim_path="{ENV_REGEX_NS}/Kitchen/Cabinet_B_02",
         parent_asset=background,
     )
-    microwave = OpenableReferenceObject(
+    microwave = OpenableObjectReference(
         name="microwave",
         prim_path="{ENV_REGEX_NS}/Kitchen/microwave",
         parent_asset=background,
