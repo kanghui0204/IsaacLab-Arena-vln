@@ -34,7 +34,7 @@ class KitchenPickAndPlaceEnvironment(ExampleEnvironmentBase):
         from isaac_arena.scene.scene import Scene
         from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
 
-        background = self.asset_registry.get_asset_by_name("kitchen_pick_and_place")()
+        background = self.asset_registry.get_asset_by_name("kitchen")()
         pick_up_object = self.asset_registry.get_asset_by_name(args_cli.object)()
         embodiment = self.asset_registry.get_asset_by_name(args_cli.embodiment)()
 
