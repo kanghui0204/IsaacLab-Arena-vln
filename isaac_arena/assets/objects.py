@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any
 
@@ -31,35 +32,36 @@ class ObjectType(Enum):
     RIGID = "rigid"
 
 
-class Object(Asset):
-    """
-    Encapsulates the pick-up object config for a pick-and-place environment.
-    """
+class ObjectBase(Asset, ABC):
+    """Parent class for SpawnObject and ReferenceObject."""
 
     # Defined in Asset, restated here for clariry
     # name: str | None = None
     # tags: list[str] | None = None
-    usd_path: str | None = None
-    object_type: ObjectType = ObjectType.RIGID
-    scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
     def __init__(
         self,
+        name: str,
         prim_path: str,
         initial_pose: Pose | None = None,
+        object_type: ObjectType = ObjectType.RIGID,
         **kwargs,
     ):
-        super().__init__(**kwargs)
+        super().__init__(name=name, **kwargs)
         self.prim_path = prim_path
+        self.object_type = object_type
         self.initial_pose = initial_pose
 
     def set_prim_path(self, prim_path: str) -> None:
         self.prim_path = prim_path
 
+    def get_prim_path(self) -> str:
+        return self.prim_path
+
     def set_initial_pose(self, pose: Pose) -> None:
         self.initial_pose = pose
 
-    def get_initial_pose(self) -> Pose:
+    def get_initial_pose(self) -> Pose | None:
         return self.initial_pose
 
     def is_initial_pose_set(self) -> bool:
@@ -67,7 +69,7 @@ class Object(Asset):
 
     def get_cfgs(self) -> dict[str, Any]:
         if self.object_type == ObjectType.RIGID:
-            object_cfg = self._generate_RIGID_cfg()
+            object_cfg = self._generate_rigid_cfg()
         elif self.object_type == ObjectType.ARTICULATION:
             object_cfg = self._generate_articulation_cfg()
         else:
@@ -85,7 +87,38 @@ class Object(Asset):
             filter_prim_paths_expr=contact_against_prim_paths,
         )
 
-    def _generate_RIGID_cfg(self) -> RigidObjectCfg:
+    @abstractmethod
+    def _generate_rigid_cfg(self) -> RigidObjectCfg:
+        # Subclasses must implement this method
+        pass
+
+    @abstractmethod
+    def _generate_articulation_cfg(self) -> ArticulationCfg:
+        # Subclasses must implement this method
+        pass
+
+
+class Object(ObjectBase):
+    """
+    Encapsulates the pick-up object config for a pick-and-place environment.
+    """
+
+    # Defined in Asset, restated here for clariry
+    # name: str | None = None
+    # tags: list[str] | None = None
+    object_type: ObjectType = ObjectType.RIGID
+    usd_path: str | None = None
+    scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
+
+    def __init__(
+        self,
+        initial_pose: Pose | None = None,
+        **kwargs,
+    ):
+        super().__init__(name=self.name, object_type=self.object_type, **kwargs)
+        self.initial_pose = initial_pose
+
+    def _generate_rigid_cfg(self) -> RigidObjectCfg:
         assert self.object_type == ObjectType.RIGID
         object_cfg = RigidObjectCfg(
             prim_path=self.prim_path,
@@ -95,7 +128,7 @@ class Object(Asset):
                 activate_contact_sensors=True,
             ),
         )
-        object_cfg = self._set_initial_pose(object_cfg)
+        object_cfg = self._add_initial_pose_to_cfg(object_cfg)
         return object_cfg
 
     def _generate_articulation_cfg(self) -> ArticulationCfg:
@@ -109,15 +142,68 @@ class Object(Asset):
             ),
             actuators={},
         )
-        object_cfg = self._set_initial_pose(object_cfg)
+        object_cfg = self._add_initial_pose_to_cfg(object_cfg)
         return object_cfg
 
-    def _set_initial_pose(self, object_cfg: RigidObjectCfg | ArticulationCfg) -> RigidObjectCfg | ArticulationCfg:
+    def _add_initial_pose_to_cfg(
+        self, object_cfg: RigidObjectCfg | ArticulationCfg
+    ) -> RigidObjectCfg | ArticulationCfg:
         # Optionally specify initial pose
         if self.initial_pose is not None:
             object_cfg.init_state.pos = self.initial_pose.position_xyz
             object_cfg.init_state.rot = self.initial_pose.rotation_wxyz
         return object_cfg
+
+
+class ReferenceObject(ObjectBase):
+    """An object which *refers* to an existing element in the scene"""
+
+    def __init__(self, parent_asset: Asset, **kwargs):
+        # TODO(alexmillane, 2025.09.08): Need some way of extracting the pose from the USD file.
+        super().__init__(initial_pose=None, **kwargs)
+        if parent_asset:
+            self._check_path_in_parent_usd(parent_asset)
+        self.parent_asset = parent_asset
+
+    def get_contact_sensor_cfg(self, contact_against_prim_paths: list[str] | None = None) -> ContactSensorCfg:
+        # NOTE(alexmillane): Right now this requires that the object
+        # has the contact sensor enabled prior to using this reference.
+        # At the moment, for the tests, I enabled the relevant APIs in the GUI.
+        # TODO(alexmillane, 2025.09.08): Make the code automatically enable the
+        # contact reporter API.
+        # Just call out to the parent class method.
+        return super().get_contact_sensor_cfg(contact_against_prim_paths)
+
+    def _generate_rigid_cfg(self) -> RigidObjectCfg:
+        assert self.object_type == ObjectType.RIGID
+        object_cfg = RigidObjectCfg(
+            prim_path=self.prim_path,
+        )
+        return object_cfg
+
+    def _generate_articulation_cfg(self) -> ArticulationCfg:
+        assert self.object_type == ObjectType.ARTICULATION
+        object_cfg = ArticulationCfg(
+            prim_path=self.prim_path,
+            actuators={},
+        )
+        return object_cfg
+
+    def _check_path_in_parent_usd(self, parent_asset: Asset) -> bool:
+        # TODO(alexmillane, 2025.09.08): Implement this check!
+        return True
+
+
+class OpenableReferenceObject(ReferenceObject, Openable):
+    """An object which *refers* to an existing element in the scene and is openable."""
+
+    def __init__(self, openable_joint_name: str, openable_open_threshold: float = 0.5, **kwargs):
+        super().__init__(
+            openable_joint_name=openable_joint_name,
+            openable_open_threshold=openable_open_threshold,
+            object_type=ObjectType.ARTICULATION,
+            **kwargs,
+        )
 
 
 @register_asset
