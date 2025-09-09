@@ -11,22 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import gymnasium as gym
+import torch
+from gymnasium.spaces.dict import Dict as GymSpacesDict
+
+from isaac_arena.policy.policy_base import PolicyBase
 
 
-class Asset:
-    """
-    Base class for all assets.
-    """
+class ZeroActionPolicy(PolicyBase):
+    def __init__(self):
+        super().__init__()
 
-    tags: list[str] | None = None
-    # TODO(alexmillane, 2025.09.08): Get rid of this flag.
-    # We should be able to use the tags attribute directly.
-    # A "None" tag should be treated as "untagged".
-    tagged: bool = True
-
-    def __init__(self, name: str, **kwargs):
-        # NOTE: Cooperative Multiple Inheritance Pattern.
-        # Calling super even though this is a base class to support
-        # multiple inheritance of inheriting classes.
-        super().__init__(**kwargs)
-        self.name = name
+    def get_action(self, env: gym.Env, observation: GymSpacesDict) -> torch.Tensor:
+        """
+        Always returns a zero action.
+        """
+        return torch.zeros(env.action_space.shape, device=torch.device(env.unwrapped.device))
