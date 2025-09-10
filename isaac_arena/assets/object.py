@@ -13,8 +13,8 @@
 # limitations under the License.
 
 
-from isaaclab.assets import RigidObjectCfg
-from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
+from isaaclab.assets import RigidObjectCfg, AssetBaseCfg, ArticulationCfg
+# from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
 from isaac_arena.assets.object_base import ObjectBase, ObjectType
@@ -27,8 +27,8 @@ class Object(ObjectBase):
     """
 
     # Defined in Asset, restated here for clariry
-    # name: str | None = None
     # tags: list[str] | None = None
+    name: str
     object_type: ObjectType = ObjectType.RIGID
     usd_path: str | None = None
     scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
@@ -67,10 +67,19 @@ class Object(ObjectBase):
         )
         object_cfg = self._add_initial_pose_to_cfg(object_cfg)
         return object_cfg
+    
+    def _generate_base_cfg(self) -> AssetBaseCfg:
+        assert self.object_type == ObjectType.BASE
+        object_cfg = AssetBaseCfg(
+            prim_path="{ENV_REGEX_NS}/" + self.name,
+            spawn=UsdFileCfg(usd_path=self.usd_path),
+        )
+        object_cfg = self._add_initial_pose_to_cfg(object_cfg)
+        return object_cfg
 
     def _add_initial_pose_to_cfg(
-        self, object_cfg: RigidObjectCfg | ArticulationCfg
-    ) -> RigidObjectCfg | ArticulationCfg:
+        self, object_cfg: RigidObjectCfg | ArticulationCfg | AssetBaseCfg
+    ) -> RigidObjectCfg | ArticulationCfg | AssetBaseCfg:
         # Optionally specify initial pose
         if self.initial_pose is not None:
             object_cfg.init_state.pos = self.initial_pose.position_xyz
