@@ -62,7 +62,9 @@ RUN ${ISAACLAB_PATH}/isaaclab.sh -i
 RUN /isaac-sim/python.sh -m pip install --upgrade pip && \
   /isaac-sim/python.sh -m pip install \
   pytest \
-  jupyter
+  jupyter \
+  typing_extensions \
+  onnxruntime
 
 # Install isaac-arena
 RUN /isaac-sim/python.sh -m pip install -e /workspaces/isaac_arena/
