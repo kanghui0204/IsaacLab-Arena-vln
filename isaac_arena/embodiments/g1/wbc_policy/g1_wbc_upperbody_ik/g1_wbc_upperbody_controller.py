@@ -293,15 +293,15 @@ class G1WBCUpperbodyController:
             if self.left_hand_ik_solver is not None and self.right_hand_ik_solver is not None:
                 left_hand_actuated_q = self.left_hand_ik_solver(left_hand_target_pose)
                 right_hand_actuated_q = self.right_hand_ik_solver(right_hand_target_pose)
+
+                body_q[self.full_robot.get_hand_actuated_joint_indices(side="left")] = (
+                    left_hand_actuated_q
+                )
+                body_q[self.full_robot.get_hand_actuated_joint_indices(side="right")] = (
+                    right_hand_actuated_q
+                )
             else:
                 raise ValueError("Left and right hand IK solvers are not initialized. Please set control_hands to True.")
-
-        body_q[self.full_robot.get_hand_actuated_joint_indices(side="left")] = (
-            left_hand_actuated_q
-        )
-        body_q[self.full_robot.get_hand_actuated_joint_indices(side="right")] = (
-            right_hand_actuated_q
-        )
 
         return body_q
 

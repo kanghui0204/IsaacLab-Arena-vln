@@ -22,6 +22,7 @@ import yaml
 import os
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
+from scipy.spatial.transform import Rotation as R
 
 import isaaclab.utils.math as math_utils
 from isaaclab.assets.articulation import Articulation
@@ -105,6 +106,12 @@ class G1DecoupledWBCAction(ActionTerm):
         except FileNotFoundError:
             raise FileNotFoundError(f"File not found: {wbc_g1_joints_order_path}")
 
+        self.upperbody_controller = G1WBCUpperbodyController(
+            robot_model=self.robot_model,
+            body_active_joint_groups=["arms"],
+            control_hands=False,
+        )
+
     # Properties.
     # """
     @property
@@ -167,6 +174,19 @@ class G1DecoupledWBCAction(ActionTerm):
         if self._wbc_version == "homie_v2" and torso_orientation_rpy_cmd is not None:
             self._wbc_goal["torso_orientation_rpy_cmd"] = torso_orientation_rpy_cmd.cpu().numpy().repeat(self.num_envs, axis=0)
 
+
+    def compute_upperbody_joint_positions(self, body_data):
+        if self.upperbody_controller.in_warmup:
+            for _ in range(50):
+                target_robot_joints = self.upperbody_controller.inverse_kinematics(body_data)
+
+            self.upperbody_controller.in_warmup = False
+        else:
+            target_robot_joints = self.upperbody_controller.inverse_kinematics(body_data)
+
+        return target_robot_joints
+
+
     # """
     # Operations.
     # """
@@ -193,11 +213,62 @@ class G1DecoupledWBCAction(ActionTerm):
         # extract navigate_cmd  base_height_cmd, and torso_orientation_rpy_cmd from actions
         navigate_cmd = actions_clone[:, -7:-4]
         base_height_cmd = actions_clone[:, -4:-3]
+        base_height_cmd[0] = 0.75
         torso_orientation_rpy_cmd = actions_clone[:, -3:]
 
         self.set_wbc_goal(navigate_cmd, base_height_cmd, torso_orientation_rpy_cmd)
         self.wbc_policy.set_goal(self._wbc_goal)
         print(f"wbc_goal: {self._wbc_goal}")
+
+
+        '''
+        **************************************************
+        Upper body PINK controller
+        **************************************************
+        '''
+        # Extract upper body left/right arm pos/quat from actions
+        left_arm_pos = actions_clone[:, :3].squeeze(0)
+        left_arm_quat = actions_clone[:, 3:7].squeeze(0)
+        right_arm_pos = actions_clone[:, 7:10].squeeze(0)
+        right_arm_quat = actions_clone[:, 10:14].squeeze(0)
+
+        # FOR TESTING WITH FIXED ARM POS/QUAT
+        ##################################################
+        ##################################################
+        ##################################################
+        left_arm_pos = torch.tensor([0.20248358, 0.17661604, 0.13682538], device=self.device)
+        left_arm_quat = torch.tensor([0.99800018,  0.04580273, -0.03275206,  0.02872376], device=self.device)
+        right_arm_pos = torch.tensor([0.21232468, -0.18499057,  0.13347319], device=self.device)
+        right_arm_quat = torch.tensor([0.99572691, -0.05724299, -0.05909783, -0.04193568], device=self.device)
+        left_arm_pos = left_arm_pos + 0.005*torch.randn_like(left_arm_pos, device=self.device)
+        right_arm_pos = right_arm_pos + 0.005*torch.randn_like(right_arm_pos, device=self.device)
+        ##################################################
+        ##################################################
+        ##################################################
+
+        # Convert from pos/quat to 4x4 transform matrix
+        # Scipy requires quat xyzw, IsaacLab uses wxyz so a conversion is needed
+        left_arm_quat = np.roll(left_arm_quat, -1)
+        right_arm_quat = np.roll(right_arm_quat, -1)
+        left_arm_quat[3] = 1
+        right_arm_quat[3] = 1
+        left_rotmat = R.from_quat(left_arm_quat).as_matrix()
+        right_rotmat = R.from_quat(right_arm_quat).as_matrix()
+
+        left_arm_pose = np.eye(4)
+        left_arm_pose[:3, :3] = left_rotmat
+        left_arm_pose[:3, 3] = left_arm_pos
+
+        right_arm_pose = np.eye(4)
+        right_arm_pose[:3, :3] = right_rotmat
+        right_arm_pose[:3, 3] = right_arm_pos
+
+        # Run PINK IK to get target upper body joint positions
+        body_data = {"left_wrist_yaw_link": left_arm_pose, "right_wrist_yaw_link": right_arm_pose}
+        target_robot_joints_mujoco = self.compute_upperbody_joint_positions(body_data)
+        # arms only, no hands
+        target_upper_body_joints = target_robot_joints_mujoco[self.robot_model.get_joint_group_indices("upper_body_no_hands")]
+        target_upper_body_joints = torch.tensor(target_upper_body_joints, device=self.device, dtype=torch.float32).unsqueeze(0)
 
         '''
         **************************************************
@@ -207,6 +278,7 @@ class G1DecoupledWBCAction(ActionTerm):
         wbc_obs = prepare_observations(self.num_envs, self._asset.data, self.wbc_g1_joints_order)
         sim_target_full_body_joints = actions_clone[:, :self._num_joints]
         wbc_target_full_body_joints = convert_sim_joint_to_wbc_joint(sim_target_full_body_joints, self._asset.data.joint_names, self.wbc_g1_joints_order)
+        wbc_target_full_body_joints[:, self.robot_model.get_joint_group_indices("upper_body_no_hands")] = target_upper_body_joints
         wbc_target_upper_body_joints = wbc_target_full_body_joints[:, self.robot_model.get_joint_group_indices("upper_body")]
 
         self.wbc_policy.set_observation(wbc_obs)

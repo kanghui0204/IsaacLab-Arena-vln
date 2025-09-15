@@ -24,6 +24,10 @@ if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLenv
 
 def reset_decoupled_wbc_policy(env: ManagerBasedRLenv, env_ids: torch.Tensor):
+    # Reset upper body IK solver
+    env.action_manager.get_term("g1_action").upperbody_controller.body_ik_solver.initialize()
+    env.action_manager.get_term("g1_action").upperbody_controller.in_warmup = True
+
     policy = env.action_manager.get_term("g1_action").get_wbc_policy
 
     policy.lower_body_policy.reset(env_ids)
