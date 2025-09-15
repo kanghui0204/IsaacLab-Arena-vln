@@ -19,8 +19,32 @@ from isaac_arena.assets.register import register_asset
 from isaac_arena.geometry.pose import Pose
 
 
+class LibraryObject(Object):
+    """
+    Base class for all objects in the library. These classes have class attributes.
+    """
+
+    name: str
+    tags: list[str]
+    usd_path: str
+    # default_prim_path: str
+    object_type: ObjectType = ObjectType.RIGID
+    scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
+
+    def __init__(self, prim_path: str, initial_pose: Pose | None = None):
+        super().__init__(
+            name=self.name,
+            prim_path=prim_path,
+            tags=self.tags,
+            usd_path=self.usd_path,
+            object_type=self.object_type,
+            scale=self.scale,
+            initial_pose=initial_pose,
+        )
+
+
 @register_asset
-class CrackerBox(Object):
+class CrackerBox(LibraryObject):
     """
     Encapsulates the pick-up object config for a pick-and-place environment.
     """

@@ -40,14 +40,14 @@ class ObjectBase(Asset, ABC):
         self,
         name: str,
         prim_path: str,
-        initial_pose: Pose | None = None,
+        # initial_pose: Pose | None = None,
         object_type: ObjectType = ObjectType.RIGID,
         **kwargs,
     ):
         super().__init__(name=name, **kwargs)
         self.prim_path = prim_path
         self.object_type = object_type
-        self.initial_pose = initial_pose
+        # self.initial_pose = initial_pose
 
     def set_prim_path(self, prim_path: str) -> None:
         self.prim_path = prim_path
@@ -55,12 +55,15 @@ class ObjectBase(Asset, ABC):
     def get_prim_path(self) -> str:
         return self.prim_path
 
+    # MOVE
     def set_initial_pose(self, pose: Pose) -> None:
         self.initial_pose = pose
 
+    # MOVE
     def get_initial_pose(self) -> Pose | None:
         return self.initial_pose
 
+    # MOVE
     def is_initial_pose_set(self) -> bool:
         return self.initial_pose is not None
 

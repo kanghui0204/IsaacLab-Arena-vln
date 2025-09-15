@@ -27,18 +27,27 @@ class Object(ObjectBase):
 
     # Defined in Asset, restated here for clariry
     # tags: list[str] | None = None
-    name: str | None = None
-    object_type: ObjectType = ObjectType.RIGID
-    usd_path: str | None = None
-    scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
+
+    # Removing!
+    # name: str | None = None
+    # object_type: ObjectType = ObjectType.RIGID
+    # usd_path: str | None = None
+    # scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
     def __init__(
         self,
+        name: str | None = None,
+        prim_path: str | None = None,
+        object_type: ObjectType = ObjectType.RIGID,
+        usd_path: str | None = None,
+        scale: tuple[float, float, float] = (1.0, 1.0, 1.0),
         initial_pose: Pose | None = None,
         **kwargs,
     ):
-        assert self.name is not None and self.usd_path is not None
-        super().__init__(name=self.name, object_type=self.object_type, **kwargs)
+        assert name is not None and usd_path is not None
+        super().__init__(name=name, prim_path=prim_path, object_type=object_type, **kwargs)
+        self.usd_path = usd_path
+        self.scale = scale
         self.initial_pose = initial_pose
 
     def _generate_rigid_cfg(self) -> RigidObjectCfg:
