@@ -42,7 +42,7 @@ if args_cli.enable_pinocchio:
     import pinocchio  # noqa: F401
 
     # Keep this on if we use pinocchio as we will use AVP for the humanoid
-    app_launcher_args["xr"] = True
+    app_launcher_args["xr"] = False
 
 # launch omniverse app
 app_launcher = AppLauncher(app_launcher_args)
@@ -225,6 +225,8 @@ def main() -> None:
     # simulate environment
     while simulation_app.is_running():
         try:
+            print("HERE")
+            print(teleoperation_active)
             # run everything in inference mode
             with torch.inference_mode():
                 # get device command
@@ -235,6 +237,7 @@ def main() -> None:
                     # process actions
                     actions = action.repeat(env.num_envs, 1)
                     # apply actions
+                    print(actions)
                     env.step(actions)
                 else:
                     env.sim.render()

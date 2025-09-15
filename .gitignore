@@ -75,3 +75,5 @@ TAGS
 
 # Ignore plots
 *.png
+
+*robot_model/

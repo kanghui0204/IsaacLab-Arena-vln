@@ -28,9 +28,11 @@ from isaaclab.assets.articulation import Articulation
 from isaaclab.managers.action_manager import ActionTerm
 
 from isaac_arena.embodiments.g1.wbc_policy.config.configs import HomieV2Config
+from isaac_arena.embodiments.g1.wbc_policy.g1_wbc_upperbody_ik.g1_wbc_upperbody_controller import G1WBCUpperbodyController
 from isaac_arena.embodiments.g1.wbc_policy.utils.g1 import instantiate_g1_robot_model
 from isaac_arena.embodiments.g1.wbc_policy.policy.wbc_policy_factory import get_wbc_policy
 from isaac_arena.embodiments.g1.wbc_policy.run_policy import prepare_observations, postprocess_actions, convert_sim_joint_to_wbc_joint
+
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedEnv
