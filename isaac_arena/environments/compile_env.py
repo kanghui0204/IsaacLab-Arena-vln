@@ -27,6 +27,7 @@ from isaac_arena.environments.isaac_arena_manager_based_env import (
     IsaacArenaManagerBasedMimicEnvCfg,
     IsaacArenaManagerBasedRLEnvCfg,
 )
+from isaac_arena.utils.cameras import add_camera_to_environment_cfg
 from isaac_arena.utils.configclass import combine_configclass_instances
 
 
@@ -44,12 +45,25 @@ class ArenaEnvBuilder:
         robot_pose = self.arena_env.scene.get_robot_initial_pose()
         self.arena_env.embodiment.set_robot_initial_pose(robot_pose)
 
+        # Add cameras to the scene along with the observation cfg if requested
+        camera_scene_cfg, camera_observation_cfg = add_camera_to_environment_cfg(
+            self.arena_env.embodiment.get_camera_cfg(),
+            enable_cameras=True,
+            tag=self.args.camera_tag,
+        )
+        observation_cfg = combine_configclass_instances(
+            "ObservationCfg",
+            self.arena_env.embodiment.get_observation_cfg(),
+            camera_observation_cfg,
+        )
+
         scene_cfg = combine_configclass_instances(
             "SceneCfg",
             self.DEFAULT_SCENE_CFG,
             self.arena_env.scene.get_scene_cfg(),
             self.arena_env.embodiment.get_scene_cfg(),
             self.arena_env.task.get_scene_cfg(),
+            camera_scene_cfg,
         )
         events_cfg = combine_configclass_instances(
             "EventsCfg",
@@ -62,7 +76,6 @@ class ArenaEnvBuilder:
             self.arena_env.task.get_termination_cfg(),
             self.arena_env.scene.get_termination_cfg(),
         )
-        observation_cfg = self.arena_env.embodiment.get_observation_cfg()
         actions_cfg = self.arena_env.embodiment.get_action_cfg()
         xr_cfg = self.arena_env.embodiment.get_xr_cfg()
         teleop_device = self.arena_env.teleop_device

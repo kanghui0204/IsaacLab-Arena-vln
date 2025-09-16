@@ -42,13 +42,22 @@ def run_subprocess(cmd, env=None):
         raise
 
 
-def runner(q: multiprocessing.Queue, function: Callable[[SimulationAppContext, Any], bool], headless: bool, **kwargs):
+def runner(
+    q: multiprocessing.Queue,
+    function: Callable[[SimulationAppContext, Any], bool],
+    headless: bool,
+    enable_cameras: bool = False,
+    **kwargs,
+):
     # The runner runs a function in a way that a result is returned to the main process, before
     # simulation_app.close() can ruin everything.
     # Simulation app args. For now, we just make these default + headless.
     # TODO(alexmillane, 2025.09.01): We're eventually going to want a way to override the args.
     parser = get_isaac_arena_cli_parser()
-    simulation_app_args = parser.parse_args([])
+    if enable_cameras:
+        simulation_app_args = parser.parse_args(["--enable_cameras"])
+    else:
+        simulation_app_args = parser.parse_args()
     simulation_app_args.headless = headless
     # Launch the simulator
     with SimulationAppContext(simulation_app_args) as simulation_app:
@@ -66,7 +75,7 @@ def runner(q: multiprocessing.Queue, function: Callable[[SimulationAppContext, A
 
 
 def run_simulation_app_function_in_separate_process(
-    function: Callable[..., bool], headless: bool = True, **kwargs
+    function: Callable[..., bool], headless: bool = True, enable_cameras: bool = False, **kwargs
 ) -> bool:
     """Run a simulation app in a separate process.
 
@@ -90,7 +99,7 @@ def run_simulation_app_function_in_separate_process(
     # NOTE(alexmillane, 2025.04.10): We need to start the test in a separate process
     # because the simulation app cannot be closed in the main process, because it
     # kills the entire pytest process.
-    p = multiprocessing.Process(target=runner, args=(q, function, headless), kwargs=kwargs)
+    p = multiprocessing.Process(target=runner, args=(q, function, headless, enable_cameras), kwargs=kwargs)
     p.start()
     p.join()
 
