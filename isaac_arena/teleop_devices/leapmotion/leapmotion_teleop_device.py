@@ -34,7 +34,6 @@ class LeapmotionTeleopDevice:
         right_hand_ik_solver,
         body_control_device: str,
         hand_control_device: str | None = None,
-        enable_real_device=True,
         body_active_joint_groups: list[str] | None = None,
     ):
         # initialize the body
@@ -60,36 +59,24 @@ class LeapmotionTeleopDevice:
         if hand_control_device:
             self.left_hand_pre_processor = FingersPreProcessor(side="left")
             self.right_hand_pre_processor = FingersPreProcessor(side="right")
-
         else:
             self.left_hand_pre_processor = None
             self.right_hand_pre_processor = None
 
-
-        # enable real robot and devices
-        self.enable_real_device = enable_real_device
-        if self.enable_real_device:
-
-            self.body_streamer = LeapMotionStreamer()
-            self.body_streamer.start_streaming()
-
-            self.hand_streamer = None
+        self.body_streamer = LeapMotionStreamer()
+        self.body_streamer.start_streaming()
 
         self.raw_data = {}
 
     def get_streamer_raw_data(self):
-        # print("+++++++++++get_streamer_raw++++++++")
-        if self.body_streamer:
-            body_data_ = self.body_streamer.get()
-            self.raw_data.update(body_data_)
-        if self.hand_streamer:
-            self.raw_data.update(self.hand_streamer.get())
+        body_data_ = self.body_streamer.get()
+        self.raw_data.update(body_data_)
         return self.raw_data
 
     def calibrate(self):
         """Calibrate the pre-processors."""
         assert (
-            self.body_streamer or self.hand_streamer
+            self.body_streamer
         ), "Real device is enabled, but no streamer is initialized."
         raw_data = self.get_streamer_raw_data()
 
@@ -119,6 +106,21 @@ class LeapmotionTeleopDevice:
                 right_hand_data = self.right_hand_pre_processor(raw_data)
                 return None, left_hand_data, right_hand_data
 
+    def get_g1_gripper_state(self, finger_data, dist_threshold=0.05):
+        fingertips = finger_data["position"]
+
+        # Extract X, Y, Z positions of fingertips from the transformation matrices
+        positions = np.array([finger[:3, 3] for finger in fingertips])
+        positions = np.reshape(positions, (-1, 3))  # Ensure 2D array with shape (N, 3)
+
+        # Compute the distance between the thumb and index finger
+        thumb_pos = positions[4, :]
+        index_pos = positions[4 + 5, :]
+        dist = np.linalg.norm(thumb_pos - index_pos)
+        hand_close = dist < dist_threshold
+
+        return int(hand_close)
+
     def get_leapmotion_action(self):
         raw_action = self.get_streamer_raw_data()
         body_data, left_hand_data, right_hand_data = self.pre_process(raw_action)
@@ -126,8 +128,6 @@ class LeapmotionTeleopDevice:
         # Original variables
         left_wrist_action = np.array(body_data['left_wrist_yaw_link'])
         right_wrist_action = np.array(body_data['right_wrist_yaw_link'])
-        left_fingers_position = np.array(left_hand_data['position'])
-        right_fingers_position = np.array(right_hand_data['position'])
 
         # Extract position and quaternion from left wrist 4x4 pose matrix
         left_wrist_pos = torch.from_numpy(left_wrist_action[:3, 3])
@@ -143,16 +143,16 @@ class LeapmotionTeleopDevice:
         left_wrist_quat_wxyz = torch.from_numpy(np.roll(left_wrist_quat, 1))
         right_wrist_quat_wxyz = torch.from_numpy(np.roll(right_wrist_quat, 1))
 
-        # Flattened variables
-        left_fingers_position_flat = torch.from_numpy(left_fingers_position.flatten())
-        right_fingers_position_flat = torch.from_numpy(right_fingers_position.flatten())
+        # Get G1 hand state (0 for open, 1 for close)
+        left_hand_state = torch.from_numpy(np.array([self.get_g1_gripper_state(left_hand_data)]))
+        right_hand_state = torch.from_numpy(np.array([self.get_g1_gripper_state(right_hand_data)]))
 
         # Assemble into upper body env action
-        upperbody_action = torch.cat([left_wrist_pos,
+        upperbody_action = torch.cat([left_hand_state,
+                            right_hand_state,
+                            left_wrist_pos,
                             left_wrist_quat_wxyz,
                             right_wrist_pos,
-                            right_wrist_quat_wxyz,
-                            left_fingers_position_flat,
-                            right_fingers_position_flat])
+                            right_wrist_quat_wxyz])
 
         return upperbody_action

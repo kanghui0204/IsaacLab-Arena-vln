@@ -105,13 +105,12 @@ class G1DecoupledWBCAction(ActionTerm):
         self.upperbody_controller = G1WBCUpperbodyController(
             robot_model=self.robot_model,
             body_active_joint_groups=["arms"],
-            control_hands=True,
         )
 
-        self.left_wrist_action_start_idx = 0
-        self.right_wrist_action_start_idx = 7
-        self.left_fingers_position_start_idx = 14
-        self.right_fingers_position_start_idx = 414
+        self.left_hand_gripper_pos_start_idx = 0
+        self.right_hand_gripper_pos_start_idx = 1
+        self.left_wrist_action_start_idx = 2
+        self.right_wrist_action_start_idx = 9
 
     # Properties.
     # """
@@ -146,14 +145,14 @@ class G1DecoupledWBCAction(ActionTerm):
         return 4
 
     @property
-    def left_fingers_position_dim(self) -> int:
-        """Dimension of navigation command."""
-        return 400
+    def left_hand_state_dim(self) -> int:
+        """Dimension of left hand state command."""
+        return 1
 
     @property
-    def right_fingers_position_dim(self) -> int:
-        """Dimension of navigation command."""
-        return 400
+    def right_hand_state_dim(self) -> int:
+        """Dimension of right hand state command."""
+        return 1
 
     @property
     def navigate_cmd_dim(self) -> int:
@@ -173,9 +172,9 @@ class G1DecoupledWBCAction(ActionTerm):
     @property
     def action_dim(self) -> int:
         """Dimension of the action space (based on number of tasks and pose dimension)."""
-        return self.left_wrist_pos_dim + self.left_wrist_quat_dim + \
+        return self.left_hand_state_dim + self.right_hand_state_dim + \
+            self.left_wrist_pos_dim + self.left_wrist_quat_dim + \
             self.right_wrist_pos_dim + self.right_wrist_quat_dim + \
-            self.left_fingers_position_dim + self.right_fingers_position_dim + \
             self.navigate_cmd_dim + self.base_height_cmd_dim + self.torso_orientation_rpy_cmd_dim
 
     @property
@@ -208,18 +207,14 @@ class G1DecoupledWBCAction(ActionTerm):
                 torso_orientation_rpy_cmd.cpu().numpy().repeat(self.num_envs, axis=0)
             )
 
-    def compute_upperbody_joint_positions(self, body_data, left_hand_data, right_hand_data):
+    def compute_upperbody_joint_positions(self, body_data, left_hand_state, right_hand_state):
         if self.upperbody_controller.in_warmup:
             for _ in range(50):
-                target_robot_joints = self.upperbody_controller.inverse_kinematics(
-                    body_data, left_hand_data, right_hand_data
-                )
+                target_robot_joints = self.upperbody_controller.inverse_kinematics(body_data, left_hand_state, right_hand_state)
 
             self.upperbody_controller.in_warmup = False
         else:
-            target_robot_joints = self.upperbody_controller.inverse_kinematics(
-                    body_data, left_hand_data, right_hand_data
-                )
+            target_robot_joints = self.upperbody_controller.inverse_kinematics(body_data, left_hand_state, right_hand_state)
         return target_robot_joints
 
     # """
@@ -231,6 +226,17 @@ class G1DecoupledWBCAction(ActionTerm):
 
         Args:
             actions: The input actions tensor.
+
+            action tensor layout:
+            action = [left_hand_state: dim=1, 0 for open, 1 for close,
+                      right_hand_state: dim=1, 0 for open, 1 for close,
+                      left_arm_pos: dim=3, xyz position,
+                      left_arm_quat: dim=4, wxyz quaternion,
+                      right_arm_pos: dim=3, xyz position,
+                      right_arm_quat: dim=4, wxyz quaternion,
+                      navigate_cmd: dim=3, xyz velocity,
+                      base_height_cmd: dim=1, height,
+                      torso_orientation_rpy_cmd: dim=3, rpy]
         """
 
         # Store the raw actions
@@ -239,17 +245,16 @@ class G1DecoupledWBCAction(ActionTerm):
         # Make a copy of actions before modifying so that raw actions are not modified
         actions_clone = actions.clone()
 
-        
         """
         **************************************************
         Upper body PINK controller
         **************************************************
         """
         # Extract upper body left/right arm pos/quat from actions
-        left_arm_pos = actions_clone[:, :3].squeeze(0)
-        left_arm_quat = actions_clone[:, 3:7].squeeze(0)
-        right_arm_pos = actions_clone[:, 7:10].squeeze(0)
-        right_arm_quat = actions_clone[:, 10:14].squeeze(0)
+        left_arm_pos = actions_clone[:, 2:5].squeeze(0)
+        left_arm_quat = actions_clone[:, 5:9].squeeze(0)
+        right_arm_pos = actions_clone[:, 9:12].squeeze(0)
+        right_arm_quat = actions_clone[:, 12:16].squeeze(0)
 
         # Convert from pos/quat to 4x4 transform matrix
         # Scipy requires quat xyzw, IsaacLab uses wxyz so a conversion is needed
@@ -266,22 +271,18 @@ class G1DecoupledWBCAction(ActionTerm):
         right_arm_pose[:3, :3] = right_rotmat
         right_arm_pose[:3, 3] = right_arm_pos
 
-        # Extract left/right finger position from actions
-        left_fingers_position = actions_clone[:, self.left_fingers_position_start_idx:self.left_fingers_position_start_idx + self.left_fingers_position_dim]
-        right_fingers_position = actions_clone[:, self.right_fingers_position_start_idx:self.right_fingers_position_start_idx + self.right_fingers_position_dim]
-        left_fingers_position = left_fingers_position.squeeze(0).cpu().numpy()
-        right_fingers_position = right_fingers_position.squeeze(0).cpu().numpy()
+        # Extract left/right hand state from actions
+        left_hand_state = actions_clone[:, 0].squeeze(0)
+        right_hand_state = actions_clone[:, 1].squeeze(0)
 
-        # Reshape from the flattened isaaclab format to 4x4 transform matrix
-        left_fingers_position = left_fingers_position.reshape(25, 4, 4)
-        right_fingers_position = right_fingers_position.reshape(25, 4, 4)
+        # # Reshape from the flattened isaaclab format to 4x4 transform matrix
+        # left_fingers_position = left_fingers_position.reshape(25, 4, 4)
+        # right_fingers_position = right_fingers_position.reshape(25, 4, 4)
 
         # Assemble data format for runnning IK
         body_data = {"left_wrist_yaw_link": left_arm_pose, "right_wrist_yaw_link": right_arm_pose}
-        left_hand_data = {"position": left_fingers_position}
-        right_hand_data = {"position": right_fingers_position}
 
-        target_robot_joints_mujoco = self.compute_upperbody_joint_positions(body_data, left_hand_data, right_hand_data)
+        target_robot_joints_mujoco = self.compute_upperbody_joint_positions(body_data, left_hand_state, right_hand_state)
         self._target_robot_joints_mujoco = torch.tensor(target_robot_joints_mujoco).unsqueeze(0)
 
         # Reformat the joint position tensor to the correct order for G1 robot

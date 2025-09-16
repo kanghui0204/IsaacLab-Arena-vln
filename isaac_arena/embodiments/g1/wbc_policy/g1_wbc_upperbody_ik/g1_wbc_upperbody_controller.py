@@ -251,7 +251,6 @@ class G1WBCUpperbodyController:
         self,
         robot_model: RobotModel,
         body_active_joint_groups: Optional[List[str]] = None,
-        control_hands: bool = False,
     ):
         # initialize the body
         if body_active_joint_groups is not None:
@@ -268,20 +267,32 @@ class G1WBCUpperbodyController:
         # Register the specific robot model to the robot-agnostic body IK solver class
         self.body_ik_solver.register_robot(self.body)
 
-        if control_hands:
-            self.left_hand_ik_solver = G1GripperIKSolver(side="left")
-            self.right_hand_ik_solver = G1GripperIKSolver(side="right")
-        else:
-            self.left_hand_ik_solver = None
-            self.right_hand_ik_solver = None
-
         self.in_warmup = True
+
+    def get_hand_joint_pos(self, hand_state):
+        hand_q_desired = np.deg2rad([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        if hand_state == 0:
+            return hand_q_desired
+        else:
+            amp = 0.7
+
+            hand_q_desired[1] += amp
+            hand_q_desired[2] += amp
+
+            ampA = 0.6
+            ampB = 1.2
+
+            hand_q_desired[3] -= ampA
+            hand_q_desired[4] -= ampB
+            hand_q_desired[5] -= ampA
+            hand_q_desired[6] -= ampB
+        return hand_q_desired
 
     def inverse_kinematics(
         self,
         body_target_pose,
-        left_hand_target_pose=None,
-        right_hand_target_pose=None,
+        left_hand_state,
+        right_hand_state,
     ):
         """
         Solve the inverse kinematics problem for the given target poses.
@@ -299,19 +310,11 @@ class G1WBCUpperbodyController:
         else:
             body_q = self.body_ik_solver(body_target_pose)
 
-        if left_hand_target_pose is not None and right_hand_target_pose is not None:
-            if self.left_hand_ik_solver is not None and self.right_hand_ik_solver is not None:
-                left_hand_actuated_q = self.left_hand_ik_solver(left_hand_target_pose)
-                right_hand_actuated_q = self.right_hand_ik_solver(right_hand_target_pose)
+        left_hand_joint_pos = self.get_hand_joint_pos(left_hand_state)
+        right_hand_joint_pos = -self.get_hand_joint_pos(right_hand_state)
 
-                body_q[self.full_robot.get_hand_actuated_joint_indices(side="left")] = (
-                    left_hand_actuated_q
-                )
-                body_q[self.full_robot.get_hand_actuated_joint_indices(side="right")] = (
-                    right_hand_actuated_q
-                )
-            else:
-                raise ValueError("Left and right hand IK solvers are not initialized. Please set control_hands to True.")
+        body_q[self.full_robot.get_hand_actuated_joint_indices(side="left")] = (left_hand_joint_pos)
+        body_q[self.full_robot.get_hand_actuated_joint_indices(side="right")] = (right_hand_joint_pos)
 
         return body_q
 
