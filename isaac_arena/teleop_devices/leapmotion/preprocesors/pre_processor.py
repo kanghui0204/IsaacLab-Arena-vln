@@ -12,19 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import MISSING
+import abc
 
-from isaaclab.managers.action_manager import ActionTerm, ActionTermCfg
-from isaaclab.utils import configclass
 
-from isaac_arena.embodiments.g1.mdp.actions.g1_decoupled_wbc_action import G1DecoupledWBCAction
+class PreProcessor(abc.ABC):
+    def __init__(self, **kwargs):
+        pass
 
-@configclass
-class G1DecoupledWBCActionCfg(ActionTermCfg):
-    class_type: type[ActionTerm] = G1DecoupledWBCAction
-    """Specifies the action term class type for G1 WBC action."""
+    def register(self, robot):
+        self.robot = robot
 
-    preserve_order: bool = False
-    joint_names: list[str] = MISSING
-
-    wbc_version: str = "homie_v2"
+    @abc.abstractmethod
+    def __call__(self, data) -> dict:
+        pass

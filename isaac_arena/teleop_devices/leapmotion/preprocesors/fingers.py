@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import MISSING
+from isaac_arena.teleop_devices.leapmotion.preprocesors.pre_processor import PreProcessor
 
-from isaaclab.managers.action_manager import ActionTerm, ActionTermCfg
-from isaaclab.utils import configclass
 
-from isaac_arena.embodiments.g1.mdp.actions.g1_decoupled_wbc_action import G1DecoupledWBCAction
+class FingersPreProcessor(PreProcessor):
+    """Dummy class just takes out the fingers from the data."""
 
-@configclass
-class G1DecoupledWBCActionCfg(ActionTermCfg):
-    class_type: type[ActionTerm] = G1DecoupledWBCAction
-    """Specifies the action term class type for G1 WBC action."""
+    def __init__(self, side: str):
+        super().__init__()
+        self.side = side
 
-    preserve_order: bool = False
-    joint_names: list[str] = MISSING
+    def __call__(self, data):
+        return data[f"{self.side}_fingers"]
 
-    wbc_version: str = "homie_v2"
+    # TODO: calibrate max and min
+    def calibrate(self, data):
+        pass
