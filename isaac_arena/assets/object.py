@@ -17,8 +17,6 @@ from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
 from isaac_arena.assets.object_base import ObjectBase, ObjectType
-
-# from isaac_arena.assets.object_base import ObjectType
 from isaac_arena.assets.object_utils import detect_object_type
 from isaac_arena.geometry.pose import Pose
 
@@ -46,6 +44,15 @@ class Object(ObjectBase):
         self.usd_path = usd_path
         self.scale = scale
         self.initial_pose = initial_pose
+
+    def set_initial_pose(self, pose: Pose) -> None:
+        self.initial_pose = pose
+
+    def get_initial_pose(self) -> Pose | None:
+        return self.initial_pose
+
+    def is_initial_pose_set(self) -> bool:
+        return self.initial_pose is not None
 
     def _generate_rigid_cfg(self) -> RigidObjectCfg:
         assert self.object_type == ObjectType.RIGID

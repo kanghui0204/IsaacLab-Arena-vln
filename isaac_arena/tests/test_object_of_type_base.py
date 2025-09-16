@@ -25,8 +25,8 @@ MOVEMENT_EPS = 0.001
 def _test_object_of_type_base(simulation_app):
 
     from isaac_arena.assets.asset_registry import AssetRegistry
-    from isaac_arena.assets.object import Object
     from isaac_arena.assets.object_base import ObjectType
+    from isaac_arena.assets.object_library import LibraryObject
     from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
     from isaac_arena.environments.compile_env import ArenaEnvBuilder
     from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
@@ -36,7 +36,7 @@ def _test_object_of_type_base(simulation_app):
 
     asset_registry = AssetRegistry()
 
-    class CrackerBoxNoPhysics(Object):
+    class CrackerBoxNoPhysics(LibraryObject):
         """
         Cracker box without physics.
         """
@@ -48,7 +48,6 @@ def _test_object_of_type_base(simulation_app):
         )
         default_prim_path = "{ENV_REGEX_NS}/target_cracker_box_no_physics"
         object_type = ObjectType.BASE
-        # object_type = ObjectType.RIGID
 
         def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
             super().__init__(prim_path=prim_path, initial_pose=initial_pose)

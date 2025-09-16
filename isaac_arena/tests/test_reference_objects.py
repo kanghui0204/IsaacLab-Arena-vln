@@ -51,6 +51,7 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
     from isaaclab.managers import SceneEntityCfg
 
     from isaac_arena.assets.asset_registry import AssetRegistry  # noqa: F401
+    from isaac_arena.assets.object_base import ObjectType
     from isaac_arena.assets.object_reference import ObjectReference, OpenableObjectReference
     from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
     from isaac_arena.embodiments.franka.franka import FrankaEmbodiment
@@ -73,11 +74,13 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
         name="cracker_box",
         prim_path="{ENV_REGEX_NS}/kitchen/_03_cracker_box",
         parent_asset=background,
+        object_type=ObjectType.RIGID,
     )
     destination_location = ObjectReference(
         name="drawer",
         prim_path="{ENV_REGEX_NS}/kitchen/Cabinet_B_02",
         parent_asset=background,
+        object_type=ObjectType.RIGID,
     )
     microwave = OpenableObjectReference(
         name="microwave",

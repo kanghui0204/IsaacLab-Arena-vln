@@ -14,8 +14,6 @@
 
 from isaac_arena.assets.affordances import Openable
 from isaac_arena.assets.object import Object
-
-# from isaac_arena.assets.object_base import ObjectType
 from isaac_arena.assets.object_base import ObjectType
 from isaac_arena.assets.register import register_asset
 from isaac_arena.geometry.pose import Pose
@@ -23,7 +21,8 @@ from isaac_arena.geometry.pose import Pose
 
 class LibraryObject(Object):
     """
-    Base class for all objects in the library. These classes have class attributes.
+    Base class for objects in the library which are defined in this file.
+    These objects have class attributes (rather than instance attributes).
     """
 
     name: str

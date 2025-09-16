@@ -86,8 +86,6 @@ def _test_detect_object_type_for_all_objects(simulation_app):
 def _test_auto_object_type(simulation_app):
 
     from isaac_arena.assets.asset_registry import AssetRegistry
-
-    # from isaac_arena.assets.object_base import ObjectType
     from isaac_arena.assets.object import Object
     from isaac_arena.assets.object_base import ObjectType
     from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
