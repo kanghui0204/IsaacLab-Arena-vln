@@ -167,3 +167,4 @@ from isaac_arena.embodiments.gr1t2.gr1t2 import *  # noqa: F403, F401
 from isaac_arena.teleop_devices.avp_handtracking import *  # noqa: F403, F401
 from isaac_arena.teleop_devices.keyboard import *  # noqa: F403, F401
 from isaac_arena.teleop_devices.spacemouse import *  # noqa: F403, F401
+from isaac_arena.teleop_devices.leapmotion.leapmotion import *  # noqa: F403, F401

@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from dataclasses import dataclass
 import numpy as np
+from collections.abc import Callable
 import torch
 from scipy.spatial.transform import Rotation as R
 
@@ -21,6 +23,10 @@ from isaac_arena.teleop_devices.leapmotion.leapmotion_streamer import LeapMotion
 
 from isaac_arena.teleop_devices.leapmotion.preprocesors.fingers import FingersPreProcessor
 from isaac_arena.teleop_devices.leapmotion.preprocesors.wrists import WristsPreProcessor
+
+from isaac_arena.embodiments.g1.wbc_policy.utils.g1 import instantiate_g1_robot_model
+
+from isaaclab.devices.device_base import DeviceBase, DeviceCfg
 
 class LeapmotionTeleopDevice:
     """
@@ -156,3 +162,42 @@ class LeapmotionTeleopDevice:
                             right_wrist_quat_wxyz])
 
         return upperbody_action
+
+@dataclass
+class LeapmotionCfg(DeviceCfg):
+    """Configuration for the Leapmotion teleop device."""
+
+    body_control_device: str = "leapmotion"
+
+class Leapmotion(DeviceBase):
+
+    def __init__(self, cfg: LeapmotionCfg):
+        self.robot_model = instantiate_g1_robot_model()
+        self.device_streamer = LeapmotionTeleopDevice(
+            robot_model=self.robot_model,
+            left_hand_ik_solver=None,
+            right_hand_ik_solver=None,
+            body_control_device=cfg.body_control_device,
+            hand_control_device=cfg.body_control_device,
+            body_active_joint_groups=["arms"],
+        )
+        self.device_streamer.calibrate()
+
+        # dictionary for additional callbacks
+        self._additional_callbacks = dict()
+
+    def __str__(self) -> str:
+        """Returns: A string containing the information of joystick."""
+        msg = f"Leapmotion Controller for G1: {self.__class__.__name__}\n"
+        return msg
+
+    def reset(self):
+        self.device_streamer.calibrate()
+
+    def add_callback(self, key: str, func: Callable):
+        """Add additional functions.
+        """
+        self._additional_callbacks[key] = func
+
+    def advance(self) -> torch.Tensor:
+        return self.device_streamer.get_leapmotion_action()
