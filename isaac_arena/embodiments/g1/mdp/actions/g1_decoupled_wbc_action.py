@@ -29,6 +29,7 @@ from isaac_arena.embodiments.g1.wbc_policy.config.configs import HomieV2Config
 from isaac_arena.embodiments.g1.wbc_policy.g1_wbc_upperbody_ik.g1_wbc_upperbody_controller import G1WBCUpperbodyController
 from isaac_arena.embodiments.g1.wbc_policy.policy.wbc_policy_factory import get_wbc_policy
 from isaac_arena.embodiments.g1.wbc_policy.run_policy import (
+    convert_sim_joint_to_wbc_joint,
     postprocess_actions,
     prepare_observations,
 )
@@ -301,7 +302,6 @@ class G1DecoupledWBCAction(ActionTerm):
 
         self.set_wbc_goal(navigate_cmd, base_height_cmd, torso_orientation_rpy_cmd)
         self.wbc_policy.set_goal(self._wbc_goal)
-
 
         """
         **************************************************

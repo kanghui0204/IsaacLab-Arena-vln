@@ -17,6 +17,7 @@ from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 
 from isaac_arena.assets.object_base import ObjectBase, ObjectType
+from isaac_arena.assets.object_utils import detect_object_type
 from isaac_arena.geometry.pose import Pose
 
 
@@ -25,21 +26,33 @@ class Object(ObjectBase):
     Encapsulates the pick-up object config for a pick-and-place environment.
     """
 
-    # Defined in Asset, restated here for clariry
-    # tags: list[str] | None = None
-    name: str | None = None
-    object_type: ObjectType = ObjectType.RIGID
-    usd_path: str | None = None
-    scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
-
     def __init__(
         self,
+        name: str,
+        prim_path: str,
+        object_type: ObjectType | None = None,
+        usd_path: str | None = None,
+        scale: tuple[float, float, float] = (1.0, 1.0, 1.0),
         initial_pose: Pose | None = None,
         **kwargs,
     ):
-        assert self.name is not None and self.usd_path is not None
-        super().__init__(name=self.name, object_type=self.object_type, **kwargs)
+        assert name is not None and usd_path is not None
+        # Detect object type if not provided
+        if object_type is None:
+            object_type = detect_object_type(usd_path=usd_path)
+        super().__init__(name=name, prim_path=prim_path, object_type=object_type, **kwargs)
+        self.usd_path = usd_path
+        self.scale = scale
         self.initial_pose = initial_pose
+
+    def set_initial_pose(self, pose: Pose) -> None:
+        self.initial_pose = pose
+
+    def get_initial_pose(self) -> Pose | None:
+        return self.initial_pose
+
+    def is_initial_pose_set(self) -> bool:
+        return self.initial_pose is not None
 
     def _generate_rigid_cfg(self) -> RigidObjectCfg:
         assert self.object_type == ObjectType.RIGID

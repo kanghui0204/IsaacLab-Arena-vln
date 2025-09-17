@@ -16,12 +16,10 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any
 
-from isaaclab.assets import RigidObjectCfg
-from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
+from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
 from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
 
 from isaac_arena.assets.asset import Asset
-from isaac_arena.geometry.pose import Pose
 
 
 class ObjectType(Enum):
@@ -33,36 +31,22 @@ class ObjectType(Enum):
 class ObjectBase(Asset, ABC):
     """Parent class for (spawnable) Object and ObjectReference."""
 
-    # Defined in Asset, restated here for clariry
-    # tags: list[str] | None = None
-
     def __init__(
         self,
         name: str,
         prim_path: str,
-        initial_pose: Pose | None = None,
-        object_type: ObjectType = ObjectType.RIGID,
+        object_type: ObjectType = ObjectType.BASE,
         **kwargs,
     ):
         super().__init__(name=name, **kwargs)
         self.prim_path = prim_path
         self.object_type = object_type
-        self.initial_pose = initial_pose
 
     def set_prim_path(self, prim_path: str) -> None:
         self.prim_path = prim_path
 
     def get_prim_path(self) -> str:
         return self.prim_path
-
-    def set_initial_pose(self, pose: Pose) -> None:
-        self.initial_pose = pose
-
-    def get_initial_pose(self) -> Pose | None:
-        return self.initial_pose
-
-    def is_initial_pose_set(self) -> bool:
-        return self.initial_pose is not None
 
     def get_cfgs(self) -> dict[str, Any]:
         if self.object_type == ObjectType.RIGID:
@@ -93,5 +77,10 @@ class ObjectBase(Asset, ABC):
 
     @abstractmethod
     def _generate_articulation_cfg(self) -> ArticulationCfg:
+        # Subclasses must implement this method
+        pass
+
+    @abstractmethod
+    def _generate_base_cfg(self) -> AssetBaseCfg:
         # Subclasses must implement this method
         pass

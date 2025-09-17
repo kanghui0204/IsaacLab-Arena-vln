@@ -172,7 +172,7 @@ class RobotModel:
             group_names: Either a single group name (str) or a set of group names (Set[str])
 
         Returns:
-             of joint indices in sorted order with no duplicates
+            List of joint indices in sorted order with no duplicates
         """
         if self.supplemental_info is None:
             raise ValueError("supplemental_info must be provided to use this method")

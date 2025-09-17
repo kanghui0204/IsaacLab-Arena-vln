@@ -25,11 +25,15 @@ class ObjectReference(ObjectBase):
     """An object which *refers* to an existing element in the scene"""
 
     def __init__(self, parent_asset: Asset, **kwargs):
-        # TODO(alexmillane, 2025.09.08): Need some way of extracting the pose from the USD file.
-        super().__init__(initial_pose=None, **kwargs)
+        # TODO(alexmillane, 2025.09.08): Need some way of extracting the initial pose from the USD file.
+        super().__init__(**kwargs)
         if parent_asset:
             self._check_path_in_parent_usd(parent_asset)
         self.parent_asset = parent_asset
+
+    def get_initial_pose(self) -> None:
+        # TODO(alexmillane, 2025.09.08): Need some way of extracting the initial pose from the USD file.
+        return None
 
     def get_contact_sensor_cfg(self, contact_against_prim_paths: list[str] | None = None) -> ContactSensorCfg:
         # NOTE(alexmillane): Right now this requires that the object
