@@ -51,6 +51,7 @@ class ArenaEnvBuilder:
             self.arena_env.embodiment.get_scene_cfg(),
             self.arena_env.task.get_scene_cfg(),
         )
+        observation_cfg = self.arena_env.embodiment.get_observation_cfg()
         events_cfg = combine_configclass_instances(
             "EventsCfg",
             self.arena_env.embodiment.get_event_cfg(),
@@ -62,7 +63,6 @@ class ArenaEnvBuilder:
             self.arena_env.task.get_termination_cfg(),
             self.arena_env.scene.get_termination_cfg(),
         )
-        observation_cfg = self.arena_env.embodiment.get_observation_cfg()
         actions_cfg = self.arena_env.embodiment.get_action_cfg()
         xr_cfg = self.arena_env.embodiment.get_xr_cfg()
         teleop_device = self.arena_env.teleop_device
