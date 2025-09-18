@@ -251,7 +251,7 @@ class G1SceneCfg:
                 joint_names_expr=[
                     ".*_hand_.*",
                 ],
-                effort_limit=2.0,
+                effort_limit=5.0,
                 velocity_limit=10.0,
                 stiffness=4.0,
                 damping=0.5,
@@ -260,6 +260,21 @@ class G1SceneCfg:
             ),
         },
     )
+
+    # robot_head_cam = CameraCfg(
+    #     prim_path="{ENV_REGEX_NS}/Robot/head_link/RobotHeadCam",
+    #     update_period=0.0,
+    #     height=480,
+    #     width=640,
+    #     data_types=["rgb"],
+    #     spawn=sim_utils.PinholeCameraCfg(
+    #         focal_length=0.169,  # Changed focal length to 1.69 mm, FOVs preserved by scaling apertures
+    #         horizontal_aperture=0.693,  # Scaled to preserve 128 horizontal FOV
+    #         vertical_aperture=0.284,    # Scaled to preserve 80 vertical FOV
+    #         clipping_range=(0.1, 5)
+    #     ),
+    #     offset=CameraCfg.OffsetCfg(pos=(0.04485, 0.0, 0.35325), rot=(0.32651, -0.62721, 0.62721, -0.32651), convention="ros"),
+    # )
 
     # TODO(vik: Fix camera and xr issues)
     # robot_pov_cam: CameraCfg = CameraCfg(
@@ -303,6 +318,10 @@ class G1ObservationsCfg:
             func=wbc_observations_mdp.eef_pose_pelvis_frame,
             params={"asset_cfg": SceneEntityCfg("robot"), "eef_name": "left_wrist_yaw_link"},
         )
+        # robot_head_cam = ObsTerm(
+        #     func=mdp.image,
+        #     params={"sensor_cfg": SceneEntityCfg("robot_head_cam"), "data_type": "rgb", "normalize": False},
+        # )
 
         def __post_init__(self):
             self.enable_corruption = False

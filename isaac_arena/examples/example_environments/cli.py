@@ -21,6 +21,9 @@ from isaac_arena.examples.example_environments.kitchen_pick_and_place_environmen
 from isaac_arena.examples.example_environments.lightwheel_kitchen_pot_pick_and_place import (
     LightwheelKitchenPotPickAndPlaceEnvironment,
 )
+from isaac_arena.examples.example_environments.galileo_g1_locomanip_pick_and_place_environment import (
+    GalileoG1LocomanipPickAndPlaceEnvironment
+)
 
 # NOTE(alexmillane, 2025.09.04): There is an issue with type annotation in this file.
 # We cannot annotate types which require the simulation app to be started in order to
@@ -35,6 +38,7 @@ ExampleEnvironments = {
     KitchenPickAndPlaceEnvironment.name: KitchenPickAndPlaceEnvironment,
     GalileoPickAndPlaceEnvironment.name: GalileoPickAndPlaceEnvironment,
     LightwheelKitchenPotPickAndPlaceEnvironment.name: LightwheelKitchenPotPickAndPlaceEnvironment,
+    GalileoG1LocomanipPickAndPlaceEnvironment.name: GalileoG1LocomanipPickAndPlaceEnvironment,
 }
 
 
