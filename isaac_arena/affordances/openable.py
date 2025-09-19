@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ABC import ABC, abstractmethod
-
 import torch
 
 from isaaclab.envs.manager_based_env import ManagerBasedEnv
 from isaaclab.managers import SceneEntityCfg
+
+from isaac_arena.affordances.affordance_base import AffordanceBase
 
 
 def normalize_value(value: torch.Tensor, min_value: float, max_value: float):
@@ -59,15 +59,8 @@ def set_normalized_joint_position(
     )
 
 
-class Openable(ABC):
+class Openable(AffordanceBase):
     """Interface for openable objects."""
-
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        # Openable always has be combined with an Asset which has a name
-        # TODO(alexmillane, 2025.09.19): Move this to an Affordance base class.
-        pass
 
     def __init__(self, openable_joint_name: str, openable_open_threshold: float, **kwargs):
         super().__init__(**kwargs)
@@ -83,7 +76,11 @@ class Openable(ABC):
         return get_normalized_joint_position(env, asset_cfg) > self.openable_open_threshold
 
     def open(
-        self, env: ManagerBasedEnv, env_ids: torch.Tensor | None = None, asset_cfg: SceneEntityCfg | None = None, percentage: float = 1.0
+        self,
+        env: ManagerBasedEnv,
+        env_ids: torch.Tensor | None,
+        asset_cfg: SceneEntityCfg | None = None,
+        percentage: float = 1.0,
     ):
         """Open the object (in all the environments)."""
         if asset_cfg is None:
@@ -92,7 +89,11 @@ class Openable(ABC):
         set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
 
     def close(
-        self, env: ManagerBasedEnv, env_ids: torch.Tensor | None = None, asset_cfg: SceneEntityCfg | None = None, percentage: float = 0.0
+        self,
+        env: ManagerBasedEnv,
+        env_ids: torch.Tensor | None,
+        asset_cfg: SceneEntityCfg | None = None,
+        percentage: float = 0.0,
     ):
         """Close the object (in all the environments)."""
         if asset_cfg is None:

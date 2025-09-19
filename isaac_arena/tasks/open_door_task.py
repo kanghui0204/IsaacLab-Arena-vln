@@ -18,7 +18,7 @@ import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.managers import EventTermCfg, SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
-from isaac_arena.assets.affordances import Openable
+from isaac_arena.affordances.openable import Openable
 from isaac_arena.tasks.task import TaskBase
 
 
@@ -72,7 +72,4 @@ class OpenDoorEventCfg:
         self.reset_door_state = EventTermCfg(
             func=openable_object.close,
             mode="reset",
-            params={
-                "asset_cfg": SceneEntityCfg(openable_object.name),
-            },
         )
