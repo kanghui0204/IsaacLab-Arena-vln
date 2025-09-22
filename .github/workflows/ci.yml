@@ -156,5 +156,4 @@ jobs:
       - name: Build & push image to NGC
         run: |
           chmod +x ./docker/push_to_ngc* || true
-          # Support either filename with or without .sh
-          ./docker/push_to_ngc -p || ./docker/push_to_ngc.sh -p
+          ./docker/push_to_ngc.sh -p
