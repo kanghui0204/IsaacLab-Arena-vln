@@ -636,6 +636,10 @@ def run_simulation_loop(
             torso_orientation_rpy_cmd=torch.tensor([torso_orientation_roll, torso_orientation_pitch, torso_orientation_yaw])
             action = torch.cat([action, navigate_cmd, base_height_cmd, torso_orientation_rpy_cmd])
 
+            print(f"navigatie_cmd: {navigate_cmd}")
+            print(f"base_height_cmd: {base_height_cmd}")
+            print(" ")
+
             actions = action.repeat(env.num_envs, 1)
 
             # Perform action on environment

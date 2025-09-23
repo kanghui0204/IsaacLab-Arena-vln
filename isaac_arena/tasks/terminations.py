@@ -91,9 +91,9 @@ def object_on_destination_g1_locomanip(
     # max_object_to_bin_z: float = 0.080,
 
     # For box task
-    max_object_to_bin_y: float = 0.070,
-    max_object_to_bin_x: float = 0.270,
-    max_object_to_bin_z: float = 0.110,
+    max_object_to_bin_y: float = 0.150,
+    max_object_to_bin_x: float = 0.300,
+    max_object_to_bin_z: float = 0.135,
 ) -> torch.Tensor:
     """Determine if the task is complete.
 
