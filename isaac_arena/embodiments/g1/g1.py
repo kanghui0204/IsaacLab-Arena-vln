@@ -35,9 +35,7 @@ from isaaclab.utils import configclass
 import isaac_arena.terms.transforms as transforms_terms
 from isaac_arena.assets.register import register_asset
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase
-
-# TODO(xinjieyao, 2025-09-15): Consider moving to IsaacLab repo
-from isaac_arena.embodiments.g1.mdp import observations_wbc as wbc_observations_mdp
+from isaac_arena.embodiments.g1.mdp import observations_wbc as observations_wbc_mdp
 from isaac_arena.embodiments.g1.mdp import wbc_events as wbc_events_mdp
 from isaac_arena.embodiments.g1.mdp.actions.g1_decoupled_wbc_joint_action_cfg import G1DecoupledWBCJointActionCfg
 from isaac_arena.embodiments.g1.mdp.actions.g1_decoupled_wbc_pink_action_cfg import G1DecoupledWBCPinkActionCfg
@@ -306,21 +304,6 @@ class G1SceneCfg:
         ),
     )
 
-    # TODO(vik: Fix camera and xr issues)
-    # robot_pov_cam: CameraCfg = CameraCfg(
-    #         prim_path="{ENV_REGEX_NS}/Robot/head_yaw_link/RobotPOVCam",
-    #         update_period=0.0,
-    #         height=512,
-    #         width=512,
-    #         data_types=["rgb", "distance_to_image_plane", "semantic_segmentation"],
-    #         spawn=sim_utils.PinholeCameraCfg(focal_length=18.15, clipping_range=(0.01, 1.0e5)),
-    #         offset=CameraCfg.OffsetCfg(
-    #             pos=(0.12515, 0.0, 0.06776),
-    #             rot=(0.62, 0.32, -0.32, -0.63),
-    #             convention="opengl",
-    #         ),
-    #     )
-
 
 @configclass
 class G1ObservationsCfg:
@@ -358,36 +341,36 @@ class G1ObservationsCfg:
         )
         # Mimic required observations
         left_eef_pos = ObsTerm(
-            func=wbc_observations_mdp.get_eef_pose,
-            params={"mode": "pos", "eef_name": "left_wrist_yaw_link"},
+            func=transforms_terms.get_target_link_position_in_target_frame,
+            params={"target_link_name": "left_wrist_yaw_link"},
         )
         left_eef_quat = ObsTerm(
-            func=wbc_observations_mdp.get_eef_pose,
-            params={"mode": "quat", "eef_name": "left_wrist_yaw_link"},
+            func=transforms_terms.get_target_link_quaternion_in_target_frame,
+            params={"target_link_name": "left_wrist_yaw_link"},
         )
         right_eef_pos = ObsTerm(
-            func=wbc_observations_mdp.get_eef_pose,
-            params={"mode": "pos", "eef_name": "right_wrist_yaw_link"},
+            func=transforms_terms.get_target_link_position_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
         )
         right_eef_quat = ObsTerm(
-            func=wbc_observations_mdp.get_eef_pose,
-            params={"mode": "quat", "eef_name": "right_wrist_yaw_link"},
+            func=transforms_terms.get_target_link_quaternion_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
         )
         # Body eefs are not used for transforms so values are not important,
         # but they must be present for datagen to run since "body" is considered an eef
         body_eef_pos = ObsTerm(
-            func=wbc_observations_mdp.get_eef_pose,
-            params={"mode": "pos", "eef_name": "right_wrist_yaw_link"},
+            func=transforms_terms.get_target_link_position_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
         )
         body_eef_quat = ObsTerm(
-            func=wbc_observations_mdp.get_eef_pose,
-            params={"mode": "quat", "eef_name": "right_wrist_yaw_link"},
+            func=transforms_terms.get_target_link_quaternion_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
         )
         robot_pos = ObsTerm(
-            func=wbc_observations_mdp.get_robot_pos,
+            func=transforms_terms.get_asset_position,
         )
         robot_quat = ObsTerm(
-            func=wbc_observations_mdp.get_robot_quat,
+            func=transforms_terms.get_asset_quaternion,
         )
         robot_head_cam = ObsTerm(
             func=mdp.image,
@@ -431,9 +414,44 @@ class G1ObservationsCfg:
             self.enable_corruption = False
             self.concatenate_terms = False
 
+    @configclass
+    class ActionGN2Cfg(ObsGroup):
+        """Observations for post step policy group"""
+        left_eef_pos = ObsTerm(
+            func=observations_wbc_mdp.extract_action_components,
+            params={"mode": "left_eef_pos"},
+        )
+        left_eef_quat = ObsTerm(
+            func=observations_wbc_mdp.extract_action_components,
+            params={"mode": "left_eef_quat"},
+        )
+        right_eef_pos = ObsTerm(
+            func=observations_wbc_mdp.extract_action_components,
+            params={"mode": "right_eef_pos"},
+        )
+        right_eef_quat = ObsTerm(
+            func=observations_wbc_mdp.extract_action_components,
+            params={"mode": "right_eef_quat"},
+        )
+        navigate_cmd = ObsTerm(
+            func=observations_wbc_mdp.get_navigate_cmd,
+        )
+        base_height_cmd = ObsTerm(
+            func=observations_wbc_mdp.extract_action_components,
+            params={"mode": "base_height_cmd"},
+        )
+        torso_orientation_rpy_cmd = ObsTerm(
+            func=observations_wbc_mdp.extract_action_components,
+            params={"mode": "torso_orientation_rpy_cmd"},
+        )
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
+
     # observation groups
     policy: PolicyCfg = PolicyCfg()
     wbc: WBCObsCfg = WBCObsCfg()
+    action_gn2: ActionGN2Cfg = ActionGN2Cfg()
 
 
 @configclass
@@ -457,7 +475,6 @@ class G1EventCfg:
     # NOTE(xinjieyao, 2025-09-15): This will reset all the articulation joints to the initial state,
     # e.g. the robot will go to the initial pose, the microwave will return to init state, etc.
     reset_all = EventTerm(func=reset_all_articulation_joints, mode="reset")
-
     reset_wbc_policy = EventTerm(func=wbc_events_mdp.reset_decoupled_wbc_policy, mode="reset")
 
 
@@ -491,11 +508,10 @@ class G1MimicEnv(ManagerBasedRLMimicEnv):
         target_eef_pose_dict: dict,
         gripper_action_dict: dict,
         action_noise_dict: dict | None = None,
-        env_id: int = 0,
     ) -> torch.Tensor:
         """
-        Takes a target pose and gripper action for the end effector controller and returns an action
-        (usually a normalized delta pose action) to try and achieve that target pose.
+        Takes a target pose and gripper action for the end effector controller and returns
+        an environment action to try and achieve that target pose.
         Noise is added to the target pose action if specified.
 
         Args:
@@ -514,15 +530,11 @@ class G1MimicEnv(ManagerBasedRLMimicEnv):
         target_left_eef_rot_quat = PoseUtils.quat_from_matrix(left_target_rot)
         target_right_eef_rot_quat = PoseUtils.quat_from_matrix(right_target_rot)
 
-        # # target position and rotation
-        # target_left_pose = target_eef_pose_dict["left"].clone()
-        # target_right_pose = target_eef_pose_dict["right"].clone()
-
         # gripper actions
         left_gripper_action = gripper_action_dict["left"]
         right_gripper_action = gripper_action_dict["right"]
 
-        # body gripper action is lower body control commands
+        # body gripper action is lower body control commands (nav_cmd, base_height_cmd, torso_orientation_rpy_cmd)
         body_gripper_action = gripper_action_dict["body"]
 
         if action_noise_dict is not None:
@@ -600,9 +612,6 @@ class G1MimicEnv(ManagerBasedRLMimicEnv):
             navigate_cmd shape: (3,)
             base_height_cmd shape: (1,)
             torso_orientation_rpy_cmd shape: (3,)
-
-            Size of left/right gripper actions = 400
-            Note: the base commands are passed through as a "gripper" action along with right hand
         """
         return {"left": actions[:, 0], "right": actions[:, 1], "body": actions[:, -7:]}
 
@@ -638,6 +647,5 @@ class G1MimicEnv(ManagerBasedRLMimicEnv):
             object_pose_matrix[obj_name] = object_pose_pelvis_frame
 
         return object_pose_matrix
-
 
 from isaac_arena.utils.locomanip_mimic_patch import patch_generate

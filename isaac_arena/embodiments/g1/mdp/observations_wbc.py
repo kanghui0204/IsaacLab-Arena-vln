@@ -24,103 +24,38 @@ if TYPE_CHECKING:
     from isaaclab.assets import Articulation
     from isaaclab.envs import ManagerBasedEnv
 
-
-def joint_acc(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
-    """The joint accelerations of the asset.
-
-    Note: Only the joints configured in :attr:`asset_cfg.joint_ids` will have their accelerations returned.
-    """
-    # extract the used quantities (to enable type-hinting)
-    asset: Articulation = env.scene[asset_cfg.name]
-    return asset.data.joint_acc[:, asset_cfg.joint_ids]
-
-
-def eef_pose_pelvis_frame(
-    env: ManagerBasedEnv, eef_name: str, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
-) -> torch.Tensor:
-    """Get the pose of the end-effector in the pelvis frame."""
-    asset: Articulation = env.scene[asset_cfg.name]
-
-    eef_pose_w = asset.data.body_link_state_w[:, asset.data.body_names.index(eef_name), :]
-    pelvis_pose_w = asset.data.body_link_state_w[:, asset.data.body_names.index("pelvis"), :]
-
-    # Convert to pose matrix
-    eef_position_w = eef_pose_w[:, :3]
-    eef_rot_mat_w = PoseUtils.matrix_from_quat(eef_pose_w[:, 3:7])
-    eef_pose_mat_w = PoseUtils.make_pose(eef_position_w, eef_rot_mat_w)
-
-    pelvis_position_w = pelvis_pose_w[:, :3]
-    pelvis_rot_mat_w = PoseUtils.matrix_from_quat(pelvis_pose_w[:, 3:7])
-    pelvis_pose_mat_w = PoseUtils.make_pose(pelvis_position_w, pelvis_rot_mat_w)
-
-    # Get pelvis inverse transform to convert from world to pelvis frame
-    pelvis_pose_inv = PoseUtils.pose_inv(pelvis_pose_mat_w)
-
-    # Transform wrist poses from world frame to pelvis frame
-    eef_pose_pelvis_frame = torch.matmul(pelvis_pose_inv, eef_pose_mat_w)
-
-    return eef_pose_pelvis_frame
-
-
-def get_eef_pose(
-    env: ManagerBasedEnv,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
-    eef_name: str = "left_wrist_yaw_link",
-    mode: str = "pos",
-) -> torch.Tensor:
-    """Get the pose of the end-effector in the pelvis frame."""
-    asset: Articulation = env.scene[asset_cfg.name]
-
-    eef_pose_w = asset.data.body_link_state_w[:, asset.data.body_names.index(eef_name), :]
-    pelvis_pose_w = asset.data.body_link_state_w[:, asset.data.body_names.index("pelvis"), :]
-
-    # Get eef pose matrix in world frame
-    eef_position_w = eef_pose_w[:, :3] - env.scene.env_origins
-    eef_rot_mat_w = PoseUtils.matrix_from_quat(eef_pose_w[:, 3:7])
-    eef_pose_mat_w = PoseUtils.make_pose(eef_position_w, eef_rot_mat_w)
-
-    pelvis_position_w = pelvis_pose_w[:, :3] - env.scene.env_origins
-    pelvis_rot_mat_w = PoseUtils.matrix_from_quat(pelvis_pose_w[:, 3:7])
-    pelvis_pose_mat_w = PoseUtils.make_pose(pelvis_position_w, pelvis_rot_mat_w)
-
-    # Get pelvis inverse transform to convert from world to pelvis frame
-    pelvis_pose_inv = PoseUtils.pose_inv(pelvis_pose_mat_w)
-
-    # Transform wrist poses from world frame to pelvis frame
-    eef_pose_pelvis_frame = torch.matmul(pelvis_pose_inv, eef_pose_mat_w)
-
-    # Convert from pose matrix to position and quaternion
-    eef_pos_pelvis_frame, left_eef_rot_pelvis_frame = PoseUtils.unmake_pose(eef_pose_pelvis_frame)
-    eef_quat_pelvis_frame = PoseUtils.quat_from_matrix(left_eef_rot_pelvis_frame)
-
-    if mode == "pos":
-        return eef_pos_pelvis_frame
-    elif mode == "quat":
-        return eef_quat_pelvis_frame
-    else:
-        raise ValueError(f"Invalid mode: {mode}")
-
-
 def get_navigate_cmd(
     env: ManagerBasedEnv,
 ) -> torch.Tensor:
     """Get the navigate command."""
     return env.action_manager.get_term("g1_action").navigate_cmd.clone()
 
-
-def get_robot_pos(
+def extract_action_components(
     env: ManagerBasedEnv,
+    mode: str,
     asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
-) -> torch.Tensor:
-    """Get the robot position."""
-    asset: Articulation = env.scene[asset_cfg.name]
-    return asset.data.root_pos_w
-
-
-def get_robot_quat(
-    env: ManagerBasedEnv,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
-) -> torch.Tensor:
-    """Get the robot quaternion."""
-    asset: Articulation = env.scene[asset_cfg.name]
-    return asset.data.root_quat_w
+):
+    # get the current action
+    current_action = env.action_manager.action.clone()
+    
+    if mode == "left_eef_pos":
+        left_wrist_pos = current_action[:, 2:5]
+        return left_wrist_pos
+    elif mode == "left_eef_quat":
+        left_wrist_quat = current_action[:, 5:9]
+        return left_wrist_quat
+    elif mode == "right_eef_pos":
+        right_wrist_pos = current_action[:, 9:12]
+        return right_wrist_pos
+    elif mode == "right_eef_quat":
+        right_wrist_quat = current_action[:, 12:16]
+        return right_wrist_quat
+    elif mode == "navigate_cmd":
+        navigate_cmd = current_action[:, 16:19]
+        return navigate_cmd
+    elif mode == "base_height_cmd":
+        base_height_cmd = current_action[:, 19:20]
+        return base_height_cmd
+    elif mode == "torso_orientation_rpy_cmd":
+        torso_orientation_rpy_cmd = current_action[:, 20:23]
+        return torso_orientation_rpy_cmd

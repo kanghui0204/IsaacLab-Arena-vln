@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 from dataclasses import dataclass, field
 
 import isaac_arena.embodiments.g1.g1_constants as g1_constants
