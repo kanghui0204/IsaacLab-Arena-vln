@@ -39,6 +39,7 @@ class IsaacArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
         # general settings
         self.decimation = 4
         self.episode_length_s = 30.0
+        self.wait_for_textures = False
         # simulation settings
         self.sim.dt = 1 / 200  # 200Hz
         self.sim.render_interval = 2

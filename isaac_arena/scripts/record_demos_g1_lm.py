@@ -95,6 +95,9 @@ import isaaclab_mimic.envs  # noqa: F401
 # Omniverse logger
 import omni.log
 import omni.ui as ui
+import omni.usd
+from omni.kit.viewport.utility import get_viewport_from_window_name
+
 from isaaclab.devices import Se3Keyboard, Se3KeyboardCfg, Se3SpaceMouse, Se3SpaceMouseCfg
 from isaaclab.devices.openxr import remove_camera_configs
 from isaaclab.devices.teleop_device_factory import create_teleop_device
@@ -113,6 +116,55 @@ from isaaclab.envs import DirectRLEnvCfg, ManagerBasedRLEnvCfg
 from isaaclab.envs.mdp.recorders.recorders_cfg import ActionStateRecorderManagerCfg
 from isaaclab.envs.ui import EmptyWindow
 from isaaclab.managers import DatasetExportMode
+
+
+def set_viewport_to_camera(camera_prim_path: str):
+    """Set the viewport camera to a specific camera prim path.
+    
+    Args:
+        camera_prim_path: The prim path of the camera to set as the viewport camera.
+        
+    Returns:
+        bool: True if successful, False otherwise.
+    """
+    try:
+        # Get the viewport
+        viewport = get_viewport_from_window_name("Viewport")
+        if viewport is None:
+            omni.log.error("Could not find viewport window")
+            return False
+        
+        # Set the active camera to the specified camera
+        viewport.set_active_camera(camera_prim_path)
+        omni.log.info(f"Set viewport camera to: {camera_prim_path}")
+        return True
+        
+    except Exception as e:
+        omni.log.error(f"Could not set viewport camera: {e}")
+        return False
+
+def find_and_set_camera(camera_paths_to_try):
+    """Find a camera from a list of possible paths and set it as the viewport camera.
+    
+    Args:
+        camera_paths_to_try: List of camera prim paths to try.
+        
+    Returns:
+        bool: True if successful, False otherwise.
+    """
+    stage = omni.usd.get_context().get_stage()
+    if stage is None:
+        omni.log.error("No USD stage found")
+        return False
+    
+    # Try each camera path
+    for path in camera_paths_to_try:
+        if stage.GetPrimAtPath(path):
+            omni.log.info(f"Found camera at: {path}")
+            return set_viewport_to_camera(path)
+    
+    omni.log.warn("Could not find any of the specified cameras")
+    return False
 
 
 class RateLimiter:
@@ -510,6 +562,8 @@ def run_simulation_loop(
         nonlocal should_reset_recording_instance
         should_reset_recording_instance = True
         print("Recording instance reset requested")
+        reset_wbc()
+        print("WBC reseted")
 
     def start_recording_instance():
         nonlocal running_recording_instance
@@ -534,7 +588,7 @@ def run_simulation_loop(
 
     """ Lower body keyboard control """
     keyboard_interface = Se3Keyboard(Se3KeyboardCfg(pos_sensitivity=0.1, rot_sensitivity=0.1))
-    keyboard_interface.add_callback("R", reset_wbc)
+    keyboard_interface.add_callback("R", reset_recording_instance)
     keyboard_interface.add_callback("W", increase_linear_vel_x)
     keyboard_interface.add_callback("S", decrease_linear_vel_x)
     keyboard_interface.add_callback("Q", increase_angular_vel)
@@ -558,6 +612,13 @@ def run_simulation_loop(
     env.sim.reset()
     env.reset()
     teleop_interface.reset()
+
+    # Set viewport camera
+    # Try to find and set the robot head camera as a default
+    camera_paths = [
+        "/World/envs/env_0/Robot/head_link/RobotHeadCam",
+    ]
+    find_and_set_camera(camera_paths)
 
     label_text = f"Recorded {current_recorded_demo_count} successful demonstrations."
     instruction_display = setup_ui(label_text, env)

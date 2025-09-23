@@ -42,6 +42,9 @@ def object_on_destination(
     force_matrix_norm = torch.norm(sensor.data.force_matrix_w.clone(), dim=-1).reshape(-1)
     force_above_threshold = force_matrix_norm > force_threshold
 
+    print(sensor.data)
+    print(" ")
+
     velocity_w = object.data.root_lin_vel_w
     velocity_w_norm = torch.norm(velocity_w, dim=-1)
     velocity_below_threshold = velocity_w_norm < velocity_threshold
@@ -82,9 +85,15 @@ def object_on_destination_g1_locomanip(
     env: ManagerBasedRLEnv,
     object_cfg: SceneEntityCfg = SceneEntityCfg("pick_up_object"),
     destination_bin_cfg: SceneEntityCfg = SceneEntityCfg("blue_sorting_bin"),
-    max_object_to_bin_y: float = 0.120,
-    max_object_to_bin_x: float = 0.300,
-    max_object_to_bin_z: float = 0.080,
+    # For exhaust pipe task
+    # max_object_to_bin_y: float = 0.120,
+    # max_object_to_bin_x: float = 0.300,
+    # max_object_to_bin_z: float = 0.080,
+
+    # For box task
+    max_object_to_bin_y: float = 0.070,
+    max_object_to_bin_x: float = 0.270,
+    max_object_to_bin_z: float = 0.110,
 ) -> torch.Tensor:
     """Determine if the task is complete.
 
@@ -94,6 +103,9 @@ def object_on_destination_g1_locomanip(
     # Get object entities from the scene
     object: RigidObject = env.scene[object_cfg.name]
     destination_bin: RigidObject = env.scene[destination_bin_cfg.name]
+
+    # print(object.data.root_pos_w)
+    # print(destination_bin.data.root_pos_w)
 
     # Get positions relative to environment origin
     object_pos = object.data.root_pos_w - env.scene.env_origins
@@ -106,6 +118,12 @@ def object_on_destination_g1_locomanip(
     object_to_bin_x = torch.abs(object_pos[:, 0] - destination_bin_pos[:, 0])
     object_to_bin_y = torch.abs(object_pos[:, 1] - destination_bin_pos[:, 1])
     object_to_bin_z = object_pos[:, 2] - destination_bin_pos[:, 2]
+
+    # print(object.root_physx_view.get_masses())
+    # print(f"object_to_bin_x: {object_to_bin_x}")
+    # print(f"object_to_bin_y: {object_to_bin_y}")
+    # print(f"object_to_bin_z: {object_to_bin_z}")
+    # print(" ")
 
     done = object_to_bin_x < max_object_to_bin_x
     done = torch.logical_and(done, object_to_bin_y < max_object_to_bin_y)

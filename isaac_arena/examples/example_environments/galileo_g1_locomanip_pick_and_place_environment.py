@@ -45,14 +45,20 @@ class GalileoG1LocomanipPickAndPlaceEnvironment(ExampleEnvironmentBase):
 
         pick_up_object.set_initial_pose(
             Pose(
-                position_xyz=(0.55, -0.04, 0.2259),
+                position_xyz=(0.5785, 0.0, 0.0707),
                 rotation_wxyz=(0.0, 0.0, 1.0, 0.0),
             )
         )
+        # pick_up_object.set_initial_pose(
+        #     Pose(
+        #         position_xyz=(-0.2450, -1.6272, 0.5641),
+        #         rotation_wxyz=(0.0, 0.0, 1.0, 0.0),
+        #     )
+        # )
         blue_sorting_bin.set_initial_pose(
             Pose(
-                position_xyz=(-0.2450, -1.5815, -0.2641),
-                rotation_wxyz=(0.0, 0, 0, 10),
+                position_xyz=(-0.2450, -1.6272, -0.2641),
+                rotation_wxyz=(0.0, 0.0, 0.0, 1.0),
             )
         )
 

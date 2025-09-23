@@ -68,7 +68,6 @@ class G1LocomanipPickAndPlaceTask(TaskBase):
     def get_mimic_env_cfg(self, embodiment_name: str):
         return G1LocomanipPickPlaceMimicEnvCfg()
 
-
 @configclass
 class TerminationsCfg:
     """Termination terms for the MDP."""
