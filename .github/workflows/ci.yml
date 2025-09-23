@@ -22,6 +22,7 @@ env:
   OMNI_USER: ${{ secrets.OMNI_USER }}
 
 jobs:
+  timeout-minutes: 30
   test:
     name: Run pre commit checks and tests
     runs-on: [self-hosted, zurich]
