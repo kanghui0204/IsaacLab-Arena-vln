@@ -27,14 +27,14 @@ if TYPE_CHECKING:
 def get_navigate_cmd(
     env: ManagerBasedEnv,
 ) -> torch.Tensor:
-    """Get the navigate command."""
+    """Get the P-controller navigate command."""
     return env.action_manager.get_term("g1_action").navigate_cmd.clone()
 
 def extract_action_components(
     env: ManagerBasedEnv,
     mode: str,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
 ):
+    """Extract the individual components of the G1 WBC PINK action."""
     # get the current action
     current_action = env.action_manager.action.clone()
     
