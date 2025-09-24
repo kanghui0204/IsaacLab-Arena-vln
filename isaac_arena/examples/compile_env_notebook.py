@@ -30,7 +30,6 @@ from isaac_arena.environments.compile_env import ArenaEnvBuilder
 from isaac_arena.environments.isaac_arena_environment import IsaacArenaEnvironment
 from isaac_arena.geometry.pose import Pose
 from isaac_arena.scene.scene import Scene
-from isaac_arena.tasks.dummy_task import DummyTask
 from isaac_arena.tasks.pick_and_place_task import PickAndPlaceTask
 
 asset_registry = AssetRegistry()
@@ -47,19 +46,14 @@ destination_location = ObjectReference(
 )
 cracker_box.set_initial_pose(
     Pose(
-        position_xyz=(0.0758066475391388 + 0.2, -0.5088448524475098, 0.0 + 0.2),
+        # Success
+        position_xyz=(0.0758066475391388, -0.5088448524475098, 0.0),
+        # Fail
+        # position_xyz=(0.0758066475391388 - 0.2, -0.5088448524475098 + 0.5, 0.0 + 0.2),
         rotation_wxyz=(1, 0, 0, 0),
     )
 )
 
-
-# %%
-
-# from isaaclab.envs.mdp.recorders.recorders_cfg import ActionStateRecorderManagerCfg
-# from isaaclab.managers import DatasetExportMode
-
-# recorder_cfg = ActionStateRecorderManagerCfg()
-# recorder_cfg.dataset_export_mode = DatasetExportMode.EXPORT_NONE
 
 # %%
 
@@ -79,6 +73,13 @@ class PreResetPrintingRecorder(RecorderTerm):
 
     def record_pre_reset(self, env_ids):
         print("Recording pre reset")
+        # Set task success values for the relevant episodes
+        success_results = torch.zeros(len(env_ids), dtype=bool, device=self._env.device)
+        # Check success indicator from termination terms
+        if hasattr(self._env, "termination_manager"):
+            if "success" in self._env.termination_manager.active_terms:
+                success_results |= self._env.termination_manager.get_term("success")[env_ids]
+        print(f"success_results: {success_results}")
         return "printing pre reset", torch.zeros(self._env.num_envs, 1, device=self._env.device)
 
 
@@ -100,18 +101,7 @@ class PrintingRecorderManagerCfg(RecorderManagerBaseCfg):
 
 
 recorder_cfg = PrintingRecorderManagerCfg()
-recorder_cfg.dataset_export_mode = DatasetExportMode.EXPORT_NONE
-
-
-# %%
-
-# # Set task success values for the relevant episodes
-# success_results = torch.zeros(len(env_ids), dtype=bool, device=self._env.device)
-# # Check success indicator from termination terms
-# asset hasattr(self._env, "termination_manager"):
-# if "success" in self._env.termination_manager.active_terms:
-#         success_results |= self._env.termination_manager.get_term("success")[env_ids]
-
+recorder_cfg.dataset_export_mode = DatasetExportMode.EXPORT_ALL
 
 # %%
 
@@ -147,5 +137,21 @@ for _ in tqdm.tqdm(range(NUM_STEPS)):
 for i in range(10):
     print(i)
     print(env.recorder_manager.get_episode(i).data["printing"].shape)
+
+# %%
+
+
+import h5py
+import pathlib
+
+dataset_path = pathlib.Path("/tmp/isaaclab/logs/dataset.hdf5")
+
+with h5py.File(dataset_path, "r") as f:
+    print(f.keys())
+    print(f["data"].keys())
+    print(f["data"]["demo_2"].keys())
+    print(f["data"]["demo_2"]["printing pre reset"][:])
+    print(f["data"]["demo_2"]["printing"][:])
+
 
 # %%
