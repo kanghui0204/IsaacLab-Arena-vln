@@ -297,7 +297,7 @@ class G1DecoupledWBCPinkAction(ActionTerm):
                       base_height_cmd: dim=1, height,
                       torso_orientation_rpy_cmd: dim=3, rpy]
         """
-
+        
         # Store the raw actions
         self._raw_actions[:] = actions[:, : self.action_dim]
 
@@ -310,10 +310,10 @@ class G1DecoupledWBCPinkAction(ActionTerm):
         **************************************************
         """
         # Extract upper body left/right arm pos/quat from actions
-        left_arm_pos = actions_clone[:, 2:5].squeeze(0)
-        left_arm_quat = actions_clone[:, 5:9].squeeze(0)
-        right_arm_pos = actions_clone[:, 9:12].squeeze(0)
-        right_arm_quat = actions_clone[:, 12:16].squeeze(0)
+        left_arm_pos = actions_clone[:, 2:5].squeeze(0).cpu()
+        left_arm_quat = actions_clone[:, 5:9].squeeze(0).cpu()
+        right_arm_pos = actions_clone[:, 9:12].squeeze(0).cpu()
+        right_arm_quat = actions_clone[:, 12:16].squeeze(0).cpu()
 
         # Convert from pos/quat to 4x4 transform matrix
         # Scipy requires quat xyzw, IsaacLab uses wxyz so a conversion is needed
@@ -331,8 +331,8 @@ class G1DecoupledWBCPinkAction(ActionTerm):
         right_arm_pose[:3, 3] = right_arm_pos
 
         # Extract left/right hand state from actions
-        left_hand_state = actions_clone[:, 0].squeeze(0)
-        right_hand_state = actions_clone[:, 1].squeeze(0)
+        left_hand_state = actions_clone[:, 0].squeeze(0).cpu()
+        right_hand_state = actions_clone[:, 1].squeeze(0).cpu()
 
         # Assemble data format for running IK
         body_data = {"left_wrist_yaw_link": left_arm_pose, "right_wrist_yaw_link": right_arm_pose}

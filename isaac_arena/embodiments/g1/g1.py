@@ -53,8 +53,8 @@ class G1EmbodimentBase(EmbodimentBase):
         # Configuration structs
         self.scene_config = G1SceneCfg()
         self.action_config = MISSING
-        self.observation_config = G1ObservationsCfg()
-        self.event_config = G1EventCfg()
+        self.observation_config = MISSING
+        self.event_config = MISSING
         self.mimic_env = G1MimicEnv
 
         # XR settings
@@ -75,6 +75,8 @@ class G1WBCJointEmbodiment(G1EmbodimentBase):
     def __init__(self, enable_cameras: bool = False, initial_pose: Pose | None = None):
         super().__init__(enable_cameras, initial_pose)
         self.action_config = G1WBCJointActionCfg()
+        self.observation_config = G1WBCJointObservationsCfg()
+        self.event_config = G1WBCJointEventCfg()
 
 
 @register_asset
@@ -86,6 +88,8 @@ class G1WBCPinkEmbodiment(G1EmbodimentBase):
     def __init__(self, enable_cameras: bool = False, initial_pose: Pose | None = None):
         super().__init__(enable_cameras, initial_pose)
         self.action_config = G1WBCPinkActionCfg()
+        self.observation_config = G1WBCPinkObservationsCfg()
+        self.event_config = G1WBCPinkEventCfg()
 
 
 @configclass
@@ -306,7 +310,84 @@ class G1SceneCfg:
 
 
 @configclass
-class G1ObservationsCfg:
+class G1WBCJointObservationsCfg:
+    """Observation specifications for the MDP."""
+
+    @configclass
+    class PolicyCfg(ObsGroup):
+        """Observations for policy group with state values."""
+
+        actions = ObsTerm(func=mdp.last_action)
+        robot_joint_pos = ObsTerm(
+            func=base_mdp.joint_pos,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        # TODO(xinjie.yao, 2025.09.09): Add robot pov camera
+        robot_joint_vel = ObsTerm(
+            func=base_mdp.joint_vel,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        right_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "right_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        left_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "left_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
+
+    @configclass
+    class WBCObsCfg(ObsGroup):
+        """Observations for WBC policy group with state values."""
+
+        robot_joint_pos = ObsTerm(
+            func=base_mdp.joint_pos,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        robot_joint_vel = ObsTerm(
+            func=base_mdp.joint_vel,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        right_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "right_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        left_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "left_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
+
+    # observation groups
+    policy: PolicyCfg = PolicyCfg()
+    wbc: WBCObsCfg = WBCObsCfg()
+
+
+@configclass
+class G1WBCPinkObservationsCfg:
     """Observation specifications for the MDP."""
 
     @configclass
@@ -471,13 +552,19 @@ class G1WBCPinkActionCfg:
 
 
 @configclass
-class G1EventCfg:
+class G1WBCJointEventCfg:
     """Configuration for events."""
 
-    # NOTE(xinjieyao, 2025-09-15): This will reset all the articulation joints to the initial state,
-    # e.g. the robot will go to the initial pose, the microwave will return to init state, etc.
     reset_all = EventTerm(func=reset_all_articulation_joints, mode="reset")
-    reset_wbc_policy = EventTerm(func=wbc_events_mdp.reset_decoupled_wbc_policy, mode="reset")
+    reset_wbc_policy = EventTerm(func=wbc_events_mdp.reset_decoupled_wbc_joint_policy, mode="reset")
+
+
+@configclass
+class G1WBCPinkEventCfg:
+    """Configuration for events."""
+
+    reset_all = EventTerm(func=reset_all_articulation_joints, mode="reset")
+    reset_wbc_policy = EventTerm(func=wbc_events_mdp.reset_decoupled_wbc_pink_policy, mode="reset")
 
 
 class G1MimicEnv(ManagerBasedRLMimicEnv):
