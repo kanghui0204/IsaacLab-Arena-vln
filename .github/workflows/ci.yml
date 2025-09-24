@@ -129,12 +129,18 @@ jobs:
       NGC_API_KEY: ${{ secrets.ARENA_NGC_API_KEY }}
 
     steps:
+      - name: Install git (and tools needed by hooks)
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git git-lfs clang-format ca-certificates
+          git --version
+          git lfs version
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
-          submodules: recursive
 
       - name: Mark repo as safe for git
         run: git config --global --add safe.directory "$PWD"
