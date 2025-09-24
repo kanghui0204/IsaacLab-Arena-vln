@@ -36,10 +36,12 @@ asset_registry = AssetRegistry()
 background = asset_registry.get_asset_by_name("kitchen")()
 embodiment = asset_registry.get_asset_by_name("franka")()
 cracker_box = asset_registry.get_asset_by_name("cracker_box")()
+toaster = asset_registry.get_asset_by_name("toaster")()
 
 cracker_box.set_initial_pose(Pose(position_xyz=(0.4, 0.0, 0.1), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
+toaster.set_initial_pose(Pose(position_xyz=(0.4, 0.2, 0.1), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
-scene = Scene(assets=[background, cracker_box])
+scene = Scene(assets=[background, cracker_box, toaster])
 isaac_arena_environment = IsaacArenaEnvironment(
     name="reference_object_test",
     embodiment=embodiment,
