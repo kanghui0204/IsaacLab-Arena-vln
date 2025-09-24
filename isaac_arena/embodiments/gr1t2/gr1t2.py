@@ -35,6 +35,7 @@ from isaaclab_tasks.manager_based.manipulation.pick_place.pickplace_gr1t2_env_cf
 
 from isaac_arena.assets.register import register_asset
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase
+from isaac_arena.geometry.pose import Pose
 from isaac_arena.isaaclab_utils.resets import reset_all_articulation_joints
 
 
@@ -44,8 +45,8 @@ class GR1T2Embodiment(EmbodimentBase):
 
     name = "gr1"
 
-    def __init__(self, enable_cameras: bool = False):
-        super().__init__(enable_cameras)
+    def __init__(self, enable_cameras: bool = False, initial_pose: Pose | None = None):
+        super().__init__(enable_cameras, initial_pose)
         # Configuration structs
         self.scene_config = GR1T2SceneCfg()
         self.camera_config = GR1T2CameraCfg()

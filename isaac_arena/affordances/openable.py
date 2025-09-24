@@ -17,6 +17,8 @@ import torch
 from isaaclab.envs.manager_based_env import ManagerBasedEnv
 from isaaclab.managers import SceneEntityCfg
 
+from isaac_arena.affordances.affordance_base import AffordanceBase
+
 
 def normalize_value(value: torch.Tensor, min_value: float, max_value: float):
     return (value - min_value) / (max_value - min_value)
@@ -57,7 +59,7 @@ def set_normalized_joint_position(
     )
 
 
-class Openable:
+class Openable(AffordanceBase):
     """Interface for openable objects."""
 
     def __init__(self, openable_joint_name: str, openable_open_threshold: float, **kwargs):
@@ -66,22 +68,36 @@ class Openable:
         self.openable_joint_name = openable_joint_name
         self.openable_open_threshold = openable_open_threshold
 
-    def is_open(self, env: ManagerBasedEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+    def is_open(self, env: ManagerBasedEnv, asset_cfg: SceneEntityCfg | None = None) -> torch.Tensor:
         """Returns a boolean tensor of whether the object is open."""
+        if asset_cfg is None:
+            asset_cfg = SceneEntityCfg(self.name)
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
         return get_normalized_joint_position(env, asset_cfg) > self.openable_open_threshold
 
     def open(
-        self, env: ManagerBasedEnv, env_ids: torch.Tensor | None, asset_cfg: SceneEntityCfg, percentage: float = 1.0
+        self,
+        env: ManagerBasedEnv,
+        env_ids: torch.Tensor | None,
+        asset_cfg: SceneEntityCfg | None = None,
+        percentage: float = 1.0,
     ):
         """Open the object (in all the environments)."""
+        if asset_cfg is None:
+            asset_cfg = SceneEntityCfg(self.name)
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
         set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
 
     def close(
-        self, env: ManagerBasedEnv, env_ids: torch.Tensor | None, asset_cfg: SceneEntityCfg, percentage: float = 0.0
+        self,
+        env: ManagerBasedEnv,
+        env_ids: torch.Tensor | None,
+        asset_cfg: SceneEntityCfg | None = None,
+        percentage: float = 0.0,
     ):
         """Close the object (in all the environments)."""
+        if asset_cfg is None:
+            asset_cfg = SceneEntityCfg(self.name)
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
         set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
 

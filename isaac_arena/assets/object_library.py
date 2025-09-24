@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from isaac_arena.assets.affordances import Openable
+from isaac_arena.affordances.openable import Openable
 from isaac_arena.assets.object import Object
 from isaac_arena.assets.object_base import ObjectType
 from isaac_arena.assets.register import register_asset
