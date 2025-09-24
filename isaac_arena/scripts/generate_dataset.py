@@ -21,7 +21,9 @@ from isaac_arena.examples.example_environments.cli import add_example_environmen
 
 # add argparse arguments
 parser = get_isaac_arena_cli_parser()
-parser.add_argument("--generation_num_trials", type=int, help="Number of demos to be generated.", default=None, required=True)
+parser.add_argument(
+    "--generation_num_trials", type=int, help="Number of demos to be generated.", default=None, required=True
+)
 parser.add_argument("--input_file", type=str, default=None, required=True, help="File path to the source dataset file.")
 parser.add_argument(
     "--output_file",

@@ -286,8 +286,8 @@ class GR1T2MimicEnv(ManagerBasedRLMimicEnv):
         target_pose_left = PoseUtils.make_pose(target_left_wrist_position, target_left_rot_mat)
         target_poses["left"] = target_pose_left
 
-        target_right_wrist_position = action[:, 0:3]
-        target_right_rot_mat = PoseUtils.matrix_from_quat(action[:, 3:7])
+        target_right_wrist_position = action[:, 7:10]
+        target_right_rot_mat = PoseUtils.matrix_from_quat(action[:, 10:14])
         target_pose_right = PoseUtils.make_pose(target_right_wrist_position, target_right_rot_mat)
         target_poses["right"] = target_pose_right
 
@@ -304,8 +304,8 @@ class GR1T2MimicEnv(ManagerBasedRLMimicEnv):
             A dictionary of torch.Tensor gripper actions. Key to each dict is an eef_name.
         """
         return {"left": actions[:, 14:25], "right": actions[:, 25:]}
-    
-     # Have to implement this to consider articulated objects as well
+
+    # Have to implement this to consider articulated objects as well
     def get_object_poses(self, env_ids: Sequence[int] | None = None):
         """
         Gets the pose of each object relevant to Isaac Lab Mimic data generation in the current scene.
@@ -327,11 +327,7 @@ class GR1T2MimicEnv(ManagerBasedRLMimicEnv):
         groups = ["rigid_object", "articulation"]
 
         object_pose_matrix = {
-            name: pose_from(obj_state) 
-            for group in groups
-            for name, obj_state in state.get(group, {}).items()
+            name: pose_from(obj_state) for group in groups for name, obj_state in state.get(group, {}).items()
         }
-
-        print(object_pose_matrix)
 
         return object_pose_matrix

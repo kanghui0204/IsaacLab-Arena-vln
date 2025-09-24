@@ -33,8 +33,8 @@ class SpacemouseTeleopDevice(TeleopDeviceBase):
         return DevicesCfg(
             devices={
                 "spacemouse": Se3SpaceMouseCfg(
-                    pos_sensitivity=0.05,
-                    rot_sensitivity=0.05,
+                    pos_sensitivity=0.2,
+                    rot_sensitivity=0.5,
                     sim_device=sim_device,
                 ),
             }

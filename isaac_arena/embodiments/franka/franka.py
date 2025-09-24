@@ -304,8 +304,8 @@ class FrankaMimicEnv(ManagerBasedRLMimicEnv):
         """
         # last dimension is gripper action
         return {list(self.cfg.subtask_configs.keys())[0]: actions[:, -1:]}
-    
-     # Have to implement this to consider articulated objects as well
+
+    # Have to implement this to consider articulated objects as well
     def get_object_poses(self, env_ids: Sequence[int] | None = None):
         """
         Gets the pose of each object relevant to Isaac Lab Mimic data generation in the current scene.
