@@ -57,23 +57,30 @@ cracker_box.set_initial_pose(
 
 # %%
 
-# import gym
+import numpy as np
+
+from isaac_arena.metrics.metric_base import MetricBase
 
 from isaaclab.managers import DatasetExportMode
 from isaaclab.managers.recorder_manager import RecorderManagerBaseCfg, RecorderTerm, RecorderTermCfg
 from isaaclab.utils import configclass
 
 
-class SuccessRateMetric:
+class SuccessRateMetric(MetricBase):
 
-    def __init__(self):
-        self.name = "success"
+    name = "success"
 
-    def get_recorder_manager_cfg(self):
-        return RecorderManagerCfg()
+    def get_recorder_term_cfg(self):
+        return SuccessRecorderCfg()
 
-    # def get_metric(self, env: gym.Env) -> float:
-    #     return 0.0
+    def compute_metric_from_recording(self, recorded_metric_data: list[np.ndarray]) -> float:
+        """Gets the average success rate from a list of recorded success flags."""
+        num_demos = len(recorded_metric_data)
+        all_demos_success_flags = np.concatenate(recorded_metric_data)
+        assert all_demos_success_flags.ndim == 1
+        assert all_demos_success_flags.shape[0] == num_demos
+        success_rate = np.mean(all_demos_success_flags)
+        return success_rate
 
 
 class SuccessRecorder(RecorderTerm):
@@ -100,17 +107,69 @@ class SuccessRecorder(RecorderTerm):
         return "success", success_results
 
 
+
 @configclass
 class SuccessRecorderCfg(RecorderTermCfg):
     class_type: type[RecorderTerm] = SuccessRecorder
 
 
+success_metric = SuccessRateMetric()
+
+#%
+
+class ObjectMovedRateMetric(MetricBase):
+
+    name = "object_moved"
+
+    def __init__(self, object_velocity_threshold: float = 0.5):
+        super().__init__()
+        self.object_velocity_threshold = object_velocity_threshold
+
+    def get_recorder_term_cfg(self):
+        return ObjectVelocityRecorderCfg()
+
+    def compute_metric_from_recording(self, recorded_metric_data: list[np.ndarray]) -> float:
+        object_velocity_per_demo = recorded_metric_data
+        object_moved_per_demo = []
+        for object_velocity in object_velocity_per_demo:
+            assert object_velocity.ndim == 2
+            assert object_velocity.shape[1] == 3
+            object_linear_velocity_magnitude = np.linalg.norm(object_velocity, axis=-1)
+            object_moved = np.any(object_linear_velocity_magnitude > self.object_velocity_threshold)
+            object_moved_per_demo.append(object_moved)
+        object_moved_rate = np.mean(object_moved_per_demo)
+        return object_moved_rate
+
+
+class ObjectVelocityRecorder(RecorderTerm):
+
+    def record_post_step(self):
+        object_linear_velocity = self._env.scene["cracker_box"].data.root_link_vel_w[:, :3]
+        assert object_linear_velocity.shape == (self._env.num_envs, 3)
+        return "object_linear_velocity", object_linear_velocity
+
+
 @configclass
-class RecorderManagerCfg(RecorderManagerBaseCfg):
-    record_pre_reset_term = SuccessRecorderCfg()
+class ObjectVelocityRecorderCfg(RecorderTermCfg):
+    class_type: type[RecorderTerm] = ObjectVelocityRecorder
 
+object_moved_rate_metric = ObjectMovedRateMetric()
 
-recorder_cfg = RecorderManagerCfg()
+#%%
+
+from isaac_arena.utils.configclass import make_configclass
+
+success_recorder_cfg = success_metric.get_recorder_term_cfg()
+object_velocity_recorder_cfg = object_moved_rate_metric.get_recorder_term_cfg()
+
+recorder_cfg_cls = make_configclass(
+    "RecorderManagerCfg", [
+        ("success_recorder", type(success_recorder_cfg), success_recorder_cfg),
+        ("object_velocity_recorder", type(object_velocity_recorder_cfg), object_velocity_recorder_cfg),
+    ],
+    bases=(RecorderManagerBaseCfg,)
+)
+recorder_cfg = recorder_cfg_cls()
 recorder_cfg.dataset_export_mode = DatasetExportMode.EXPORT_ALL
 
 # %%
@@ -162,6 +221,8 @@ with h5py.File(dataset_path, "r") as f:
     print(f["data"].keys())
     # print(f["data"]["demo_2"].keys())
     print(f["data"]["demo_1"]["success"][:])
+    print(f["data"]["demo_1"]["object_linear_velocity"][:])
+
 
 # %%
 
@@ -179,30 +240,49 @@ def get_recorded_metric_data(dataset_path: pathlib.Path, metric_name: str) -> li
     return recorded_metric_data_per_demo
 
 
-# Average success rate
-def get_average_success_rate(recorded_metric_data: list[np.ndarray]) -> float:
-    """Gets the average success rate from a list of recorded success flags."""
-    num_demos = len(recorded_metric_data)
-    all_demos_success_flags = np.concatenate(recorded_metric_data)
-    assert all_demos_success_flags.ndim == 1
-    assert all_demos_success_flags.shape[0] == num_demos
-    success_rate = np.mean(all_demos_success_flags)
-    return success_rate
-
-
-recorded_metric_data = get_recorded_metric_data(dataset_path, "success")
-print(f"Recorded metric data: {recorded_metric_data}")
-
-average_success_rate = get_average_success_rate(recorded_metric_data)
+recorded_success_rate_data = get_recorded_metric_data(dataset_path, "success")
+# print(f"Recorded metric data: {recorded_success_rate_data}")
+average_success_rate = success_metric.compute_metric_from_recording(recorded_success_rate_data)
 print(f"Average success rate: {average_success_rate}")
+
+recorded_object_linear_velocity_data = get_recorded_metric_data(dataset_path, "object_linear_velocity")
+# print(f"Recorded metric data: {recorded_object_linear_velocity_data}")
+average_object_moved_rate = object_moved_rate_metric.compute_metric_from_recording(recorded_object_linear_velocity_data)
+print(f"Average object moved rate: {average_object_moved_rate}")
 
 # %%
 
 
-# Try to exclude the first run in each environment
+# Calculate the average object velocity
+# TODO: CHANGE FOR A THRESHOLD!
 
 
 
+# recorded_metric_data = get_recorded_metric_data(dataset_path, "object_velocity")
+# print(f"Recorded metric data: {recorded_metric_data}")
+
+# OBJECT_VELOCITY_THRESHOLD = 0.5
+# object_velocity_per_demo = recorded_metric_data
+# object_moved_per_demo = []
+# for object_velocity in object_velocity_per_demo:
+#     print(f"Object velocity: {object_velocity}")
+#     print(f"type of object_velocity: {type(object_velocity)}")
+#     assert object_velocity.ndim == 2
+#     assert object_velocity.shape[1] == 3
+#     object_linear_velocity_magnitude = np.linalg.norm(object_velocity, axis=-1)
+#     print(f"Object linear velocity magnitude: {object_linear_velocity_magnitude}")
+#     object_moved = np.any(object_linear_velocity_magnitude > OBJECT_VELOCITY_THRESHOLD)
+#     print(f"Object moved: {object_moved}")
+#     object_moved_per_demo.append(object_moved)
+# object_moved_rate = np.mean(object_moved_per_demo)
+# print(f"Object moved rate: {object_moved_rate}")
+
+# #%%
+
+# object_velocity = env.scene["cracker_box"].data.root_link_vel_w[:, :3]
+# object_velocity_magnitude = torch.norm(object_velocity, dim=-1)
+# print(f"Object velocity: {object_velocity}")
+# print(f"Object velocity magnitude: {object_velocity_magnitude}")
 
 #%%
 
