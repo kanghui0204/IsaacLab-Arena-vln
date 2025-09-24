@@ -37,6 +37,7 @@ from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_eve
 from isaaclab_tasks.manager_based.manipulation.stack.mdp.observations import ee_frame_pos, ee_frame_quat, gripper_pos
 
 from isaac_arena.assets.register import register_asset
+from isaac_arena.embodiments.common.mimic_utils import get_rigid_and_articulated_object_poses
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase
 from isaac_arena.geometry.pose import Pose
 
@@ -309,10 +310,10 @@ class FrankaMimicEnv(ManagerBasedRLMimicEnv):
         # last dimension is gripper action
         return {list(self.cfg.subtask_configs.keys())[0]: actions[:, -1:]}
 
-    # Have to implement this to consider articulated objects as well
+    # Implemented this to consider articulated objects as well
     def get_object_poses(self, env_ids: Sequence[int] | None = None):
         """
-        Gets the pose of each object relevant to Isaac Lab Mimic data generation in the current scene.
+        Gets the pose of each object(rigid and articulated) in the current scene.
         Args:
             env_ids: Environment indices to get the pose for. If None, all envs are considered.
         Returns:
@@ -323,15 +324,6 @@ class FrankaMimicEnv(ManagerBasedRLMimicEnv):
 
         state = self.scene.get_state(is_relative=True)
 
-        def pose_from(obj_state) -> "torch.Tensor":
-            rp = obj_state["root_pose"][env_ids]  # (..., 7): [x,y,z, qx,qy,qz,qw]
-            pos, quat = rp[..., :3], rp[..., 3:7]
-            return PoseUtils.make_pose(pos, PoseUtils.matrix_from_quat(quat))  # (..., 4, 4)
-
-        groups = ("rigid_object", "articulation")
-
-        object_pose_matrix = {
-            name: pose_from(obj_state) for group in groups for name, obj_state in state.get(group, {}).items()
-        }
+        object_pose_matrix = get_rigid_and_articulated_object_poses(state, env_ids)
 
         return object_pose_matrix

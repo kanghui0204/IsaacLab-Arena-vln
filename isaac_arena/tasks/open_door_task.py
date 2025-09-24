@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import torch
 from dataclasses import MISSING
 
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg, SubTaskConfig
 from isaaclab.managers import EventTermCfg, SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
+from isaaclab.utils.math import euler_xyz_from_quat
+from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_events
 
 from isaac_arena.affordances.openable import Openable
 from isaac_arena.tasks.task import TaskBase
@@ -76,6 +79,8 @@ class OpenDoorEventCfg:
 
     reset_door_state: EventTermCfg = MISSING
 
+    reset_openable_object_pose: EventTermCfg = MISSING
+
     def __init__(self, openable_object: Openable, reset_openness: float | None):
         assert isinstance(openable_object, Openable), "Object pose must be an instance of Openable"
         params = {}
@@ -86,6 +91,25 @@ class OpenDoorEventCfg:
             mode="reset",
             params=params,
         )
+
+        initial_pose = openable_object.get_initial_pose()
+        if initial_pose is not None:
+            roll, pitch, yaw = euler_xyz_from_quat(torch.tensor(initial_pose.rotation_wxyz).reshape(1, 4))
+            self.reset_openable_object_pose = EventTermCfg(
+                func=franka_stack_events.randomize_object_pose,
+                mode="reset",
+                params={
+                    "pose_range": {
+                        "x": (initial_pose.position_xyz[0] - 0.1, initial_pose.position_xyz[0] + 0.1),
+                        "y": (initial_pose.position_xyz[1] - 0.1, initial_pose.position_xyz[1] + 0.1),
+                        "z": (initial_pose.position_xyz[2], initial_pose.position_xyz[2]),
+                        "roll": (roll, roll),
+                        "pitch": (pitch, pitch),
+                        "yaw": (yaw, yaw),
+                    },
+                    "asset_cfgs": [SceneEntityCfg(openable_object.name)],
+                },
+            )
 
 
 @configclass
@@ -101,9 +125,6 @@ class OpenDoorMimicEnvCfg(MimicEnvCfg):
     def __post_init__(self):
         # post init of parents
         super().__post_init__()
-        # # TODO: Figure out how we can move this to the MimicEnvCfg class
-        # # The __post_init__() above only calls the init for FrankaCubeStackEnvCfg and not MimicEnvCfg
-        # # https://stackoverflow.com/questions/59986413/achieving-multiple-inheritance-using-python-dataclasses
 
         # Override the existing values
         self.datagen_config.name = "demo_src_opendoor_isaac_lab_task_D0"
@@ -136,7 +157,7 @@ class OpenDoorMimicEnvCfg(MimicEnvCfg):
                 # Optional parameters for the selection strategy function
                 selection_strategy_kwargs={"nn_k": 3},
                 # Amount of action noise to apply during this subtask
-                action_noise=0.03,
+                action_noise=0.005,
                 # Number of interpolation steps to bridge to this subtask segment
                 num_interpolation_steps=5,
                 # Additional fixed steps for the robot to reach the necessary pose
@@ -161,7 +182,7 @@ class OpenDoorMimicEnvCfg(MimicEnvCfg):
                 # Optional parameters for the selection strategy function
                 selection_strategy_kwargs={"nn_k": 3},
                 # Amount of action noise to apply during this subtask
-                action_noise=0.03,
+                action_noise=0.005,
                 # Number of interpolation steps to bridge to this subtask segment
                 num_interpolation_steps=5,
                 # Additional fixed steps for the robot to reach the necessary pose

@@ -146,9 +146,6 @@ class PickPlaceMimicEnvCfg(MimicEnvCfg):
     def __post_init__(self):
         # post init of parents
         super().__post_init__()
-        # # TODO: Figure out how we can move this to the MimicEnvCfg class
-        # # The __post_init__() above only calls the init for FrankaCubeStackEnvCfg and not MimicEnvCfg
-        # # https://stackoverflow.com/questions/59986413/achieving-multiple-inheritance-using-python-dataclasses
 
         # Override the existing values
         self.datagen_config.name = "demo_src_pickplace_isaac_lab_task_D0"

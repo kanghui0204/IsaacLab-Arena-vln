@@ -51,6 +51,7 @@ class KitchenPickAndPlaceEnvironment(ExampleEnvironmentBase):
             )
         )
 
+        # TODO(alexmillane, 2025.09.24): Add automatic object type detection of ObjectReferences.
         destination_location = ObjectReference(
             name="destination_location",
             prim_path="{ENV_REGEX_NS}/kitchen/Cabinet_B_02",
