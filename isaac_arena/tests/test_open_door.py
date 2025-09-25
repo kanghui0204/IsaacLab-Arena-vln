@@ -14,8 +14,8 @@
 
 import gymnasium as gym
 import torch
-import tqdm
 
+from isaac_arena.tests.utils.simulation import step_zeros_and_call
 from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
 
 NUM_STEPS = 10
@@ -68,15 +68,6 @@ def get_test_environment(remove_reset_door_state_event: bool, num_envs: int):
     env.reset()
 
     return env, microwave
-
-
-def step_zeros_and_call(env, num_steps, function=None):
-    for _ in tqdm.tqdm(range(num_steps)):
-        with torch.inference_mode():
-            actions = torch.zeros(env.action_space.shape, device=env.device)
-            _, _, terminated, _, _ = env.step(actions)
-            if function is not None:
-                function(env, terminated)
 
 
 def _test_open_door_microwave(simulation_app) -> bool:
