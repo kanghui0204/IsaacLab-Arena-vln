@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from isaac_arena.tasks.task import TaskBase
+from isaac_arena.tasks.task_base import TaskBase
 
 
 class DummyTask(TaskBase):

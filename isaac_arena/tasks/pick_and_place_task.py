@@ -24,7 +24,10 @@ from isaaclab.utils.math import euler_xyz_from_quat
 from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_events
 
 from isaac_arena.assets.asset import Asset
-from isaac_arena.tasks.task import TaskBase
+from isaac_arena.metrics.metric_base import MetricBase
+from isaac_arena.metrics.object_moved import ObjectMovedRateMetric
+from isaac_arena.metrics.success_rate import SuccessRateMetric
+from isaac_arena.tasks.task_base import TaskBase
 from isaac_arena.tasks.terminations import object_on_destination
 
 
@@ -76,9 +79,9 @@ class PickAndPlaceTask(TaskBase):
             embodiment_name=embodiment_name,
             pick_up_object_name=self.pick_up_object.name,
         )
-    
-    def get_metrics(self):
-        pass
+
+    def get_metrics(self) -> list[MetricBase]:
+        return [SuccessRateMetric(), ObjectMovedRateMetric(self.pick_up_object)]
 
 
 @configclass

@@ -17,6 +17,8 @@ from isaaclab.envs import ManagerBasedRLEnvCfg
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg
 from isaaclab.utils import configclass
 
+from isaac_arena.metrics.metric_base import MetricBase
+
 
 @configclass
 class IsaacArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
@@ -34,6 +36,9 @@ class IsaacArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
     commands = None
     rewards = None
     curriculum = None
+
+    # Metrics
+    metrics: list[MetricBase] | None = None
 
     def __post_init__(self):
         """Post initialization."""

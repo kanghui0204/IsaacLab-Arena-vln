@@ -18,7 +18,7 @@ from isaaclab.utils import configclass
 
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase
 from isaac_arena.scene.scene import Scene
-from isaac_arena.tasks.task import TaskBase
+from isaac_arena.tasks.task_base import TaskBase
 from isaac_arena.teleop_devices.teleop_device_base import TeleopDeviceBase
 
 
@@ -42,4 +42,4 @@ class IsaacArenaEnvironment:
     """The teleop device to use in the environment."""
 
     # FOR TESTING ONLY
-    recorder_cfg: object = MISSING
+    # recorder_cfg: object = MISSING
