@@ -370,21 +370,21 @@ class G1DecoupledWBCPinkAction(ActionTerm):
 
             # Start applying navigation P-controller if conditions are met
             if self._is_navigating:
-                assert self.cfg.navigation_target_xy_heading is not None
-                assert len(self.cfg.navigation_target_xy_heading) > 0
+                assert self.cfg.navigation_subgoals is not None
+                assert len(self.cfg.navigation_subgoals) > 0
                 self._navigation_step_counter = self.navigation_p_controller.navigation_step_counter
 
                 # No more subgoals to navigate to, stop navigation
                 if (
-                    self._num_navigation_subgoals_reached == len(self.cfg.navigation_target_xy_heading) - 1
+                    self._num_navigation_subgoals_reached == len(self.cfg.navigation_subgoals) - 1
                 ) or self._navigation_step_counter > self.cfg.max_navigation_steps:
                     computed_lin_vel_x, computed_lin_vel_y, computed_ang_vel = 0, 0, 0
                     self._is_navigating = False
                     self._navigation_goal_reached = True
                 else:
-                    target_xy_heading = self.cfg.navigation_target_xy_heading[self._num_navigation_subgoals_reached + 1][0]
+                    target_xy_heading = self.cfg.navigation_subgoals[self._num_navigation_subgoals_reached + 1][0]
                     self.navigation_p_controller.set_inplace_turning_flag(
-                        self.cfg.navigation_target_xy_heading[self._num_navigation_subgoals_reached + 1][1]
+                        self.cfg.navigation_subgoals[self._num_navigation_subgoals_reached + 1][1]
                     )
 
                     target_xy = torch.tensor(target_xy_heading[:2])

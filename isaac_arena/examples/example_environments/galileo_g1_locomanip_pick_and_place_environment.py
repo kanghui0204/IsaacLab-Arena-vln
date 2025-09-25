@@ -51,6 +51,15 @@ class GalileoG1LocomanipPickAndPlaceEnvironment(ExampleEnvironmentBase):
         )
         embodiment.set_initial_pose(Pose(position_xyz=(0.0, 0.0, 0.0), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
+        if args_cli.embodiment == "g1_wbc_pink" and args_cli.mimic:
+            action_cfg = embodiment.get_action_cfg()
+            action_cfg.g1_action.use_p_control = True
+            # Set nav subgoals (x,y,heading) and turning_in_place flag for G1 WBC Pink navigation p-controller
+            action_cfg.g1_action.navigation_subgoals = [([0.18, 0.0, 0.0], False),
+                                                        ([0.18, 0.0, -1.74], True),
+                                                        ([-0.0955, -1.0670, -1.74], False),
+                                                        ([-0.0955, -1.0670, -1.74], False)]
+
         scene = Scene(assets=[background, pick_up_object, blue_sorting_bin])
         isaac_arena_environment = IsaacArenaEnvironment(
             name=self.name,

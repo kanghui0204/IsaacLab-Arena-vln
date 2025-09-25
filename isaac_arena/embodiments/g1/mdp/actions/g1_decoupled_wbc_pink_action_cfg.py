@@ -29,6 +29,9 @@ class G1DecoupledWBCPinkActionCfg(ActionTermCfg):
     joint_names: list[str] = MISSING
 
     wbc_version: str = "homie_v2"
+
+    # Navigation Segment: Use P-controller
+    use_p_control: bool = False
     # Navigation Segment: P-controller parameters
     distance_error_threshold: float = 0.05
     heading_diff_threshold: float = 0.15
@@ -38,14 +41,8 @@ class G1DecoupledWBCPinkActionCfg(ActionTermCfg):
     kp_angular: float = 0.05
     min_vel: float = -0.4
     max_vel: float = 0.4
-    # Navigation Segment: Target xy and heading subgoals
-    # navigation_target_xy_heading: list[tuple[list[float], bool]] = MISSING
-    navigation_target_xy_heading: list[tuple[list[float], bool]] =[([0.18, 0.0, 0.0], False),
-                                                                    ([0.18, 0.0, -1.74], True),
-                                                                    ([-0.0955, -1.0670, -1.74], False),
-                                                                    ([-0.0955, -1.0670, -1.74], False)]
-    # Navigation Segment: Use P-controller
-    use_p_control: bool = True
+    # Navigation Segment: Target x, y, heading, and turning_in_place flag subgoals
+    navigation_subgoals: list[tuple[list[float], bool]] | None = None
     # Navigation Segment: Turning first
     turning_first: bool = False
     # Navigation Segment: Max navigation steps
