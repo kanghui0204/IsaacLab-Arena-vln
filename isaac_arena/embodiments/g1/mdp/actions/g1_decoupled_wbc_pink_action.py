@@ -45,7 +45,7 @@ if TYPE_CHECKING:
 
     from isaac_arena.embodiments.g1.mdp.actions.g1_decoupled_wbc_pink_action_cfg import G1DecoupledWBCPinkActionCfg
 
-
+# TODO: Refactor such that WBCPinkAction and WBCJointAction such that they derive from the same base class
 class G1DecoupledWBCPinkAction(ActionTerm):
     """Action term for the G1 decoupled WBC policy. Upper body PINK IK control, lower body RL-based policy."""
 
@@ -62,6 +62,8 @@ class G1DecoupledWBCPinkAction(ActionTerm):
             env: The environment in which the action term will be applied.
         """
         super().__init__(cfg, env)
+
+        assert self.num_envs == 1, "PINK controller currently only supports single environment"
 
         # resolve the joints over which the action term is applied
         self._joint_ids, self._joint_names = self._asset.find_joints(

@@ -276,7 +276,7 @@ class G1SceneCfg:
                 armature={".*_shoulder_.*": 0.03, ".*_elbow_.*": 0.03, ".*_wrist_.*_joint": 0.03},
                 friction=0.03,
             ),
-            # TODO: check with teleop
+            # NOTE(peterd, 9/25/2025): The follow hand joint values are tested and working with Leapmotion and Mimic
             "hands": IdealPDActuatorCfg(
                 joint_names_expr=[
                     ".*_hand_.*",
@@ -539,7 +539,7 @@ class G1WBCPinkObservationsCfg:
     # observation groups
     policy: PolicyCfg = PolicyCfg()
     wbc: WBCObsCfg = WBCObsCfg()
-    action_gn2: ActionGN2Cfg = ActionGN2Cfg()
+    action: ActionGN2Cfg = ActionGN2Cfg()
 
 
 @configclass
