@@ -60,10 +60,6 @@ class Pressable(AffordanceBase):
         print(f"Pressing {self.name} with percentage {percentage}")
         set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
 
-    def _add_joint_name_to_scene_entity_cfg(self, asset_cfg: SceneEntityCfg) -> SceneEntityCfg:
-        asset_cfg.joint_names = [self.pressable_joint_name]
-        return asset_cfg
-
     def unpress(
         self,
         env: ManagerBasedEnv,
@@ -76,3 +72,7 @@ class Pressable(AffordanceBase):
             asset_cfg = SceneEntityCfg(self.name)
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
         set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
+
+    def _add_joint_name_to_scene_entity_cfg(self, asset_cfg: SceneEntityCfg) -> SceneEntityCfg:
+        asset_cfg.joint_names = [self.pressable_joint_name]
+        return asset_cfg

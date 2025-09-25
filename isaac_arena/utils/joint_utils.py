@@ -18,79 +18,33 @@ from isaaclab.managers import SceneEntityCfg
 
 
 def normalize_value(value: torch.Tensor, min_value: float, max_value: float) -> torch.Tensor:
-    """Normalize a value to the range [0, 1] given min and max bounds.
-
-    Args:
-        value: The value to normalize
-        min_value: The minimum bound
-        max_value: The maximum bound
-
-    Returns:
-        The normalized value in range [0, 1]
-    """
+    """Normalize a value to the range [0, 1] given min and max bounds."""
     return (value - min_value) / (max_value - min_value)
 
 
 def unnormalize_value(value: float, min_value: float, max_value: float) -> float:
-    """Unnormalize a value from [0, 1] back to the original range.
-
-    Args:
-        value: The normalized value in range [0, 1]
-        min_value: The minimum bound of the target range
-        max_value: The maximum bound of the target range
-
-    Returns:
-        The unnormalized value in the original range
-    """
+    """Unnormalize a value from [0, 1] back to the original range."""
     return min_value + (max_value - min_value) * value
 
 
 def get_normalized_joint_position(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
-    """Get the normalized position of a joint (in range [0, 1]).
-
-    Args:
-        env: The Isaac Lab environment
-        asset_cfg: Scene entity configuration containing the joint name
-
-    Returns:
-        Normalized joint position where 0=min position, 1=max position
-
-    Note:
-        If joint_min < 0, the normalization is flipped (1 - normalized_position)
-        to maintain consistent semantics across different joint types.
-    """
-    print("get_normalized_joint_position() called")
+    """Get the normalized position of a joint (in range [0, 1])."""
     articulation = env.scene.articulations[asset_cfg.name]
     assert len(asset_cfg.joint_names) == 1, "Only one joint name is supported for now."
     joint_index = articulation.data.joint_names.index(asset_cfg.joint_names[0])
     joint_position = articulation.data.joint_pos[:, joint_index]
     joint_position_limits = articulation.data.joint_pos_limits[0, joint_index, :]
     joint_min, joint_max = joint_position_limits[0], joint_position_limits[1]
-    print(f"joint_min: {joint_min}, joint_max: {joint_max}")
     normalized_position = normalize_value(joint_position, joint_min, joint_max)
-    print(f"normalized_position: {normalized_position}")
     if joint_min < 0.0:
         normalized_position = 1 - normalized_position
-    print(f"normalized_position: {normalized_position}")
     return normalized_position
 
 
 def set_normalized_joint_position(
     env: ManagerBasedEnv, asset_cfg: SceneEntityCfg, target_joint_position: float, env_ids: torch.Tensor | None = None
 ) -> None:
-    """Set the position of a joint using a normalized value (in range [0, 1]).
-
-    Args:
-        env: The Isaac Lab environment
-        asset_cfg: Scene entity configuration containing the joint name
-        target_joint_position: Target position in normalized range [0, 1]
-        env_ids: Environment IDs to apply the position to (None for all environments)
-
-    Note:
-        If joint_min < 0, the normalization is flipped (1 - target_joint_position)
-        to maintain consistent semantics across different joint types.
-    """
-    print("set_normalized_joint_position() called")
+    """Set the position of a joint using a normalized value (in range [0, 1])."""
     articulation = env.scene.articulations[asset_cfg.name]
     assert len(asset_cfg.joint_names) == 1, "Only one joint name is supported for now."
     joint_index = articulation.data.joint_names.index(asset_cfg.joint_names[0])
@@ -99,7 +53,6 @@ def set_normalized_joint_position(
     if joint_min < 0.0:
         target_joint_position = 1 - target_joint_position
     target_joint_position_unnormlized = unnormalize_value(target_joint_position, joint_min, joint_max)
-    print(f"Setting joint position to {target_joint_position_unnormlized} for {asset_cfg.name}")
     articulation.write_joint_position_to_sim(
         torch.tensor([[target_joint_position_unnormlized]]).to(env.device),
         torch.tensor([joint_index]).to(env.device),

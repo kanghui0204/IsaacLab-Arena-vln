@@ -180,7 +180,6 @@ class Microwave(LibraryObject, Openable):
         )
 
 
-# TODO(alexmillane, 2025.09.24): Make the toaster pressable.
 @register_asset
 class Toaster(LibraryObject, Pressable):
     """
