@@ -33,3 +33,6 @@ class DummyTask(TaskBase):
 
     def get_mimic_env_cfg(self, embodiment_name: str):
         pass
+
+    def get_metrics(self):
+        pass

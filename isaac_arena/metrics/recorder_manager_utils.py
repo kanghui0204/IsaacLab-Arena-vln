@@ -19,7 +19,9 @@ from isaac_arena.metrics.metric_base import MetricBase
 from isaac_arena.utils.configclass import make_configclass
 
 
-def metrics_to_recorder_manager_cfg(metrics: list[MetricBase]) -> RecorderManagerBaseCfg:
+def metrics_to_recorder_manager_cfg(metrics: list[MetricBase] | None) -> RecorderManagerBaseCfg | None:
+    if metrics is None:
+        return None
     configclass_fields: list[tuple[str, type, object]] = []
     for metric in metrics:
         configclass_fields.append((metric.name, type(metric.get_recorder_term_cfg()), metric.get_recorder_term_cfg()))
