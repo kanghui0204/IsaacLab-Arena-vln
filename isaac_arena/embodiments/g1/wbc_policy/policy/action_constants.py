@@ -35,5 +35,3 @@ NAVIGATE_THRESHOLD = 1e-4
 
 LEFT_WRIST_LINK_NAME = "left_wrist_yaw_link"
 RIGHT_WRIST_LINK_NAME = "right_wrist_yaw_link"
-
-
