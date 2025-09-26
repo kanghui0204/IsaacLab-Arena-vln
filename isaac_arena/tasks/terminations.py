@@ -50,7 +50,7 @@ def object_on_destination(
     return condition_met
 
 
-def object_within_target_object_vicinity(
+def object_in_proximity_to_target_object(
     env: ManagerBasedRLEnv,
     object_cfg: SceneEntityCfg,
     target_object_cfg: SceneEntityCfg,
@@ -58,10 +58,10 @@ def object_within_target_object_vicinity(
     max_x_separation: float,
     max_z_separation: float,
 ) -> torch.Tensor:
-    """Determine if two objects are within a certain vicinity of each other.
+    """Determine if two objects are within a certain proximity of each other.
 
     Returns:
-        Boolean tensor indicating when objects are within a certain vicinity of each other.
+        Boolean tensor indicating when objects are within a certain proximity of each other.
     """
     # Get object entities from the scene
     object: RigidObject = env.scene[object_cfg.name]
