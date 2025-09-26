@@ -92,5 +92,5 @@ def remap_policy_joints_to_sim_joints(
                     device
                 )
 
-    sim_joints = JointsAbsPosition(joints_pos=data, joints_order_config=sim_joints_config, device=device)
+    sim_joints = JointsAbsPosition(joints_pos=data, joints_order_config=sim_joints_config)
     return sim_joints

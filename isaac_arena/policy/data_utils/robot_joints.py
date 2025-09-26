@@ -25,15 +25,11 @@ class JointsAbsPosition:
     joints_order_config: dict[str, int]
     """Joints order configuration"""
 
-    device: torch.device
-    """Device to store the tensor on"""
-
     @staticmethod
     def zero(joint_order_config: dict[str, int], device: torch.device):
         return JointsAbsPosition(
             joints_pos=torch.zeros((len(joint_order_config)), device=device),
-            joints_order_config=joint_order_config,
-            device=device,
+            joints_order_config=joint_order_config
         )
 
     def to_array(self) -> torch.Tensor:
