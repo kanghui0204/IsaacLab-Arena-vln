@@ -13,14 +13,13 @@
 # limitations under the License.
 
 import random
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from isaac_arena.assets.asset import Asset
-from isaac_arena.teleop_devices.teleop_device_base import TeleopDeviceBase
 from isaac_arena.utils.singleton import SingletonMeta
 
-# TODO(alexmillane, 2025.09.19): Before release we should sort out this
-# circular import issue.
+if TYPE_CHECKING:
+    from isaac_arena.assets.asset import Asset
+    from isaac_arena.teleop_devices.teleop_device_base import TeleopDeviceBase
 
 
 # Have to define all classes here in order to avoid circular import.
