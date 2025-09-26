@@ -17,6 +17,7 @@ import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 
+
 @dataclass
 class Gr00tDatasetConfig:
     # Datasets & task specific parameters
@@ -146,7 +147,9 @@ class Gr00tDatasetConfig:
 
     hdf5_file_path: Path = field(init=False)
     lerobot_data_dir: Path = field(init=False)
-    task_index: int = field(default=0, metadata={"description": "Task index for the task description in LeRobot file."})     # task index for the task description in LeRobot file
+    task_index: int = field(
+        default=0, metadata={"description": "Task index for the task description in LeRobot file."}
+    )  # task index for the task description in LeRobot file
 
     def __post_init__(self):
 
@@ -167,10 +170,7 @@ class Gr00tDatasetConfig:
             shutil.rmtree(self.lerobot_data_dir)
         # Prepare data keys for mimic-generated hdf5 file
         # Minimum set of keys are state & action
-        self.hdf5_keys = {
-            "state": self.state_name_sim,
-            "action": self.action_name_sim
-        }
+        self.hdf5_keys = {"state": self.state_name_sim, "action": self.action_name_sim}
         # Optional keys if provided
         if self.left_eef_pos_name_sim != "":
             self.hdf5_keys["left_eef_pos"] = self.left_eef_pos_name_sim
@@ -194,9 +194,7 @@ class Gr00tDatasetConfig:
             "state": self.state_name_lerobot,
             "action": self.action_name_lerobot,
             "video": self.video_name_lerobot,
-            "annotation": (
-                self.task_description_lerobot,
-            ),
+            "annotation": (self.task_description_lerobot,),
         }
         if "left_eef_pos" in self.hdf5_keys:
             self.lerobot_keys["obs_eef_pose"] = "observation.eef_pose"

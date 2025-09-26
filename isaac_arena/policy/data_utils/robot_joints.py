@@ -11,11 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import numpy as np
 import torch
 from dataclasses import dataclass
-from typing import Dict
 
 
 @dataclass
@@ -23,14 +21,14 @@ class JointsAbsPosition:
     joints_pos: torch.Tensor
     """Joint positions in radians"""
 
-    joints_order_config: Dict[str, int]
+    joints_order_config: dict[str, int]
     """Joints order configuration"""
 
     device: torch.device
     """Device to store the tensor on"""
 
     @staticmethod
-    def zero(joint_order_config: Dict[str, int], device: torch.device):
+    def zero(joint_order_config: dict[str, int], device: torch.device):
         return JointsAbsPosition(
             joints_pos=torch.zeros((len(joint_order_config)), device=device),
             joints_order_config=joint_order_config,
@@ -41,7 +39,7 @@ class JointsAbsPosition:
         return self.joints_pos.cpu().numpy()
 
     @staticmethod
-    def from_array(array: np.ndarray, joint_order_config: Dict[str, int], device: torch.device) -> "JointsAbsPosition":
+    def from_array(array: np.ndarray, joint_order_config: dict[str, int], device: torch.device) -> "JointsAbsPosition":
         return JointsAbsPosition(
             joints_pos=torch.from_numpy(array).to(device), joints_order_config=joint_order_config, device=device
         )

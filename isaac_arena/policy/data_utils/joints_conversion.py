@@ -11,17 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import numpy as np
 import torch
-from typing import Dict, List
 
 from isaac_arena.policy.data_utils.robot_joints import JointsAbsPosition
 
 
 def remap_sim_joints_to_policy_joints(
-    sim_joints_state: JointsAbsPosition, policy_joints_config: Dict[str, List[str]]
-) -> Dict[str, np.ndarray]:
+    sim_joints_state: JointsAbsPosition, policy_joints_config: dict[str, list[str]]
+) -> dict[str, np.ndarray]:
     """
     Remap the state or actions joints from simulation joint orders to policy joint orders
     """
@@ -42,9 +40,9 @@ def remap_sim_joints_to_policy_joints(
 
 
 def remap_policy_joints_to_sim_joints(
-    policy_joints: Dict[str, np.array],
-    policy_joints_config: Dict[str, List[str]],
-    sim_joints_config: Dict[str, int],
+    policy_joints: dict[str, np.array],
+    policy_joints_config: dict[str, list[str]],
+    sim_joints_config: dict[str, int],
     device: torch.device,
 ) -> JointsAbsPosition:
     """
@@ -89,7 +87,9 @@ def remap_policy_joints_to_sim_joints(
         if joint_name in policy_joints_config[joint_group]:
             if f"action.{joint_group}" in policy_joints:
                 gr00t_index = policy_joints_config[joint_group].index(joint_name)
-                data[..., joint_index] = torch.from_numpy(policy_joints[f"action.{joint_group}"][..., gr00t_index]).to(device)
+                data[..., joint_index] = torch.from_numpy(policy_joints[f"action.{joint_group}"][..., gr00t_index]).to(
+                    device
+                )
 
     sim_joints = JointsAbsPosition(joints_pos=data, joints_order_config=sim_joints_config, device=device)
     return sim_joints

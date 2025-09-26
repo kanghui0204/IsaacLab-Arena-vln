@@ -22,7 +22,7 @@ class EefPose:
     eef_pos: torch.Tensor
     """Eef position in meters"""
 
-    eef_quat: torch.Tensor # wxyz
+    eef_quat: torch.Tensor  # wxyz
     """Eef orientation in quaternions w, x, y, z"""
 
     eef_pose: torch.Tensor

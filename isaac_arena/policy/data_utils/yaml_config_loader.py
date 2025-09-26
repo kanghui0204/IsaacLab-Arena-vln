@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import yaml
+from dataclasses import fields
 from pathlib import Path
 from typing import Any, Union
-from dataclasses import fields
 
 from isaac_arena.policy.config.dataset_config import Gr00tDatasetConfig
 
@@ -22,13 +22,15 @@ from isaac_arena.policy.config.dataset_config import Gr00tDatasetConfig
 def convert_yaml_value(field_type: type, value: Any) -> Any:
     """Convert YAML value to the appropriate type based on field type annotation."""
     # Handle Path fields
-    if field_type == Path or (hasattr(field_type, '__origin__') and field_type.__origin__ is Union and Path in field_type.__args__):
+    if field_type == Path or (
+        hasattr(field_type, "__origin__") and field_type.__origin__ is Union and Path in field_type.__args__
+    ):
         if isinstance(value, str):
             return Path(value)
         return value
 
     # Handle tuple fields (like image size)
-    if hasattr(field_type, '__origin__') and field_type.__origin__ is tuple:
+    if hasattr(field_type, "__origin__") and field_type.__origin__ is tuple:
         if isinstance(value, list):
             return tuple(value)
         return value
@@ -40,7 +42,7 @@ def convert_yaml_value(field_type: type, value: Any) -> Any:
     return value
 
 
-def load_config_from_yaml(yaml_path: Union[str, Path]) -> Gr00tDatasetConfig:
+def load_config_from_yaml(yaml_path: str | Path) -> Gr00tDatasetConfig:
     """
     Load Gr00tDatasetConfig from a YAML file.
 
@@ -58,7 +60,7 @@ def load_config_from_yaml(yaml_path: Union[str, Path]) -> Gr00tDatasetConfig:
         raise FileNotFoundError(f"Configuration file not found: {yaml_path}")
 
     # Load YAML content
-    with open(yaml_path, 'r') as f:
+    with open(yaml_path) as f:
         yaml_data = yaml.safe_load(f)
 
     if yaml_data is None:

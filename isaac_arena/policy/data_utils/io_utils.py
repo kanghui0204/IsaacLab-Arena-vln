@@ -17,9 +17,7 @@ import json
 import numpy as np
 import yaml
 from pathlib import Path
-from typing import Any, Dict, Tuple
-
-import cv2
+from typing import Any
 
 
 def dump_jsonl(data, file_path):
@@ -59,7 +57,7 @@ def dump_json(data, file_path, **kwargs):
         json.dump(data, fp, **kwargs)
 
 
-def load_json(file_path: str | Path, **kwargs) -> Dict[str, Any]:
+def load_json(file_path: str | Path, **kwargs) -> dict[str, Any]:
     """
     Load a JSON file.
 
@@ -74,7 +72,7 @@ def load_json(file_path: str | Path, **kwargs) -> Dict[str, Any]:
         return json.load(fp, **kwargs)
 
 
-def load_robot_joints_config(yaml_path: str | Path) -> Dict[str, Any]:
+def load_robot_joints_config(yaml_path: str | Path) -> dict[str, Any]:
     """Load robot joint configuration from YAML file"""
     with open(yaml_path, encoding="utf-8") as f:
         config = yaml.safe_load(f)

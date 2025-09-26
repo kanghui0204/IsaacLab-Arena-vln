@@ -18,23 +18,23 @@ import multiprocessing as mp
 import numpy as np
 import shutil
 import subprocess
+import time
+import torchvision
 import traceback
+from dataclasses import fields
 from pathlib import Path
 from tqdm import tqdm
-from typing import Any, Dict
-import time
-from dataclasses import fields, is_dataclass
+from typing import Any
 
 import pandas as pd
-import torchvision
 
-from isaac_arena.policy.data_utils.image_conversion import resize_frames_with_padding
-from isaac_arena.policy.data_utils.joints_conversion import remap_sim_joints_to_policy_joints
-from isaac_arena.policy.data_utils.io_utils import dump_json, dump_jsonl, load_robot_joints_config, load_json
-from isaac_arena.policy.data_utils.robot_joints import JointsAbsPosition
-from isaac_arena.policy.data_utils.robot_eef_pose import EefPose
-from isaac_arena.policy.data_utils.yaml_config_loader import load_config_from_yaml
 from isaac_arena.policy.config.dataset_config import Gr00tDatasetConfig
+from isaac_arena.policy.data_utils.image_conversion import resize_frames_with_padding
+from isaac_arena.policy.data_utils.io_utils import dump_json, dump_jsonl, load_json, load_robot_joints_config
+from isaac_arena.policy.data_utils.joints_conversion import remap_sim_joints_to_policy_joints
+from isaac_arena.policy.data_utils.robot_eef_pose import EefPose
+from isaac_arena.policy.data_utils.robot_joints import JointsAbsPosition
+from isaac_arena.policy.data_utils.yaml_config_loader import load_config_from_yaml
 
 
 def wait_for_video_completion(video_path: str, max_wait_time: int = 60, check_interval: float = 0.5) -> bool:
@@ -72,10 +72,10 @@ def wait_for_video_completion(video_path: str, max_wait_time: int = 60, check_in
                         # Try to read first few bytes to ensure file is accessible
                         f.read(1024)
                     return True
-                except (IOError, OSError):
+                except OSError:
                     # File still locked, continue waiting
                     pass
-        except (OSError, IOError):
+        except OSError:
             # File might be in process of being created
             pass
 
@@ -84,7 +84,7 @@ def wait_for_video_completion(video_path: str, max_wait_time: int = 60, check_in
     return False
 
 
-def get_video_metadata(video_path: str) -> Dict[str, Any] | None:
+def get_video_metadata(video_path: str) -> dict[str, Any] | None:
     """
     Get video metadata in the specified format with robust file completion checking.
 
@@ -166,8 +166,8 @@ def get_video_metadata(video_path: str) -> Dict[str, Any] | None:
 
 
 def get_feature_info(
-    step_data: pd.DataFrame, video_paths: Dict[str, str], config: Gr00tDatasetConfig
-) -> Dict[str, Any]:
+    step_data: pd.DataFrame, video_paths: dict[str, str], config: Gr00tDatasetConfig
+) -> dict[str, Any]:
     """
     Get feature info from each frame of the video.
 
@@ -208,7 +208,8 @@ def get_feature_info(
 
     return features
 
-def extract_teleop_command(trajectory: h5py.Dataset, teleop_key: str, config: Gr00tDatasetConfig) -> Dict[str, Any]:
+
+def extract_teleop_command(trajectory: h5py.Dataset, teleop_key: str, config: Gr00tDatasetConfig) -> dict[str, Any]:
     """
     Extract the teleop command from the trajectory.
     """
@@ -226,8 +227,8 @@ def generate_info(
     total_chunks: int,
     config: Gr00tDatasetConfig,
     step_data: pd.DataFrame,
-    video_paths: Dict[str, str],
-) -> Dict[str, Any]:
+    video_paths: dict[str, str],
+) -> dict[str, Any]:
     """
     Generate the info.json data field.
 
@@ -306,7 +307,7 @@ def convert_trajectory_to_df(
     episode_index: int,
     index_start: int,
     config: Gr00tDatasetConfig,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Convert a single trajectory from HDF5 to a pandas DataFrame.
 
@@ -329,7 +330,7 @@ def convert_trajectory_to_df(
     action_joints_config = load_robot_joints_config(config.action_joints_config_path)
     state_joints_config = load_robot_joints_config(config.state_joints_config_path)
 
-    '''Get joints state/action/timestamp from HDF5 file'''
+    """Get joints state/action/timestamp from HDF5 file"""
     length = None
     for key, hdf5_key_name in config.hdf5_keys.items():
         if key not in ["state", "action"]:
@@ -364,11 +365,13 @@ def convert_trajectory_to_df(
         ordered_joints = []
         for joint_group in gr00t_modality_config[key].keys():
             # NOTE(xinjieyao, 2025-09-25): Those are not joint position commands, which do not need remapping orders
-            if joint_group == "left_wrist_pose" \
-                or joint_group == "right_wrist_pose" \
-                or joint_group == "base_height_command" \
-                or joint_group == "navigate_command" \
-                or joint_group == "torso_orientation_rpy_command":
+            if (
+                joint_group == "left_wrist_pose"
+                or joint_group == "right_wrist_pose"
+                or joint_group == "base_height_command"
+                or joint_group == "navigate_command"
+                or joint_group == "torso_orientation_rpy_command"
+            ):
                 continue
             num_joints = (
                 gr00t_modality_config[key][joint_group]["end"] - gr00t_modality_config[key][joint_group]["start"]
@@ -390,14 +393,14 @@ def convert_trajectory_to_df(
     length = len(data[config.lerobot_keys["action"]])
     data["timestamp"] = np.arange(length).astype(np.float64) * (1.0 / config.fps)
 
-    '''Get eef pose for state/action from HDF5 file(optional)'''
+    """Get eef pose for state/action from HDF5 file(optional)"""
 
-    for key in ['obs', 'action']:
+    for key in ["obs", "action"]:
         # break for loop if key not in trajectory.keys()
         if key not in trajectory.keys():
             continue
         eef_pose = {}
-        for side in ['left', 'right']:
+        for side in ["left", "right"]:
             if f"{side}_eef_pos" in config.hdf5_keys and f"{side}_eef_quat" in config.hdf5_keys:
                 side_eef_pos = trajectory[key][config.hdf5_keys[f"{side}_eef_pos"]]
                 side_eef_quat = trajectory[key][config.hdf5_keys[f"{side}_eef_quat"]]
@@ -411,9 +414,13 @@ def convert_trajectory_to_df(
             lerobot_key_name = config.lerobot_keys[f"{key}_eef_pose"]
             data[lerobot_key_name] = [row for row in eef_pose]
 
-    '''Get teleop command for action from HDF5 file(optional)'''
+    """Get teleop command for action from HDF5 file(optional)"""
 
-    teleop_command_keys = ["teleop_base_height_command", "teleop_navigate_command", "teleop_torso_orientation_rpy_command"]
+    teleop_command_keys = [
+        "teleop_base_height_command",
+        "teleop_navigate_command",
+        "teleop_torso_orientation_rpy_command",
+    ]
     for teleop_key in teleop_command_keys:
         if teleop_key in config.hdf5_keys:
             assert teleop_key in config.lerobot_keys
@@ -437,7 +444,7 @@ def convert_trajectory_to_df(
     done[-1] = True
     data["next.reward"] = reward
     data["next.done"] = done
-    data['observation.img_state_delta'] = np.zeros(length, dtype=np.float64)
+    data["observation.img_state_delta"] = np.zeros(length, dtype=np.float64)
 
     dataframe = pd.DataFrame(data)
 
@@ -512,13 +519,11 @@ def convert_hdf5_to_lerobot(config: Gr00tDatasetConfig):
         # 2.2. Update total length, episodes_info
         length = df_ret_dict["length"]
         total_length += length
-        episodes_info.append(
-            {
-                "episode_index": episode_index,
-                "tasks": [tasks[task_index] for task_index in df_ret_dict["annotation"]],
-                "length": length,
-            }
-        )
+        episodes_info.append({
+            "episode_index": episode_index,
+            "tasks": [tasks[task_index] for task_index in df_ret_dict["annotation"]],
+            "length": length,
+        })
         # 2.3. Generate videos/
         new_video_relpath = config.video_path.format(
             episode_chunk=episode_chunk, video_key=config.lerobot_keys["video"], episode_index=episode_index
@@ -593,6 +598,7 @@ def convert_hdf5_to_lerobot(config: Gr00tDatasetConfig):
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser(description="Convert Dataset from HDF5 to GR00T LeRobot Format")
     parser.add_argument("--yaml_file", help="Path to YAML configuration file")
     args = parser.parse_args()
