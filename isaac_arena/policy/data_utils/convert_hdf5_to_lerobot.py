@@ -30,7 +30,7 @@ import pandas as pd
 
 from isaac_arena.policy.config.dataset_config import Gr00tDatasetConfig
 from isaac_arena.policy.data_utils.image_conversion import resize_frames_with_padding
-from isaac_arena.policy.data_utils.io_utils import dump_json, dump_jsonl, load_json, load_robot_joints_config
+from isaac_arena.policy.data_utils.io_utils import dump_json, dump_jsonl, load_json, load_robot_joints_config_from_yaml
 from isaac_arena.policy.data_utils.joints_conversion import remap_sim_joints_to_policy_joints
 from isaac_arena.policy.data_utils.robot_eef_pose import EefPose
 from isaac_arena.policy.data_utils.robot_joints import JointsAbsPosition
@@ -178,7 +178,7 @@ def get_feature_info(
     Returns:
         Dictionary containing feature information for each column and video.
     """
-    gr00t_joints_config = load_robot_joints_config(config.gr00t_joints_config_path)
+    gr00t_joints_config = load_robot_joints_config_from_yaml(config.gr00t_joints_config_path)
     # flatten dict of dict into a single dict, perseving the order of the keys
     gr00t_joints_names = []
     for joint_group in gr00t_joints_config.keys():
@@ -326,9 +326,9 @@ def convert_trajectory_to_df(
 
     gr00t_modality_config = load_json(config.modality_template_path)
 
-    gr00t_joints_config = load_robot_joints_config(config.gr00t_joints_config_path)
-    action_joints_config = load_robot_joints_config(config.action_joints_config_path)
-    state_joints_config = load_robot_joints_config(config.state_joints_config_path)
+    gr00t_joints_config = load_robot_joints_config_from_yaml(config.gr00t_joints_config_path)
+    action_joints_config = load_robot_joints_config_from_yaml(config.action_joints_config_path)
+    state_joints_config = load_robot_joints_config_from_yaml(config.state_joints_config_path)
 
     """Get joints state/action/timestamp from HDF5 file"""
     length = None
