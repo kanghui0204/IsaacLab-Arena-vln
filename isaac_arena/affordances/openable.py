@@ -18,7 +18,6 @@ from isaaclab.envs.manager_based_env import ManagerBasedEnv
 from isaaclab.managers import SceneEntityCfg
 
 from isaac_arena.affordances.affordance_base import AffordanceBase
-
 from isaac_arena.utils.joint_utils import get_normalized_joint_position, set_normalized_joint_position
 
 
