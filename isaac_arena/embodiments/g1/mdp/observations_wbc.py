@@ -39,8 +39,10 @@ from isaac_arena.embodiments.g1.wbc_policy.policy.action_constants import (
     TORSO_ORIENTATION_RPY_CMD_START_IDX,
 )
 
+
 class ActionComponentMode(Enum):
     """Enum for different action component modes."""
+
     LEFT_EEF_POS = "left_eef_pos"
     LEFT_EEF_QUAT = "left_eef_quat"
     RIGHT_EEF_POS = "right_eef_pos"
@@ -49,13 +51,12 @@ class ActionComponentMode(Enum):
     BASE_HEIGHT_CMD = "base_height_cmd"
     TORSO_ORIENTATION_RPY_CMD = "torso_orientation_rpy_cmd"
 
+
 def get_navigate_cmd(
     env: ManagerBasedEnv,
 ) -> torch.Tensor:
     """Get the P-controller navigate command."""
     return env.action_manager.get_term("g1_action").navigate_cmd.clone()
-
-
 
 
 def extract_action_components(
