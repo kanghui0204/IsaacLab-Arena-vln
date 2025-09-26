@@ -64,7 +64,10 @@ class ArenaEnvBuilder:
         )
         actions_cfg = self.arena_env.embodiment.get_action_cfg()
         xr_cfg = self.arena_env.embodiment.get_xr_cfg()
-        teleop_device = self.arena_env.teleop_device
+        if self.arena_env.teleop_device is not None:
+            teleop_device = self.arena_env.teleop_device.get_teleop_device_cfg(actions_cfg=actions_cfg, xr_cfg=xr_cfg)
+        else:
+            teleop_device = None
 
         # Build the environment configuration
         if not self.args.mimic:

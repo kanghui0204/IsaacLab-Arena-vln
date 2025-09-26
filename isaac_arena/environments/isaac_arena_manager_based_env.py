@@ -47,14 +47,6 @@ class IsaacArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
         # NOTE(xinjieyao, 2025-09-22): render_interval is set to match the decimation.
         self.sim.render_interval = 4
 
-        # Add teleop device here as we need access to xr and sim device.
-        if self.teleop_devices is not None:
-            self.teleop_devices = self.teleop_devices.get_teleop_device_cfg(
-                sim_device=self.sim.device,
-                actions=self.actions,
-                xr_cfg=self.xr,
-            )
-
 
 @configclass
 class IsaacArenaManagerBasedMimicEnvCfg(IsaacArenaManagerBasedRLEnvCfg, MimicEnvCfg):
