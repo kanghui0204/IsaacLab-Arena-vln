@@ -68,7 +68,7 @@ RUN if [ "$INSTALL_GROOT" = "true" ]; then \
   fi && \
   rm -f /tmp/install_cuda.sh
 # Copy GR00T
-COPY ./submodules/Isaac-GR00T ${WORKDIR}/submodules/Isaac-GR00T 
+COPY ./submodules/Isaac-GR00T ${WORKDIR}/submodules/Isaac-GR00T
 # Copy GR00T dependencies installation script
 COPY docker/setup/install_gr00t_deps.sh /tmp/install_gr00t_deps.sh
 RUN chmod +x /tmp/install_gr00t_deps.sh

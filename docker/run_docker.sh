@@ -76,7 +76,7 @@ while getopts ":d:m:e:hn:rn:vn:gn:G:" OPTION; do
     esac
 done
 
-# Shift off the processed options so that $@ has a commad to pass to docker run
+# Shift off the processed options so that $@ has a command to pass to docker run
 shift $((OPTIND-1))
 
 # Display the values being used
