@@ -24,7 +24,8 @@ useradd --no-log-init \
         --groups sudo \
         --shell /bin/bash \
         $DOCKER_RUN_USER_NAME
-chown $DOCKER_RUN_USER_NAME /home/$DOCKER_RUN_USER_NAME
+chown $DOCKER_RUN_USER_NAME:$DOCKER_RUN_GROUP_NAME /home/$DOCKER_RUN_USER_NAME
+chown $DOCKER_RUN_USER_NAME:$DOCKER_RUN_GROUP_NAME $WORKDIR
 
 # Change the root user password (so we can su root)
 echo 'root:root' | chpasswd
@@ -36,6 +37,18 @@ echo "$DOCKER_RUN_USER_NAME ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 # Suppress sudo hint message
 touch /home/$DOCKER_RUN_USER_NAME/.sudo_as_admin_successful
 
-su $DOCKER_RUN_USER_NAME
+cp /etc/bash.bashrc /home/$DOCKER_RUN_USER_NAME/.bashrc
+chown $DOCKER_RUN_USER_NAME:$DOCKER_RUN_GROUP_NAME /home/$DOCKER_RUN_USER_NAME/.bashrc
+
+# Run the passed command or just start the shell as the created user
+if [ $# -ge 1 ]; then
+    echo "alias pytest='/isaac-sim/python.sh -m pytest'" >> /etc/aliasess.bashrc
+    # -i makes bash to expand aliases
+    # -c makes bash to run a command
+    exec sudo --preserve-env -u $DOCKER_RUN_USER_NAME \
+        -- env HOME=/home/$DOCKER_RUN_USER_NAME bash -ic "$@"
+else
+    su $DOCKER_RUN_USER_NAME
+fi
 
 exit

@@ -76,6 +76,9 @@ while getopts ":d:m:e:hn:rn:vn:gn:G:" OPTION; do
     esac
 done
 
+# Shift off the processed options so that $@ has a commad to pass to docker run
+shift $((OPTIND-1))
+
 # Display the values being used
 echo "Using Docker image: $DOCKER_IMAGE_NAME"
 
@@ -142,7 +145,6 @@ else
                     # remove it, if indeed it's not needed.
                     # "--env" "OMNI_KIT_ALLOW_ROOT=1"
                     "--env" "ISAACLAB_PATH=${WORKDIR}/submodules/IsaacLab"
-                    "--entrypoint" "${WORKDIR}/docker/setup/entrypoint.sh"
                     )
 
     # map omniverse auth or config so we have connection to the dev nucleus
@@ -158,5 +160,5 @@ else
     # Allow X11 connections
     xhost +local:docker > /dev/null
 
-    docker run "${DOCKER_RUN_ARGS[@]}" --interactive --rm --tty ${DOCKER_IMAGE_NAME}
+    docker run "${DOCKER_RUN_ARGS[@]}" --interactive --rm --tty ${DOCKER_IMAGE_NAME} "${@}"
 fi

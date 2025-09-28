@@ -83,7 +83,6 @@ RUN if [ "$INSTALL_GROOT" = "true" ]; then \
 
 # Copy the rest of the files
 COPY *.* ${WORKDIR}/
-COPY docker ${WORKDIR}/docker
 COPY isaac_arena ${WORKDIR}/isaac_arena
 
 # Install Isaac Arena
@@ -116,3 +115,6 @@ RUN cp /etc/bash.bashrc /root/.bashrc
 # Fix damage to /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch
 RUN rm -rf /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch
 
+# Set the entrypoint
+COPY docker/setup/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
