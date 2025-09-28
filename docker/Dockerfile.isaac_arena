@@ -113,5 +113,6 @@ RUN echo "alias ..='cd ..'" >> /etc/bash.bashrc
 # Change prompt to colored one for root too
 RUN cp /etc/bash.bashrc /root/.bashrc
 
-# Remove the entrypoint from the base image.
-ENTRYPOINT [""]
+# Fix damage to /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch
+RUN rm -rf /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch
+
