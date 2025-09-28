@@ -72,7 +72,6 @@ COPY ./submodules/Isaac-GR00T ${WORKDIR}/submodules/Isaac-GR00T
 # Copy GR00T dependencies installation script
 COPY docker/setup/install_gr00t_deps.sh /tmp/install_gr00t_deps.sh
 RUN chmod +x /tmp/install_gr00t_deps.sh
-
 # Install GR00T dependencies if requested
 RUN if [ "$INSTALL_GROOT" = "true" ]; then \
     /tmp/install_gr00t_deps.sh; \
@@ -82,8 +81,12 @@ RUN if [ "$INSTALL_GROOT" = "true" ]; then \
   # Clean up installation scripts
   rm -f /tmp/install_gr00t_deps.sh
 
-# Install isaac-arena
-COPY ./pyproject.toml ${WORKDIR}/pyproject.toml
+# Copy the rest of the files
+COPY *.* ${WORKDIR}/
+COPY docker ${WORKDIR}/docker
+COPY isaac_arena ${WORKDIR}/isaac_arena
+
+# Install Isaac Arena
 RUN /isaac-sim/python.sh -m pip install -e ${WORKDIR}/
 
 # Set an alias to run the isaac lab python interpreter.
