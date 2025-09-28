@@ -4,6 +4,7 @@ set -e
 TAG_NAME=latest
 CONTAINER_ID=""
 PUSH_TO_NGC=false
+WORKDIR="/workspaces/isaac_arena"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -48,6 +49,7 @@ NGC_PATH=nvcr.io/nvstaging/isaac-amr/${ISAAC_ARENA_IMAGE_NAME}:${TAG_NAME}
 # Build the image.
 docker build --progress=plain --network=host \
   --build-arg INSTALL_GROOT=$INSTALL_GROOT \
+  --build-arg WORKDIR="${WORKDIR}" \
   -t ${ISAAC_ARENA_IMAGE_NAME}:${TAG_NAME} \
   "${SCRIPT_DIR}/.." \
   -f "${SCRIPT_DIR}/Dockerfile.isaac_arena"
