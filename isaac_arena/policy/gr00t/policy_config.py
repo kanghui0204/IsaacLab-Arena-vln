@@ -50,9 +50,8 @@ class LerobotReplayActionPolicyConfig:
         default=TaskMode.G1_LOCOMANIPULATION.value,
         metadata={"description": "Task option name of the policy inference."},
     )
-
     # robot simulation specific parameters
-    # Only replay actions and set it as targets
+    # Only replay action and set it as targets
     action_joints_config_path: Path = field(
         default=Path(__file__).parent.parent.resolve() / "config" / "g1" / "43dof_joint_space.yaml",
         metadata={
@@ -61,15 +60,6 @@ class LerobotReplayActionPolicyConfig:
             )
         },
     )
-    # state_joints_config_path: Path = field(
-    #     default=Path(__file__).parent.parent.resolve() / "config" / "g1" / "43dof_joint_space.yaml",
-    #     metadata={
-    #         "description": (
-    #             "Path to the YAML file specifying the joint ordering configuration for GR1 state space in Lab."
-    #         )
-    #     },
-    # )
-
     # action chunking specific parameters
     num_feedback_actions: int = field(
         default=1,  # Replay actions from every recorded timestamp in the dataset
