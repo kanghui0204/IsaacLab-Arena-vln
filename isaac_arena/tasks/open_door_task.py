@@ -16,11 +16,12 @@ from dataclasses import MISSING
 
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg, SubTaskConfig
-from isaaclab.managers import EventTermCfg, TerminationTermCfg
+from isaaclab.managers import EventTermCfg, SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaac_arena.affordances.openable import Openable
 from isaac_arena.tasks.task import TaskBase
+from isaac_arena.terms.events import set_object_pose
 
 
 class OpenDoorTask(TaskBase):
@@ -76,6 +77,8 @@ class OpenDoorEventCfg:
 
     reset_door_state: EventTermCfg = MISSING
 
+    reset_openable_object_pose: EventTermCfg = MISSING
+
     def __init__(self, openable_object: Openable, reset_openness: float | None):
         assert isinstance(openable_object, Openable), "Object pose must be an instance of Openable"
         params = {}
@@ -86,6 +89,16 @@ class OpenDoorEventCfg:
             mode="reset",
             params=params,
         )
+        initial_pose = openable_object.get_initial_pose()
+        if initial_pose is not None:
+            self.reset_openable_object_pose = EventTermCfg(
+                func=set_object_pose,
+                mode="reset",
+                params={
+                    "pose": initial_pose,
+                    "asset_cfg": SceneEntityCfg(openable_object.name),
+                },
+            )
 
 
 @configclass
