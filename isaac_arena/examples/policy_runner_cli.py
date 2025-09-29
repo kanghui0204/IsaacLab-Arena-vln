@@ -18,8 +18,6 @@ from isaac_arena.examples.example_environments.cli import get_isaac_arena_exampl
 from isaac_arena.policy.policy_base import PolicyBase
 from isaac_arena.policy.replay_action_policy import ReplayActionPolicy
 from isaac_arena.policy.zero_action_policy import ZeroActionPolicy
-from isaac_arena.policy.gr00t.replay_lerobot_action_policy import ReplayLerobotActionPolicy
-from isaac_arena.policy.gr00t.policy_config import LerobotReplayActionPolicyConfig
 
 
 def add_zero_action_arguments(parser: argparse.ArgumentParser) -> None:
@@ -51,15 +49,29 @@ def add_replay_arguments(parser: argparse.ArgumentParser) -> None:
         ),
     )
 
+
 def add_replay_lerobot_arguments(parser: argparse.ArgumentParser) -> None:
     """Add replay Lerobot action policy specific arguments to the parser."""
-    replay_lerobot_group = parser.add_argument_group("Replay Lerobot Action Policy", "Arguments for replay Lerobot action policy")
-    replay_lerobot_group.add_argument(
-        "--replay_lerobot_dataset_path",
-        type=str,
-        help="Path to the Lerobot file containing the episode (required with --policy_type replay_lerobot)",
+    replay_lerobot_group = parser.add_argument_group(
+        "Replay Lerobot Action Policy", "Arguments for replay Lerobot dataset action policy"
     )
-
+    replay_lerobot_group.add_argument(
+        "--config_yaml_path",
+        type=str,
+        help="Path to the Lerobot action policy config YAML file (required with --policy_type replay_lerobot)",
+    )
+    replay_lerobot_group.add_argument(
+        "--max_steps",
+        type=int,
+        default=None,
+        help="Maximum number of steps to run the policy for (only used with --policy_type replay_lerobot)",
+    )
+    replay_lerobot_group.add_argument(
+        "--trajectory_index",
+        type=int,
+        default=0,
+        help="Index of the trajectory to run the policy for (only used with --policy_type replay_lerobot)",
+    )
 
 
 def setup_policy_argument_parser() -> argparse.ArgumentParser:
@@ -83,8 +95,8 @@ def setup_policy_argument_parser() -> argparse.ArgumentParser:
 
     if parsed_args.policy_type == "replay" and parsed_args.replay_file_path is None:
         raise ValueError("--replay_file_path is required when using --policy_type replay")
-    if parsed_args.policy_type == "replay_lerobot" and parsed_args.replay_lerobot_dataset_path is None:
-        raise ValueError("--replay_lerobot_dataset_path is required when using --policy_type replay_lerobot")
+    if parsed_args.policy_type == "replay_lerobot" and parsed_args.config_yaml_path is None:
+        raise ValueError("--config_yaml_path is required when using --policy_type replay_lerobot")
 
     return args_parser
 
@@ -98,10 +110,19 @@ def create_policy(args: argparse.Namespace) -> tuple[PolicyBase, int]:
         policy = ZeroActionPolicy()
         num_steps = args.num_steps
     elif args.policy_type == "replay_lerobot":
-        # init dataset_path member in policy_cfg class
-        policy_cfg = LerobotReplayActionPolicyConfig(dataset_path=args.replay_lerobot_dataset_path)
-        policy = ReplayLerobotActionPolicy(policy_cfg)
-        num_steps = args.num_steps
+        # NOTE(xinjie.yao, 2025-09-28): lazy import to prevent app stalling
+        # due to import GR00T py dependencies that are conflicting with omni.kit
+        # see functional import sequence here https://github.com/isaac-sim/IsaacLabEvalTasks/blob/main/scripts/evaluate_gn1.py#L38
+        from isaac_arena.policy.gr00t.replay_lerobot_action_policy import ReplayLerobotActionPolicy
+
+        policy = ReplayLerobotActionPolicy(
+            args.config_yaml_path, num_envs=args.num_envs, device=args.device, trajectory_index=args.trajectory_index
+        )
+        # Use custom max_steps if provided to optionally playing partial sequence in one trajectory
+        if hasattr(args, "max_steps") and args.max_steps is not None:
+            num_steps = args.max_steps
+        else:
+            num_steps = policy.get_trajectory_length()
     else:
         raise ValueError(f"Unknown policy type: {args.type}")
     return policy, num_steps
