@@ -75,6 +75,8 @@ RUN chmod +x /tmp/install_gr00t_deps.sh
 # Install GR00T dependencies if requested
 RUN if [ "$INSTALL_GROOT" = "true" ]; then \
     /tmp/install_gr00t_deps.sh; \
+    # Fix damage to /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch
+    rm -rf /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch \
   else \
     echo "Skipping GR00T installation"; \
   fi && \
@@ -111,9 +113,6 @@ RUN echo "alias ll='ls -alF --color=auto'" >> /etc/bash.bashrc
 RUN echo "alias ..='cd ..'" >> /etc/bash.bashrc
 # Change prompt to colored one for root too
 RUN cp /etc/bash.bashrc /root/.bashrc
-
-# Fix damage to /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch
-RUN rm -rf /isaac-sim/exts/omni.isaac.ml_archive/pip_prebundle/torch
 
 # Set the entrypoint
 COPY docker/setup/entrypoint.sh /entrypoint.sh
