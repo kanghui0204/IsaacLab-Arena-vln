@@ -21,6 +21,7 @@ NUM_STEPS = 10
 # Only 1 traj in test data
 TRAJECTORY_INDEX = 0
 
+
 def test_g1_locomanip_replay_lerobot_policy_runner_single_env():
     args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
     args.append("--policy_type")
@@ -43,6 +44,6 @@ def test_g1_locomanip_replay_lerobot_policy_runner_single_env():
     args.append("g1_wbc_joint")
     run_subprocess(args)
 
+
 if __name__ == "__main__":
     test_g1_locomanip_replay_lerobot_policy_runner_single_env()
-

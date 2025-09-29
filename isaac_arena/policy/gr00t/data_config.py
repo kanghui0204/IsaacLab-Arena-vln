@@ -15,29 +15,15 @@
 """
 External data configuration module for UnitreeG1 WBC simulation.
 This module can be loaded as an external config using:
-isaac_arena.policy.config.unitree_g1_data_config:UnitreeG1SimWBCDataConfig
+isaac_arena.policy.gr00t.data_config:UnitreeG1SimWBCDataConfig
 """
-
-from dataclasses import dataclass
-from typing import Optional
-
-# Import necessary GR00T components
 from gr00t.data.dataset import ModalityConfig
 from gr00t.data.transform.base import ComposedModalityTransform, ModalityTransform
 from gr00t.data.transform.concat import ConcatTransform
-from gr00t.data.transform.state_action import (
-    StateActionToTensor,
-    StateActionTransform,
-)
-from gr00t.data.transform.video import (
-    VideoColorJitter,
-    VideoCrop,
-    VideoResize,
-    VideoToNumpy,
-    VideoToTensor,
-)
-from gr00t.model.transforms import GR00TTransform
+from gr00t.data.transform.state_action import StateActionToTensor, StateActionTransform
+from gr00t.data.transform.video import VideoColorJitter, VideoCrop, VideoResize, VideoToNumpy, VideoToTensor
 from gr00t.experiment.data_config import BaseDataConfig
+from gr00t.model.transforms import GR00TTransform
 
 
 class UnitreeG1SimWBCDataConfig(BaseDataConfig):
@@ -123,28 +109,24 @@ class UnitreeG1SimWBCDataConfig(BaseDataConfig):
                 hue=0.08,
             ),
             VideoToNumpy(apply_to=self.video_keys),
-
             # State transforms: normalize joint positions
             StateActionToTensor(apply_to=self.state_keys),
             StateActionTransform(
                 apply_to=self.state_keys,
                 normalization_modes={key: "min_max" for key in self.state_keys},
             ),
-
             # Action transforms: normalize control commands
             StateActionToTensor(apply_to=self.action_keys),
             StateActionTransform(
                 apply_to=self.action_keys,
                 normalization_modes={key: "min_max" for key in self.action_keys},
             ),
-
             # Concatenation: combine modalities in correct order
             ConcatTransform(
                 video_concat_order=self.video_keys,
                 state_concat_order=self.state_keys,
                 action_concat_order=self.action_keys,
             ),
-
             # GR00T model transform: prepare for policy input
             GR00TTransform(
                 state_horizon=len(self.observation_indices),
