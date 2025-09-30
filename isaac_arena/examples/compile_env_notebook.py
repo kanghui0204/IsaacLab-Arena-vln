@@ -53,7 +53,7 @@ cracker_box.set_initial_pose(
     )
 )
 
-# %%
+# %
 
 
 scene = Scene(assets=[background, cracker_box, destination_location])
@@ -68,7 +68,33 @@ isaac_arena_environment = IsaacArenaEnvironment(
 args_cli = get_isaac_arena_cli_parser().parse_args([])
 args_cli.num_envs = 2
 env_builder = ArenaEnvBuilder(isaac_arena_environment, args_cli)
-env = env_builder.make_registered()
+# env = env_builder.make_registered()
+# env.reset()
+env_cfg = env_builder.compose_manager_cfg()
+
+# %
+
+from isaaclab.managers import EventTermCfg, SceneEntityCfg
+
+from isaac_arena.terms.events import set_object_pose_per_env
+
+pose_list = [
+    Pose(position_xyz=(0.0, -0.51, 0.2), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)),
+    Pose(position_xyz=(0.0 - 0.5, -0.51, 0.2), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)),
+]
+env_cfg.events.reset_pick_up_object_pose = EventTermCfg(
+    func=set_object_pose_per_env,
+    mode="reset",
+    params={
+        "pose_list": pose_list,
+        "asset_cfg": SceneEntityCfg(cracker_box.name),
+    },
+)
+
+
+# %
+
+env = env_builder.make_registered(env_cfg)
 env.reset()
 
 # %%
@@ -76,7 +102,7 @@ env.reset()
 from isaac_arena.metrics.metrics import compute_metrics
 
 # Run some zero actions.
-NUM_STEPS = 100
+NUM_STEPS = 1000
 num_resets = 0
 for _ in tqdm.tqdm(range(NUM_STEPS)):
     with torch.inference_mode():

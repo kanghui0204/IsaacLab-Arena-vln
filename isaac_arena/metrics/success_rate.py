@@ -53,7 +53,7 @@ class SuccessRecorderCfg(RecorderTermCfg):
 
 class SuccessRateMetric(MetricBase):
 
-    name = "success"
+    name = "success_rate"
     recorder_term_name = SuccessRecorder.name
 
     def get_recorder_term_cfg(self):

@@ -45,7 +45,7 @@ class ObjectVelocityRecorderCfg(RecorderTermCfg):
 
 class ObjectMovedRateMetric(MetricBase):
 
-    name = "object_moved"
+    name = "object_moved_rate"
     recorder_term_name = ObjectVelocityRecorder.name
 
     def __init__(self, object: Asset, object_velocity_threshold: float = 0.5):
