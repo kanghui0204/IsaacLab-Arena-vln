@@ -68,4 +68,3 @@ class PressButtonEnvironment(ExampleEnvironmentBase):
         # to be used in the record_demos.py script.
         parser.add_argument("--teleop_device", type=str, default=None)
         parser.add_argument("--embodiment", type=str, default="franka")
-        parser.add_argument("--press_object", type=str, default="toaster")
