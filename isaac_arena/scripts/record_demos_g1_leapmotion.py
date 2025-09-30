@@ -584,8 +584,7 @@ def run_simulation_loop(
         should_reset_recording_instance = True
         print("Recording instance reset requested")
         reset_wbc()
-        global lin_vel_x, lin_vel_y, ang_vel, standing, base_height, \
-            torso_orientation_roll, torso_orientation_pitch, torso_orientation_yaw
+        global lin_vel_x, lin_vel_y, ang_vel, standing, base_height, torso_orientation_roll, torso_orientation_pitch, torso_orientation_yaw
         lin_vel_x = 0.0
         lin_vel_y = 0.0
         ang_vel = 0.0
