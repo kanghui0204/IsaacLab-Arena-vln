@@ -26,7 +26,7 @@ class SpacemouseTeleopDevice(TeleopDeviceBase):
 
     name = "spacemouse"
 
-    def __init__(self, pos_sensitivity: float = 0.05, rot_sensitivity: float = 0.05):
+    def __init__(self, pos_sensitivity: float = 0.25, rot_sensitivity: float = 0.25):
         super().__init__()
         self.pos_sensitivity = pos_sensitivity
         self.rot_sensitivity = rot_sensitivity
