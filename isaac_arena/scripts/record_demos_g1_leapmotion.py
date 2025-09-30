@@ -334,6 +334,7 @@ def setup_teleop_device(callbacks: dict[str, Callable]) -> object:
         if hasattr(env_cfg, "teleop_devices") and args_cli.teleop_device in env_cfg.teleop_devices.devices:
             if args_cli.teleop_device.lower() == "leapmotion":
                 from isaac_arena.teleop_devices.leapmotion.leapmotion_teleop_device import Leapmotion
+
                 teleop_interface = Leapmotion(env_cfg.teleop_devices.devices["leapmotion"])
             else:
                 teleop_interface = create_teleop_device(
@@ -644,7 +645,10 @@ def run_simulation_loop(
     teleop_interface.reset()
 
     # Set viewport camera
-    find_and_set_camera("/World/envs/env_0/Robot/head_link/RobotHeadCam")
+    camera_paths = [
+        "/World/envs/env_0/Robot/head_link/RobotHeadCam",
+    ]
+    find_and_set_camera(camera_paths)
 
     label_text = f"Recorded {current_recorded_demo_count} successful demonstrations."
     instruction_display = setup_ui(label_text, env)
