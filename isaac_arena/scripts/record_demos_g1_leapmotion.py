@@ -334,6 +334,7 @@ def setup_teleop_device(callbacks: dict[str, Callable]) -> object:
         if hasattr(env_cfg, "teleop_devices") and args_cli.teleop_device in env_cfg.teleop_devices.devices:
             if args_cli.teleop_device.lower() == "leapmotion":
                 from isaac_arena.teleop_devices.leapmotion.leapmotion_teleop_device import Leapmotion
+
                 teleop_interface = Leapmotion(env_cfg.teleop_devices.devices["leapmotion"])
             else:
                 teleop_interface = create_teleop_device(
