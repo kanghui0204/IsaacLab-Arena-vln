@@ -24,12 +24,12 @@ def test_g1_locomanip_gr00t_closedloop_policy_runner_single_env():
     args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
     args.append("--policy_type")
     args.append("gr00t_closedloop")
-    args.append("--config_yaml_path")
-    args.append(TestConstants.test_data_dir + "/test_g1_locomanip_lerobot/test_g1_locomanip_gr00t_closedloop_config.yaml")
-    args.append("--max_steps")
+    args.append("--policy_config_yaml_path")
+    args.append(
+        TestConstants.test_data_dir + "/test_g1_locomanip_lerobot/test_g1_locomanip_gr00t_closedloop_config.yaml"
+    )
+    args.append("--num_steps")
     args.append(str(NUM_STEPS))
-    args.append("--trajectory_index")
-    args.append(str(TRAJECTORY_INDEX))
     if HEADLESS:
         args.append("--headless")
     if ENABLE_CAMERAS:
