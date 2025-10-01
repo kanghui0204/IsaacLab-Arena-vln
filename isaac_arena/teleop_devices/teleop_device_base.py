@@ -23,5 +23,5 @@ class TeleopDeviceBase(ABC):
         self.sim_device = sim_device
 
     @abstractmethod
-    def get_teleop_device_cfg(self, actions_cfg: object | None = None, xr_cfg: object | None = None):
+    def get_teleop_device_cfg(self, embodiment: object | None = None):
         raise NotImplementedError

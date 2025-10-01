@@ -31,7 +31,7 @@ class SpacemouseTeleopDevice(TeleopDeviceBase):
         self.pos_sensitivity = pos_sensitivity
         self.rot_sensitivity = rot_sensitivity
 
-    def get_teleop_device_cfg(self, actions_cfg: object | None = None, xr_cfg: object | None = None):
+    def get_teleop_device_cfg(self, embodiment: object | None = None):
         return DevicesCfg(
             devices={
                 "spacemouse": Se3SpaceMouseCfg(

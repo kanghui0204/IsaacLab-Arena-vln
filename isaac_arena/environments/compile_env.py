@@ -65,9 +65,9 @@ class ArenaEnvBuilder:
         actions_cfg = self.arena_env.embodiment.get_action_cfg()
         xr_cfg = self.arena_env.embodiment.get_xr_cfg()
         if self.arena_env.teleop_device is not None:
-            teleop_device = self.arena_env.teleop_device.get_teleop_device_cfg(actions_cfg=actions_cfg, xr_cfg=xr_cfg)
+            teleop_device_cfg = self.arena_env.teleop_device.get_teleop_device_cfg(embodiment=self.arena_env.embodiment)
         else:
-            teleop_device = None
+            teleop_device_cfg = None
 
         # Build the environment configuration
         if not self.args.mimic:
@@ -78,7 +78,7 @@ class ArenaEnvBuilder:
                 scene=scene_cfg,
                 terminations=termination_cfg,
                 xr=xr_cfg,
-                teleop_devices=teleop_device,
+                teleop_devices=teleop_device_cfg,
             )
         else:
             task_mimic_env_cfg = self.arena_env.task.get_mimic_env_cfg(embodiment_name=self.arena_env.embodiment.name)
@@ -89,7 +89,7 @@ class ArenaEnvBuilder:
                 scene=scene_cfg,
                 terminations=termination_cfg,
                 xr=xr_cfg,
-                teleop_devices=teleop_device,
+                teleop_devices=teleop_device_cfg,
                 # Mimic stuff
                 datagen_config=task_mimic_env_cfg.datagen_config,
                 subtask_configs=task_mimic_env_cfg.subtask_configs,
