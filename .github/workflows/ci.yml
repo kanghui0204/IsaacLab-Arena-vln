@@ -82,12 +82,12 @@ jobs:
       credentials:
         username: $oauthtoken
         password: ${{ env.NGC_API_KEY }}
-      # virtual mounted ckpts directory from the local machine
+      # virtual mounted checkpoints directory from the local machine
       volumes:
-        - /home/runner/ckpts:/ckpts
+        - /home/runner/checkpoints:/checkpoints
     steps:
-      - name: Print ckpts directory
-        run: ls -la /ckpts
+      - name: Print checkpoints directory
+        run: ls -la /checkpoints
 
       - name: Install git (and tools needed by hooks)
         run: |
