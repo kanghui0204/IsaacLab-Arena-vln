@@ -25,9 +25,9 @@ from isaac_arena.metrics.metric_base import MetricBase
 
 
 class OpennessRecorder(RecorderTerm):
-    """Records the joint openness of an object for each sim step of an episode."""
+    """Records the openness of an object for each sim step of an episode."""
 
-    name = "joint_state"
+    name = "openness"
 
     def __init__(self, cfg: RecorderTermCfg, env: ManagerBasedEnv):
         super().__init__(cfg, env)
@@ -45,23 +45,23 @@ class JointStateRecorderCfg(RecorderTermCfg):
 
 
 class DoorMovedRateMetric(MetricBase):
-    """Computes the object-moved rate.
+    """Computes the door-moved rate.
 
-    The object-moved rate is the number of episodes in which the object moved, divided
+    The door-moved rate is the number of episodes in which the door moved, divided
     by the total number of episodes.
     """
 
     name = "door_moved_rate"
     recorder_term_name = OpennessRecorder.name
 
-    def __init__(
-        self, object: ObjectBase, reset_openness: float, openness_delta_threshold: float = 0.05
-    ):  # NEEDS TO BE RELATIVE TO THE START POSITION OF THE OBJECT
+    def __init__(self, object: Openable, reset_openness: float, openness_delta_threshold: float = 0.05):
         """Initializes the door-moved rate metric.
 
         Args:
-            object(Asset): The object to compute the door-moved rate for.
-            openness_threshold(float): The threshold for the door openness to be considered moved.
+            object(Openable): The door to compute the door-moved rate for.
+            reset_openness(float): The initial openness of the door (what the door resets to).
+            openness_delta_threshold(float): The threshold for the door openness to be considered
+                moved. This is relative to the initial openness of the door.
         """
         super().__init__()
         assert isinstance(object, Openable), "Object must be Openable"
@@ -70,10 +70,20 @@ class DoorMovedRateMetric(MetricBase):
         self.openness_delta_threshold = openness_delta_threshold
 
     def get_recorder_term_cfg(self) -> RecorderTermCfg:
-        """Return the recorder term configuration for the object-moved rate metric."""
+        """Return the recorder term configuration for the door-moved rate metric."""
         return JointStateRecorderCfg(object=self.object)
 
     def compute_metric_from_recording(self, recorded_metric_data: list[np.ndarray]) -> float:
+        """Computes the door-moved rate from the recorded metric data.
+
+        Args:
+            recorded_metric_data(list[np.ndarray]): The recorded door openness per simulated
+                episode.
+
+        Returns:
+            The door-moved rate(float). Value between 0 and 1. The proportion of episodes
+                in which the door moved.
+        """
         door_moved_per_demo = []
         for episode_data in recorded_metric_data:
             openness_threshold = self.reset_openness + self.openness_delta_threshold

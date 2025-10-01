@@ -31,7 +31,7 @@ class Openable(AffordanceBase):
         self.openable_open_threshold = openable_open_threshold
 
     def get_openness(self, env: ManagerBasedEnv, asset_cfg: SceneEntityCfg | None = None) -> torch.Tensor:
-        """Returns a boolean tensor of whether the object is open."""
+        """Returns the percentage open that the object is."""
         if asset_cfg is None:
             asset_cfg = SceneEntityCfg(self.name)
         asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
