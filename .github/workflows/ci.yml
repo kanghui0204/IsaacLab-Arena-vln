@@ -84,7 +84,7 @@ jobs:
         password: ${{ env.NGC_API_KEY }}
       # virtual mounted ckpts directory from the local machine
       volumes:
-        - $HOME/ckpts:/ckpts
+        - /home/runner/ckpts:/ckpts
     steps:
       - name: Print ckpts directory
         run: ls -la /ckpts
