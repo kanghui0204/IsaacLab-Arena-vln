@@ -53,11 +53,13 @@ class GalileoG1LocomanipPickAndPlaceEnvironment(ExampleEnvironmentBase):
 
         if (
             args_cli.embodiment == "g1_wbc_pink"
-            and hasattr(args_cli, "mimic") and args_cli.mimic
+            and hasattr(args_cli, "mimic")
+            and args_cli.mimic
             and not hasattr(args_cli, "auto")
         ):
             # Patch the Mimic generate function for locomanip use case
             from isaac_arena.utils.locomanip_mimic_patch import patch_generate
+
             patch_generate()
 
             # Set navigation p-controller for locomanip use case

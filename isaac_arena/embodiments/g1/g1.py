@@ -744,4 +744,3 @@ class G1MimicEnv(ManagerBasedRLMimicEnv):
             object_pose_matrix[obj_name] = object_pose_pelvis_frame
 
         return object_pose_matrix
-
