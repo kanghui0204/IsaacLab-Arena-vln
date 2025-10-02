@@ -126,7 +126,7 @@ jobs:
   build_and_push_image_post_merge:
     name: Build & push NGC image (post-merge)
     runs-on: [self-hosted, zurich]
-    timeout-minutes: 30
+    timeout-minutes: 60
     # needs: [test, test_policy]       # only push if tests passed
     # if: github.event_name == 'push' #&& github.ref == 'refs/heads/main'
 
