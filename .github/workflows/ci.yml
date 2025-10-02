@@ -170,6 +170,12 @@ jobs:
       - name: Pull Git LFS files
         run: git lfs pull
 
+      - name: Install docker
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends docker.io
+          docker --version
+
       - name: Docker login to NGC
         # $oauthtoken is the literal NGC username; pipe the NGC API key via stdin
         run: echo "${NGC_API_KEY}" | docker login nvcr.io -u '$oauthtoken' --password-stdin
