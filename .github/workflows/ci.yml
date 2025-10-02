@@ -171,6 +171,9 @@ jobs:
           # submodules: true
           # clean: true
 
+      - name: debug
+        run: sleep infinity
+
       - name: submodules
         run: git submodule update --init
 
