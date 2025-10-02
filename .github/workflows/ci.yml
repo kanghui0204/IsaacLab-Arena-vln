@@ -157,11 +157,14 @@ jobs:
     # needs: [test, test_policy]       # only push if tests passed
     # if: github.event_name == 'push' #&& github.ref == 'refs/heads/main'
 
+    # container:
+    #   image: nvcr.io/nvstaging/isaac-amr/isaac_arena:latest
+    #   credentials:
+    #     username: $oauthtoken
+    #     password: ${{ env.NGC_API_KEY }}
+
     container:
-      image: nvcr.io/nvstaging/isaac-amr/isaac_arena:latest
-      credentials:
-        username: $oauthtoken
-        password: ${{ env.NGC_API_KEY }}
+      image: ubuntu-latest
 
     env:
       # already defined at top, but keep here for clarity/local override if needed
