@@ -40,6 +40,9 @@ jobs:
           apt-get install -y --no-install-recommends git git-lfs clang-format ca-certificates
           git --version
           git lfs version
+      
+      - name: Debug
+        run: sleep infinity
 
       # Checkout Code
       - name: Checkout Code
