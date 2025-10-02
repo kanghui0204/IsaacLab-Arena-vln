@@ -155,8 +155,8 @@ jobs:
           git --version
           git lfs version
 
-      - name: debug
-        run: sleep infinity
+      # - name: debug
+      #   run: sleep infinity
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -164,8 +164,11 @@ jobs:
           clean: true
           fetch-depth: 0
           lfs: true
-          submodules: true
+          # submodules: true
           # clean: true
+
+      - name: submodules
+        run: git submodule update --init
 
       # Fix "detected dubious ownership in repository" inside containers
       - name: Mark repo as safe for git
