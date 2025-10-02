@@ -49,7 +49,7 @@ jobs:
           fetch-depth: 0
           # LFS checkout here somehow causes issues when LFS stuff changes over time.
           # So I do LFS manually in a step after.
-          # lfs: true 
+          # lfs: true
 
       # Fix "detected dubious ownership in repository" inside containers
       - name: Mark repo as safe for git
