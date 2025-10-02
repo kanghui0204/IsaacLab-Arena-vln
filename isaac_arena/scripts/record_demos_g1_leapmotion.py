@@ -63,9 +63,7 @@ parser.add_argument(
     default=False,
     help="Enable Pinocchio.",
 )
-parser.add_argument(
-    "--teleop_device", type=str, default="leapmotion", help="The teleop device to use."
-)
+parser.add_argument("--teleop_device", type=str, default="leapmotion", help="The teleop device to use.")
 
 # Add the example environments CLI args
 # NOTE(alexmillane, 2025.09.04): This has to be added last, because
@@ -103,9 +101,8 @@ import isaaclab_mimic.envs  # noqa: F401
 import omni.log
 import omni.ui as ui
 import omni.usd
-from isaaclab.devices import Se3Keyboard, Se3KeyboardCfg, Se3SpaceMouse, Se3SpaceMouseCfg
+from isaaclab.devices import Se3Keyboard, Se3KeyboardCfg
 from isaaclab.devices.openxr import remove_camera_configs
-from isaaclab.devices.teleop_device_factory import create_teleop_device
 from isaaclab_mimic.ui.instruction_display import InstructionDisplay, show_subtask_instructions
 from omni.kit.viewport.utility import get_viewport_from_window_name
 
@@ -113,8 +110,6 @@ from omni.kit.viewport.utility import get_viewport_from_window_name
 
 if args_cli.enable_pinocchio:
     import isaaclab_tasks.manager_based.manipulation.pick_place  # noqa: F401
-
-from collections.abc import Callable
 
 import isaaclab_tasks  # noqa: F401
 from isaaclab.envs import DirectRLEnvCfg, ManagerBasedRLEnvCfg
@@ -550,16 +545,9 @@ def run_simulation_loop(
         running_recording_instance = False
         print("Recording paused")
 
-    # Set up teleoperation callbacks
-    teleoperation_callbacks = {
-        "R": reset_recording_instance,
-        "START": start_recording_instance,
-        "STOP": stop_recording_instance,
-        "RESET": reset_recording_instance,
-    }
-
     # Import Leapmotion after env creation to prevent circular import
     from isaac_arena.teleop_devices.leapmotion.leapmotion_teleop_device import Leapmotion, LeapmotionCfg
+
     teleop_interface = Leapmotion(LeapmotionCfg())
 
     """ Lower body keyboard control """
