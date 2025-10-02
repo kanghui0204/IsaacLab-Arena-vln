@@ -44,24 +44,25 @@ jobs:
       # - name: Debug
       #   run: sleep infinity
 
+      # Fix "detected dubious ownership in repository" inside containers
+      - name: Mark repo as safe for git
+        run: git config --global --add safe.directory "$PWD"
+
       # Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           clean: true
           fetch-depth: 0
-          # lfs: true
+          lfs: true
 
-      # git lfs
-      # NOTE(alexmillane, 2025-10-02): git lfs is not needed for the CI workflow
-      - name: Git LFS
-        run: |
-          git lfs update --force
-          git lfs install --local
+      # # git lfs
+      # # NOTE(alexmillane, 2025-10-02): git lfs is not needed for the CI workflow
+      # - name: Git LFS
+      #   run: |
+      #     git lfs update --force
+      #     git lfs install --local
 
-      # Fix "detected dubious ownership in repository" inside containers
-      - name: Mark repo as safe for git
-        run: git config --global --add safe.directory "$PWD"
 
       # Pull LFS files explicitly (in case checkout didn't get them all)
       - name: Pull Git LFS files
