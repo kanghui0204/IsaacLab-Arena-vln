@@ -130,24 +130,14 @@ jobs:
     # needs: [test, test_policy]       # only push if tests passed
     # if: github.event_name == 'push' #&& github.ref == 'refs/heads/main'
 
-    # container:
-    #   image: nvcr.io/nvstaging/isaac-amr/isaac_arena:latest
-
-
     container:
       image: ubuntu:latest
-      # credentials:
-      #   username: $oauthtoken
-      #   password: ${{ env.NGC_API_KEY }}
 
     env:
       # already defined at top, but keep here for clarity/local override if needed
       NGC_API_KEY: ${{ secrets.ARENA_NGC_API_KEY }}
 
     steps:
-      # - name: Clean workspace
-      #   run: sudo rm -rf $GITHUB_WORKSPACE/*
-
       - name: Install git (and tools needed by hooks)
         run: |
           apt-get update
@@ -155,35 +145,25 @@ jobs:
           git --version
           git lfs version
 
-      # - name: debug
-      #   run: sleep infinity
-
       # Fix "detected dubious ownership in repository" inside containers
       - name: Mark repo as safe for git
         run: git config --global --add safe.directory "$PWD"
 
+      # Somehow this simlink remains from the previous steps, and it causes the submodule
+      # checkout to fail. So here we clean it up, before checking out the submodules.
       - name: cleanup IsaacSim simlink
         run: rm -f submodules/IsaacLab/_isaac_sim
 
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          clean: true
+          # clean: true
           fetch-depth: 0
           lfs: true
           submodules: true
 
-      # - name: debug
-      #   run: sleep infinity
-
       - name: submodules
         run: git submodule update --init
-
-      # - name: debug
-      #   run: sleep infinity
-
-      # - name: Pull Git LFS files
-      #   run: git lfs pull
 
       - name: Install docker
         run: |
@@ -196,9 +176,6 @@ jobs:
           "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null &&
           apt-get update && apt-get install -y docker.io docker-buildx-plugin
           docker --version
-
-      # - name: Enable BuildKit
-      #   run: echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
 
       - name: Docker login to NGC
         # $oauthtoken is the literal NGC username; pipe the NGC API key via stdin
