@@ -200,4 +200,5 @@ class Leapmotion(DeviceBase):
         self._additional_callbacks[key] = func
 
     def advance(self) -> torch.Tensor:
+        print(f"[Leapmotion] Internal usage only, remove before release.")
         return self.device_streamer.get_leapmotion_action()
