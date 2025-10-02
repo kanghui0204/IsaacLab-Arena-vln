@@ -172,16 +172,15 @@ jobs:
           fetch-depth: 0
           lfs: true
           submodules: true
-          # clean: true
 
-      - name: debug
-        run: sleep infinity
+      # - name: debug
+      #   run: sleep infinity
 
       - name: submodules
         run: git submodule update --init
 
-      - name: debug
-        run: sleep infinity
+      # - name: debug
+      #   run: sleep infinity
 
       # - name: Pull Git LFS files
       #   run: git lfs pull
