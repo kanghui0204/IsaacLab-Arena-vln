@@ -10,7 +10,6 @@ WORKDIR="/workspaces/isaac_arena"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# while getopts ":t:g:ph:G" OPTION; do
 while getopts ":t:gn:G:vn:pn:Rn:hn:" OPTION; do
     case $OPTION in
         t)
