@@ -127,7 +127,7 @@ jobs:
     runs-on: [self-hosted, zurich]
     timeout-minutes: 30
     needs: [test, test_policy]       # only push if tests passed
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' #&& github.ref == 'refs/heads/main'
 
     env:
       # already defined at top, but keep here for clarity/local override if needed
@@ -140,6 +140,7 @@ jobs:
           fetch-depth: 0
           lfs: true
           submodules: recursive
+          clean: true
 
       - name: Mark repo as safe for git
         run: git config --global --add safe.directory "$PWD"
