@@ -155,6 +155,9 @@ jobs:
           git --version
           git lfs version
 
+      - name: debug
+        run: sleep infinity
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
