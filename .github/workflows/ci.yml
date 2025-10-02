@@ -123,7 +123,7 @@ jobs:
   #       run: /isaac-sim/python.sh -m pytest -sv isaac_arena/tests/policy/
 
 
-  test:
+  build_and_push_image_post_merge:
     name: Run pre commit checks and tests
     runs-on: [self-hosted, zurich]
     timeout-minutes: 30
@@ -150,7 +150,7 @@ jobs:
           lfs: true
 
 
-  build_and_push_image_post_merge:
+  test:
     name: Build & push NGC image (post-merge)
     runs-on: [self-hosted, zurich]
     timeout-minutes: 30
