@@ -46,7 +46,7 @@ class Gr1OpenMicrowaveEnvironment(ExampleEnvironmentBase):
         # Put the microwave on the packing table.
         microwave_pose = Pose(
             position_xyz=(0.8, -0.00586, 0.22773),
-            rotation_wxyz=(0.7071068, 0, 0, -0.7071068),
+            rotation_wxyz=(0.7071068, 0, 0, -0.707106),
         )
         microwave.set_initial_pose(microwave_pose)
 
