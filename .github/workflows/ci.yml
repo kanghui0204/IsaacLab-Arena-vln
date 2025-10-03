@@ -244,8 +244,7 @@ jobs:
           cd docs
           make SPHINXOPTS=-W html
 
-      # # Deploy to pages
-      # - name: Deploy to pages
-      #   run: |
-      #     cd docs
-      #     make SPHINXOPTS=-W deploy
+      # Deploy to pages
+      - name: Deploy to GitHub Pages
+        run: |
+          cp -r docs/_build/html/* .
