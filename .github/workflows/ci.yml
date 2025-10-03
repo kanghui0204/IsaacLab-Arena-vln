@@ -211,7 +211,7 @@ jobs:
     timeout-minutes: 30
 
     container:
-      image: ubuntu:latest
+      image: python:3.11-slim
 
     steps:
       - name: Install git (and tools needed by hooks)
