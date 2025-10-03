@@ -52,6 +52,7 @@ class G1EmbodimentBase(EmbodimentBase):
         super().__init__(enable_cameras, initial_pose)
         # Configuration structs
         self.scene_config = G1SceneCfg()
+        self.camera_config = G1CameraCfg()
         self.action_config = MISSING
         self.observation_config = MISSING
         self.event_config = MISSING
@@ -291,6 +292,11 @@ class G1SceneCfg:
         },
     )
 
+
+@configclass
+class G1CameraCfg:
+    """Configuration for cameras."""
+
     robot_head_cam = CameraCfg(
         prim_path="{ENV_REGEX_NS}/Robot/head_link/RobotHeadCam",
         update_period=0.0,
@@ -454,10 +460,6 @@ class G1WBCPinkObservationsCfg:
         )
         robot_quat = ObsTerm(
             func=transforms_terms.get_asset_quaternion,
-        )
-        robot_head_cam = ObsTerm(
-            func=mdp.image,
-            params={"sensor_cfg": SceneEntityCfg("robot_head_cam"), "data_type": "rgb", "normalize": False},
         )
 
         def __post_init__(self):
