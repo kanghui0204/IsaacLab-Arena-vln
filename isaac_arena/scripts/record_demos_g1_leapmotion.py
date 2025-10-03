@@ -99,11 +99,9 @@ import isaaclab_mimic.envs  # noqa: F401
 
 # Omniverse logger
 import omni.log
-import omni.ui as ui
 import omni.usd
 from isaaclab.devices import Se3Keyboard, Se3KeyboardCfg
 from isaaclab.devices.openxr import remove_camera_configs
-from isaaclab_mimic.ui.instruction_display import InstructionDisplay, show_subtask_instructions
 from omni.kit.viewport.utility import get_viewport_from_window_name
 
 # Imports have to follow simulation startup.
@@ -114,7 +112,6 @@ if args_cli.enable_pinocchio:
 import isaaclab_tasks  # noqa: F401
 from isaaclab.envs import DirectRLEnvCfg, ManagerBasedRLEnvCfg
 from isaaclab.envs.mdp.recorders.recorders_cfg import ActionStateRecorderManagerCfg
-from isaaclab.envs.ui import EmptyWindow
 from isaaclab.managers import DatasetExportMode
 
 
@@ -304,30 +301,6 @@ def create_environment(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg, env_name:
         exit(1)
 
 
-def setup_ui(label_text: str, env: gym.Env) -> InstructionDisplay:
-    """Set up the user interface elements.
-
-    Creates instruction display and UI window with labels for showing information
-    to the user during demonstration recording.
-
-    Args:
-        label_text: Text to display showing current recording status
-        env: The environment instance for which UI is being created
-
-    Returns:
-        InstructionDisplay: The configured instruction display object
-    """
-    instruction_display = InstructionDisplay(args_cli.teleop_device)
-    if not args_cli.xr:
-        window = EmptyWindow(env, "Instruction")
-        with window.ui_window_elements["main_vstack"]:
-            demo_label = ui.Label(label_text)
-            subtask_label = ui.Label("")
-            instruction_display.set_labels(subtask_label, demo_label)
-
-    return instruction_display
-
-
 def process_success_condition(env: gym.Env, success_term: object | None, success_step_count: int) -> tuple[int, bool]:
     """Process the success condition for the current step.
 
@@ -363,9 +336,7 @@ def process_success_condition(env: gym.Env, success_term: object | None, success
     return success_step_count, False
 
 
-def handle_reset(
-    env: gym.Env, success_step_count: int, instruction_display: InstructionDisplay, label_text: str
-) -> int:
+def handle_reset(env: gym.Env, success_step_count: int) -> int:
     """Handle resetting the environment.
 
     Resets the environment, recorder manager, and related state variables.
@@ -374,7 +345,6 @@ def handle_reset(
     Args:
         env: The environment instance to reset
         success_step_count: Current count of consecutive successful steps
-        instruction_display: The display object to update
         label_text: Text to display showing current recording status
 
     Returns:
@@ -385,7 +355,6 @@ def handle_reset(
     env.recorder_manager.reset()
     env.reset()
     success_step_count = 0
-    instruction_display.show_demo(label_text)
     return success_step_count
 
 
@@ -581,11 +550,6 @@ def run_simulation_loop(
     ]
     find_and_set_camera(camera_paths)
 
-    label_text = f"Recorded {current_recorded_demo_count} successful demonstrations."
-    instruction_display = setup_ui(label_text, env)
-
-    subtasks = {}
-
     with contextlib.suppress(KeyboardInterrupt) and torch.inference_mode():
         while simulation_app.is_running():
             # Get upper body command
@@ -607,12 +571,7 @@ def run_simulation_loop(
             # Perform action on environment
             if running_recording_instance:
                 # Compute actions based on environment
-                obv = env.step(actions)
-                if subtasks is not None:
-                    if subtasks == {}:
-                        subtasks = obv[0].get("subtask_terms")
-                    elif subtasks:
-                        show_subtask_instructions(instruction_display, subtasks, obv, env.cfg)
+                env.step(actions)
             else:
                 env.sim.render()
 
@@ -624,12 +583,10 @@ def run_simulation_loop(
             # Update demo count if it has changed
             if env.recorder_manager.exported_successful_episode_count > current_recorded_demo_count:
                 current_recorded_demo_count = env.recorder_manager.exported_successful_episode_count
-                label_text = f"Recorded {current_recorded_demo_count} successful demonstrations."
-                print(label_text)
 
             # Handle reset if requested
             if should_reset_recording_instance:
-                success_step_count = handle_reset(env, success_step_count, instruction_display, label_text)
+                success_step_count = handle_reset(env, success_step_count)
                 should_reset_recording_instance = False
 
             # Check if we've reached the desired number of demos
