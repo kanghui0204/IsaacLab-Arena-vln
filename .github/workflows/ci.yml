@@ -228,23 +228,17 @@ jobs:
           clean: true
           fetch-depth: 0
 
-      # Fix "detected dubious ownership in repository" inside containers
-      - name: Mark repo as safe for git
-        run: git config --global --add safe.directory "$PWD"
-
-      # Docs deps
-      - name: Install docs dependencies
-        run: |
-          cd docs
-          pip3 install -r requirements.txt
-
       # Build docs
       - name: Build docs
         run: |
           cd docs
+          pip3 install -r requirements.txt
           make SPHINXOPTS=-W html
 
       # Deploy to pages
+      # Deploying is as simple as copying the index.html file to the root of the repository
+      # Note that by default GitHub pages will assume that this is a Jekyll site, so we need to
+      # create a .nojekyll file to disable Jekyll.
       - name: Deploy to GitHub Pages
         run: |
           cp -r docs/_build/html/* .
