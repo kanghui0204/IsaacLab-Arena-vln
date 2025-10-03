@@ -99,12 +99,12 @@ html_theme_options = {
     "pygments_light_style": "tango",
     "pygments_dark_style": "monokai",
     "footer_links": {},
-    "github_url": "https://github.com/nvidia-isaac/nvblox",
+    "github_url": "https://github.com/nvidia-isaac/isaac_arena",
     # TODO(alexmillane, 2025-04-24): Try re-enabling this once we have a pypi page.
     # "icon_links": [
     #     {
     #         "name": "PyPI",
-    #         "url": "https://pypi.org/project/nvblox",
+    #         "url": "https://pypi.org/project/isaac_arena",
     #         "icon": "fa-brands fa-python",
     #         "type": "fontawesome",
     #     },
