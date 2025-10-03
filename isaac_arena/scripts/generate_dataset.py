@@ -90,10 +90,7 @@ class PreStepFlatCameraObservationsRecorder(RecorderTerm):
     """Recorder term that records the camera observations in each step."""
 
     def record_pre_step(self):
-        if "camera_obs" in self._env.obs_buf.keys():
-            return "camera_obs", self._env.obs_buf["camera_obs"]
-        else:
-            return "camera_obs", torch.empty((self._env.num_envs, 0), device=self._env.device)
+        return "camera_obs", self._env.obs_buf["camera_obs"]
 
 
 @configclass
