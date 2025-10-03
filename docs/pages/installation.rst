@@ -12,7 +12,13 @@ We have two versions of our container:
 - **With GR00T:** This container contains additional dependencies for running ``isaac_arena``
   with the GR00T policy.
 
-To launch out container, run:
+To launch our container. First clone the repository:
+
+
+:isaac_arena_git_clone_code_block:
+
+
+and then launch the container:
 
 .. tabs::
     .. tab:: Without GR00T

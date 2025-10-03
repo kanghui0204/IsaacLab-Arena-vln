@@ -60,8 +60,6 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx_tabs.tabs",
     "sphinx_copybutton",
-    # TODO(alexmillane, 2025-04-24): Try re-enabling this once we have pydocs generating.
-    #    'autodocsumm'
     "isaac_arena_doc_tools",
 ]
 
@@ -147,20 +145,10 @@ for ignore in temporary_linkcheck_ignore:
 #  Macros dependent on release state
 #####################################
 
-nvblox_torch_docs_config = {
+isaac_arena_docs_config = {
     "released": released,
-    # 'internal_wheel_base_url': 'https://urm.nvidia.com/artifactory/hw-nvblox-alpine-local/' + \
-    #     'pypi/release/nvblox_torch/',
-    # 'external_wheel_base_url': 'https://github.com/nvidia-isaac/nvblox/releases' + \
-    #     f'/download/v{NVBLOX_VERSION_NUMBER}',
-    # 'wheel_name_ubuntu_24_cuda_12': \
-    #     'nvblox_torch-0.0.8rc5+cu12ubuntu24-863-py3-none-linux_x86_64.whl',
-    # 'wheel_name_ubuntu_22_cuda_12': \
-    #     'nvblox_torch-0.0.8rc5+cu12ubuntu22-863-py3-none-linux_x86_64.whl',
-    # 'wheel_name_ubuntu_22_cuda_11': \
-    #     'nvblox_torch-0.0.8rc5+cu11ubuntu22-863-py3-none-linux_x86_64.whl',
-    # 'internal_git_url': 'ssh://git@gitlab-master.nvidia.com:12051/nvblox/nvblox.git',
-    # 'external_git_url': 'git@github.com:nvidia-isaac/nvblox.git',
-    # 'internal_code_link_base_url': 'https://gitlab-master.nvidia.com/nvblox/nvblox/-/tree/main',
-    # 'external_code_link_base_url': 'https://github.com/nvidia-isaac/nvblox/tree/public'
+    "internal_git_url": "git@github.com:isaac-sim/isaac_arena.git",
+    "external_git_url": "UNDECIDED",
+    "internal_code_link_base_url": "https://github.com/isaac-sim/isaac_arena",
+    "external_code_link_base_url": "UNDECIDED",
 }
