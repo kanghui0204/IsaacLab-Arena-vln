@@ -21,7 +21,7 @@ To launch our container. First clone the repository:
 and then launch the container:
 
 .. tabs::
-    .. tab:: Without GR00T
+    .. tab3:: Without GR00T
 
         .. code-block:: bash
 
