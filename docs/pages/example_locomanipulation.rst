@@ -37,7 +37,7 @@ Download the recorded HDF5 data from `here <https://huggingface.co/nvidia/Arena-
 
     huggingface-cli download \
         nvidia/Arena-G1-Loco-Manipulation-Task \
-        --local-dir /datasets/arena_g1_loco_manipulation_task
+        --local-dir /datasets/Arena-G1-Loco-Manipulation-Task
 
 
 Converting to LeRobot Format
@@ -61,8 +61,8 @@ Configuration file (``g1_locomanip_config.yaml``):
 .. code-block:: yaml
 
    # Input/Output paths
-   data_root: "/datasets/"
-   hdf5_name: "my_g1_demos.hdf5"    # Modify this to the name of the HDF5 file you want to convert
+   data_root: "/datasets/Arena-G1-Loco-Manipulation-Task"
+   hdf5_name: "g1_galileo_box_npnp_mimic_generated_100_v2_action_noise_003.hdf5"    # Modify this to the name of the HDF5 file you want to convert
 
    # Task description
    language_instruction: "Pick up the brown box and place it in the blue bin"
@@ -145,7 +145,7 @@ Configuration file (``g1_locomanip_replay_action_config.yaml``):
 .. code-block:: yaml
 
    # Dataset path (LeRobot format)
-   dataset_path: /datasets/Arena-G1-Loco-Manipulation-Task
+   dataset_path: /datasets/Arena-G1-Loco-Manipulation-Task/lerobot/
    
    # Action chunking parameters
    action_horizon: 16
