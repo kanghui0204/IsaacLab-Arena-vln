@@ -19,19 +19,23 @@ Recording Demonstrations
 
 Use the teleoperation interface to record human demonstrations:
 
-# TODO(xinjie.yao, 2025-10-03): add record_demos command
+.. TODO::
+
+   (xinjie.yao, 2025-10-03): add record_demos command
 
 Mimic Generated Data
 ---------------------
 
 Use Isaac Lab Mimic with added Mimic supports for loco-manipulation to generate demonstrations:
 
-# TODO(xinjie.yao, 2025-10-03): add mimic command
+.. TODO::
+
+   (xinjie.yao, 2025-10-03): add mimic command
 
 Download Mimic Generated Data (Optional)
 ----------------------------------------
 
-Download the recorded HDF5 data from `here <https://huggingface.co/nvidia/Arena-G1-Loco-Manipulation-Task>`_.
+Download the recorded HDF5 data from `Arena-G1-Loco-Manipulation-Task <https://huggingface.co/datasets/nvidia/Arena-G1-Loco-Manipulation-Task>`_.
 
 .. code-block:: bash
 
@@ -88,7 +92,7 @@ The conversion process:
 Downloaded converted LeRobot Data (Optional)
 --------------------------------------------
 
-Download the converted LeRobot data from `here <https://huggingface.co/nvidia/Arena-G1-Loco-Manipulation-Task>`_.
+Download the converted LeRobot data from `huggingface: Arena-G1-Loco-Manipulation-Task <https://huggingface.co/datasets/nvidia/Arena-G1-Loco-Manipulation-Task>`_.
 
 .. code-block:: bash
 
@@ -101,7 +105,9 @@ Replaying Recorded Data
 
 Replay original HDF5 demonstrations to validate data quality:
 
-# TODO(xinjie.yao, 2025-10-03): verify this command
+.. TODO::
+
+   (xinjie.yao, 2025-10-03): verify this command
 
 .. code-block:: bash
 
@@ -173,12 +179,14 @@ Post-training Policy
 --------------------
 
 To post-train the GR00T N1.x policy on the converted LeRobot dataset, you can use the following command:
-# TODO(xinjie.yao, 2025-10-03): add post-training policy command
+
+.. TODO::
+   (xinjie.yao, 2025-10-03): add post-training policy command
 
 Download the trained GR00T N1.x checkpoints
 -------------------------------------------
 
-Download the trained GR00T N1.x policy checkpoints from `here <https://huggingface.co/nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation>`_.
+Download the trained GR00T N1.x policy checkpoints from `huggingface: GN1x-Tuned-Arena-G1-Loco-Manipulation <https://huggingface.co/nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation>`_.
 
 .. code-block:: bash
 
@@ -195,7 +203,8 @@ Make sure you are running the docker container with GR00T dependencies. You can 
 
     ./docker/run_docker.sh -g -G base # Include other docker arguments if needed
 
-# TODO(xinjie.yao, 2025-10-03): add evaluation command
+.. TODO::
+   (xinjie.yao, 2025-10-03): add evaluation command
 
 Run trained GR00T policies in closed-loop:
 
@@ -245,4 +254,5 @@ Advanced Usage
 
 Bring your own environment & policy
 
-# TODO(xinjie.yao, 2025-10-03): add advanced usage command
+.. TODO::
+   (xinjie.yao, 2025-10-03): add advanced usage command
