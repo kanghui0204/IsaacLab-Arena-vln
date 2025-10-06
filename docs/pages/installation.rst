@@ -1,7 +1,7 @@
 Installation
 ============
 
-At version ``v1.0.0`` ``isaac_arena`` only support installation from source inside a docker container.
+At version ``v1.0.0`` ``Isaac-Lab Arena`` only support installation from source inside a docker container.
 
 As a developer, you need to launch the container and then run isaac_arena inside.
 

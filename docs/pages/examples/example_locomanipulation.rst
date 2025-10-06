@@ -1,4 +1,4 @@
-Example: Loco-Manipulation
+Loco-Manipulation
 ==========================
 
 This example demonstrates how to work with loco-manipulation tasks in Isaac Arena, covering the complete workflow from recording demonstrations to running closed-loop policy inference.
