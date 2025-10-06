@@ -87,6 +87,7 @@ RUN if [ "$INSTALL_GROOT" = "true" ]; then \
 # Copy the rest of the files
 COPY *.* ${WORKDIR}/
 COPY isaac_arena ${WORKDIR}/isaac_arena
+COPY docs ${WORKDIR}/docs
 
 # Install Isaac Arena
 RUN /isaac-sim/python.sh -m pip install -e ${WORKDIR}/
