@@ -1,5 +1,5 @@
 ``Isaac-Lab Arena`` Documentation
-=============================
+=================================
 
 ``Isaac-Lab Arena`` is an extension to `Isaac Lab <https://isaac-sim.github.io/IsaacLab/main/index.html>`_
 for providing an environment for robotic policy evaluation.
