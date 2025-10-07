@@ -42,7 +42,6 @@ from isaac_arena.embodiments.embodiment_base import EmbodimentBase
 from isaac_arena.utils.isaaclab_utils.resets import reset_all_articulation_joints
 from isaac_arena.utils.pose import Pose
 
-
 ARM_JOINT_NAMES_LIST = [
     # arm joint
     "left_shoulder_pitch_joint",
@@ -83,6 +82,7 @@ ARM_JOINT_NAMES_LIST = [
     "L_thumb_distal_joint",
     "R_thumb_distal_joint",
 ]
+
 
 @register_asset
 class GR1T2EmbodimentBase(EmbodimentBase):
@@ -150,6 +150,7 @@ class GR1T2PinkEmbodiment(GR1T2EmbodimentBase):
 @configclass
 class GR1T2JointPositionActionCfg:
     """Configuration for the arm joint position action."""
+
     joint_pos = JointPositionActionCfg(
         asset_name="robot", joint_names=ARM_JOINT_NAMES_LIST, scale=1.0, use_default_offset=False
     )

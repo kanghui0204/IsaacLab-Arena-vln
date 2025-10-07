@@ -67,5 +67,6 @@ def test_gr1_manip_replay_lerobot_policy_runner_single_env():
     args.append("gr1_joint")
     run_subprocess(args)
 
+
 if __name__ == "__main__":
     test_g1_locomanip_replay_lerobot_policy_runner_single_env()
