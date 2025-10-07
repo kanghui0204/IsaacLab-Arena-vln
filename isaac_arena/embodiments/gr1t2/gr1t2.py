@@ -43,47 +43,46 @@ from isaac_arena.utils.isaaclab_utils.resets import reset_all_articulation_joint
 from isaac_arena.utils.pose import Pose
 
 
-joint_names_dict = {
+ARM_JOINT_NAMES_LIST = [
     # arm joint
-    "left_shoulder_pitch_joint": 0,
-    "right_shoulder_pitch_joint": 1,
-    "left_shoulder_roll_joint": 2,
-    "right_shoulder_roll_joint": 3,
-    "left_shoulder_yaw_joint": 4,
-    "right_shoulder_yaw_joint": 5,
-    "left_elbow_pitch_joint": 6,
-    "right_elbow_pitch_joint": 7,
-    "left_wrist_yaw_joint": 8,
-    "right_wrist_yaw_joint": 9,
-    "left_wrist_roll_joint": 10,
-    "right_wrist_roll_joint": 11,
-    "left_wrist_pitch_joint": 12,
-    "right_wrist_pitch_joint": 13,
+    "left_shoulder_pitch_joint",
+    "right_shoulder_pitch_joint",
+    "left_shoulder_roll_joint",
+    "right_shoulder_roll_joint",
+    "left_shoulder_yaw_joint",
+    "right_shoulder_yaw_joint",
+    "left_elbow_pitch_joint",
+    "right_elbow_pitch_joint",
+    "left_wrist_yaw_joint",
+    "right_wrist_yaw_joint",
+    "left_wrist_roll_joint",
+    "right_wrist_roll_joint",
+    "left_wrist_pitch_joint",
+    "right_wrist_pitch_joint",
     # hand joints
-    "L_index_proximal_joint": 14,
-    "L_middle_proximal_joint": 15,
-    "L_pinky_proximal_joint": 16,
-    "L_ring_proximal_joint": 17,
-    "L_thumb_proximal_yaw_joint": 18,
-    "R_index_proximal_joint": 19,
-    "R_middle_proximal_joint": 20,
-    "R_pinky_proximal_joint": 21,
-    "R_ring_proximal_joint": 22,
-    "R_thumb_proximal_yaw_joint": 23,
-    "L_index_intermediate_joint": 24,
-    "L_middle_intermediate_joint": 25,
-    "L_pinky_intermediate_joint": 26,
-    "L_ring_intermediate_joint": 27,
-    "L_thumb_proximal_pitch_joint": 28,
-    "R_index_intermediate_joint": 29,
-    "R_middle_intermediate_joint": 30,
-    "R_pinky_intermediate_joint": 31,
-    "R_ring_intermediate_joint": 32,
-    "R_thumb_proximal_pitch_joint": 33,
-    "L_thumb_distal_joint": 34,
-    "R_thumb_distal_joint": 35,
-}
-joint_names = list(joint_names_dict.keys())
+    "L_index_proximal_joint",
+    "L_middle_proximal_joint",
+    "L_pinky_proximal_joint",
+    "L_ring_proximal_joint",
+    "L_thumb_proximal_yaw_joint",
+    "R_index_proximal_joint",
+    "R_middle_proximal_joint",
+    "R_pinky_proximal_joint",
+    "R_ring_proximal_joint",
+    "R_thumb_proximal_yaw_joint",
+    "L_index_intermediate_joint",
+    "L_middle_intermediate_joint",
+    "L_pinky_intermediate_joint",
+    "L_ring_intermediate_joint",
+    "L_thumb_proximal_pitch_joint",
+    "R_index_intermediate_joint",
+    "R_middle_intermediate_joint",
+    "R_pinky_intermediate_joint",
+    "R_ring_intermediate_joint",
+    "R_thumb_proximal_pitch_joint",
+    "L_thumb_distal_joint",
+    "R_thumb_distal_joint",
+]
 
 @register_asset
 class GR1T2EmbodimentBase(EmbodimentBase):
@@ -150,9 +149,9 @@ class GR1T2PinkEmbodiment(GR1T2EmbodimentBase):
 
 @configclass
 class GR1T2JointPositionActionCfg:
-    """Configuration for the joint position action."""
+    """Configuration for the arm joint position action."""
     joint_pos = JointPositionActionCfg(
-        asset_name="robot", joint_names=joint_names, scale=1.0, use_default_offset=False
+        asset_name="robot", joint_names=ARM_JOINT_NAMES_LIST, scale=1.0, use_default_offset=False
     )
 
 
