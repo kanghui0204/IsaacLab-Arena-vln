@@ -1,10 +1,15 @@
-``isaac_arena`` Documentation
-=============================
+``Isaac Lab Arena`` Documentation
+=================================
 
-``isaac_arena`` is an extension to `Isaac Lab <https://isaac-sim.github.io/IsaacLab/main/index.html>`_
+``Isaac Lab Arena`` is an extension to `Isaac Lab <https://isaac-sim.github.io/IsaacLab/main/index.html>`_
 for providing an environment for robotic policy evaluation.
 
-A key feature of ``isaac_arena`` is an easier, more composable interface for creating environments.
+Isaac Lab Arena is a comprehensive robotics simulation framework that enhances NVIDIA Isaac Lab by providing a composable,
+scalable system for creating diverse simulation environments and evaluating robot learning policies.
+The framework enables researchers and developers to rapidly prototype and test robotic tasks with various robot embodiments,
+objects, and environments.
+
+A key feature of ``Isaac Lab Arena`` is an easier, more composable interface for creating environments.
 
 
 .. _quickstart:
@@ -12,13 +17,13 @@ A key feature of ``isaac_arena`` is an easier, more composable interface for cre
 Installation
 ============
 
-``isaac-arena`` version ``v1.0.0`` only supports installation from source in a docker container.
+``isaaclab_arena`` version ``v1.0.0`` only supports installation from source in a docker container.
 See :doc:`pages/installation` for more options.
 
 Examples
 ========
 
-Below are some example environments built using ``isaac_arena``.
+Below are some example environments built using ``isaaclab_arena``.
 
 .. TODO::
 
@@ -47,6 +52,24 @@ This code is under an `open-source license <https://github.com/isaac-sim/isaac_a
    :caption: User's Guide
 
    pages/installation
-   pages/example_tabletop_manipulation
-   pages/example_locomanipulation
-   pages/concept_environment_design
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Concepts
+
+   pages/concepts/concept_affordances_design
+   pages/concepts/concept_assets_design
+   pages/concepts/concept_embodiment_design
+   pages/concepts/concept_environment_design
+   pages/concepts/concept_metrics_design
+   pages/concepts/concept_policy_design
+   pages/concepts/concept_scene_design
+   pages/concepts/concept_tasks_design
+   pages/concepts/concept_teleop_devices_design
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   pages/examples/example_locomanipulation
+   pages/examples/example_tabletop_manipulation

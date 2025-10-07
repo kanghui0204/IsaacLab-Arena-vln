@@ -1,4 +1,0 @@
-Example: Tabletop Manipulation
-==============================
-
-TBD.

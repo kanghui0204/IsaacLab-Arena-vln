@@ -1,4 +1,0 @@
-Example: Loco-Manipulation
-==========================
-
-TBD.
