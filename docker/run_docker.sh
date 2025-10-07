@@ -127,6 +127,7 @@ else
                     "--net=host"
                     "--runtime=nvidia"
                     "--gpus=all"
+                    "-v" "./docs:${WORKDIR}/docs"
                     "-v" "./isaac_arena:${WORKDIR}/isaac_arena"
                     "-v" "$DATASETS_HOST_MOUNT_DIRECTORY:/datasets"
                     "-v" "$MODELS_HOST_MOUNT_DIRECTORY:/models"

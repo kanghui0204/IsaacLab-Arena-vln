@@ -1,4 +1,0 @@
-Concepts: Environment Design
-============================
-
-TBD.
