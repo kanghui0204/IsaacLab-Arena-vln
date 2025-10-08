@@ -1,4 +1,3 @@
 Teleop Devices Design
 ==============================
-
-TBD.
+TO BE DONE.
