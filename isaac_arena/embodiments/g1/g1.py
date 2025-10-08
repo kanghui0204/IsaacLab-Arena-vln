@@ -348,10 +348,6 @@ class G1WBCJointObservationsCfg:
                 "target_frame_name": "pelvis",
             },
         )
-        robot_head_cam = ObsTerm(
-            func=mdp.image,
-            params={"sensor_cfg": SceneEntityCfg("robot_head_cam"), "data_type": "rgb", "normalize": False},
-        )
 
         def __post_init__(self):
             self.enable_corruption = False

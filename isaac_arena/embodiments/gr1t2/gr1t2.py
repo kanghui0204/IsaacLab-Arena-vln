@@ -42,6 +42,47 @@ from isaac_arena.embodiments.embodiment_base import EmbodimentBase
 from isaac_arena.utils.isaaclab_utils.resets import reset_all_articulation_joints
 from isaac_arena.utils.pose import Pose
 
+ARM_JOINT_NAMES_LIST = [
+    # arm joint
+    "left_shoulder_pitch_joint",
+    "right_shoulder_pitch_joint",
+    "left_shoulder_roll_joint",
+    "right_shoulder_roll_joint",
+    "left_shoulder_yaw_joint",
+    "right_shoulder_yaw_joint",
+    "left_elbow_pitch_joint",
+    "right_elbow_pitch_joint",
+    "left_wrist_yaw_joint",
+    "right_wrist_yaw_joint",
+    "left_wrist_roll_joint",
+    "right_wrist_roll_joint",
+    "left_wrist_pitch_joint",
+    "right_wrist_pitch_joint",
+    # hand joints
+    "L_index_proximal_joint",
+    "L_middle_proximal_joint",
+    "L_pinky_proximal_joint",
+    "L_ring_proximal_joint",
+    "L_thumb_proximal_yaw_joint",
+    "R_index_proximal_joint",
+    "R_middle_proximal_joint",
+    "R_pinky_proximal_joint",
+    "R_ring_proximal_joint",
+    "R_thumb_proximal_yaw_joint",
+    "L_index_intermediate_joint",
+    "L_middle_intermediate_joint",
+    "L_pinky_intermediate_joint",
+    "L_ring_intermediate_joint",
+    "L_thumb_proximal_pitch_joint",
+    "R_index_intermediate_joint",
+    "R_middle_intermediate_joint",
+    "R_pinky_intermediate_joint",
+    "R_ring_intermediate_joint",
+    "R_thumb_proximal_pitch_joint",
+    "L_thumb_distal_joint",
+    "R_thumb_distal_joint",
+]
+
 
 @register_asset
 class GR1T2EmbodimentBase(EmbodimentBase):
@@ -108,9 +149,11 @@ class GR1T2PinkEmbodiment(GR1T2EmbodimentBase):
 
 @configclass
 class GR1T2JointPositionActionCfg:
-    """Configuration for the joint position action."""
+    """Configuration for the arm joint position action."""
 
-    joint_pos = JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=1.0, use_default_offset=False)
+    joint_pos = JointPositionActionCfg(
+        asset_name="robot", joint_names=ARM_JOINT_NAMES_LIST, scale=1.0, use_default_offset=False
+    )
 
 
 # NOTE(alexmillane, 2025.07.25): This is partially copied from pickplace_gr1t2_env_cfg.py
