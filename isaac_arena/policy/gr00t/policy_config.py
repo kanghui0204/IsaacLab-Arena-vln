@@ -162,7 +162,9 @@ class Gr00tClosedloopPolicyConfig:
         default="cuda", metadata={"description": "Device to run the policy model on (e.g., 'cuda' or 'cpu')."}
     )
     video_backend: str = field(default="decord", metadata={"description": "Video backend to use for evaluation."})
-
+    pov_cam_name_sim: str = field(
+        default="robot_head_cam_rgb", metadata={"description": "Name of the POV camera of the robot in simulation."}
+    )
     # Closed loop specific parameters
     num_feedback_actions: int = field(
         default=16,
