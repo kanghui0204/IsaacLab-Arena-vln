@@ -45,7 +45,7 @@
         }
     },
     "annotation": {
-        "human.task_description": {
+        "human.action.task_description": {
             "original_key": "task_index"
         }
     }

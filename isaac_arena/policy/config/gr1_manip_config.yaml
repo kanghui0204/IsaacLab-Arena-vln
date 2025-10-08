@@ -3,15 +3,15 @@
 # Example for GR1 tabletop manipulation task
 
 # Root directory for all data storage
-data_root: "/datasets/lerobot/"
+data_root: "/datasets/datasets/gr1_open_microwave/lerobot_gr1/lerobot_gr1/"
 
 # Instruction given to the policy in natural language
-language_instruction: "Pick up the red beaker and pour the contents into the yellow bowl. Then, drop the red beaker into the blue bin. Lastly, place the yellow bowl onto the white scale."
+language_instruction: "Reach out the the microwave and open it."
 task_index: 0
 
 # Name of the HDF5 file to use for the dataset
 # TODO(xinjieyao, 2025-10-07): change Hardcoded hdf5_name to some releasable path
-hdf5_name: "generated_record_new_format.hdf5"
+hdf5_name: "gr1_open_microwave_50_generated.hdf5"
 
 # Mimic-generated HDF5 datafield names
 state_name_sim: "robot_joint_pos"
@@ -22,13 +22,13 @@ pov_cam_name_sim: "robot_pov_cam_rgb"
 state_name_lerobot: "observation.state"
 action_name_lerobot: "action"
 video_name_lerobot: "observation.images.ego_view"
-task_description_lerobot: "human.task_description"
+task_description_lerobot: "annotation.human.action.task_description"
 
 # Parquet configuration
 chunks_size: 1000
 
 # Video configuration
-fps: 20
+fps: 50
 
 # File path templates
 data_path: "data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet"
