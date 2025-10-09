@@ -1,5 +1,5 @@
 Creating a New Task
-==================
+===================
 
 This guide explains how to create a new task using the ``PickAndPlaceTask`` as an example.
 
