@@ -19,7 +19,9 @@ from isaaclab.managers import EventTermCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaac_arena.affordances.pressable import Pressable
-from isaac_arena.tasks.task import TaskBase
+from isaac_arena.metrics.metric_base import MetricBase
+from isaac_arena.metrics.success_rate import SuccessRateMetric
+from isaac_arena.tasks.task_base import TaskBase
 
 
 class PressButtonTask(TaskBase):
@@ -56,6 +58,11 @@ class PressButtonTask(TaskBase):
 
     def get_mimic_env_cfg(self, embodiment_name: str):
         raise NotImplementedError("Function not implemented yet.")
+
+    def get_metrics(self) -> list[MetricBase]:
+        return [
+            SuccessRateMetric(),
+        ]
 
 
 @configclass
