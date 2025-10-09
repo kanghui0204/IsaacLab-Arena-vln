@@ -38,6 +38,8 @@ def main():
         # app. Given current SimulationAppContext setup, use lazy import to handle policy-related
         # deps inside create_policy() function to bringup sim app.
         policy, num_steps = create_policy(args_cli)
+        # NOTE(xinjieyao, 2025-10-07): lazy import to prevent app stalling caused by omni.kit
+        from isaac_arena.metrics.metrics import compute_metrics
 
         for _ in tqdm.tqdm(range(num_steps)):
             with torch.inference_mode():
@@ -45,6 +47,10 @@ def main():
                 obs, _, terminated, truncated, _ = env.step(actions)
                 if terminated.any() or truncated.any():
                     obs, _ = env.reset()
+
+        metrics = compute_metrics(env)
+        print(f"Metrics: {metrics}")
+
         # Close the environment.
         env.close()
 
