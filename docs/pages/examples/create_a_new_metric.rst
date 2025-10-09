@@ -1,5 +1,5 @@
 Creating a New Metric
-====================
+=====================
 
 This guide explains how to create a new metric using the ``SuccessRateMetric`` as an example.
 
