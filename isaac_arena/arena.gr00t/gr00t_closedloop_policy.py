@@ -28,7 +28,7 @@ from isaac_arena.policy.data_utils.joints_conversion import (
     remap_sim_joints_to_policy_joints,
 )
 from isaac_arena.policy.data_utils.robot_joints import JointsAbsPosition
-from isaac_arena.policy.gr00t.policy_config import Gr00tClosedloopPolicyConfig, TaskMode
+from isaac_arena.arena_gr00t.policy_config import Gr00tClosedloopPolicyConfig, TaskMode
 from isaac_arena.policy.policy_base import PolicyBase
 
 
