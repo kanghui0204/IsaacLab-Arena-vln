@@ -1,25 +1,21 @@
 Teleop Devices Design
 ======================
 
-Teleop devices in Isaac Arena provide a unified interface for different input devices used in teleoperation and demonstration collection. They enable seamless switching between keyboard, spacemouse, and hand tracking devices through a common abstraction layer that integrates with embodiments and environments.
+Teleop devices provide a unified interface for different input devices used in teleoperation and demonstration collection. They enable seamless switching between keyboard, spacemouse, and hand tracking devices.
 
 Core Architecture
 -----------------
 
-The teleop device system is built around the ``TeleopDeviceBase`` abstract class with automatic registration:
+Teleop devices use the ``TeleopDeviceBase`` abstract class with automatic registration:
 
 .. code-block:: python
 
    class TeleopDeviceBase(ABC):
        name: str | None = None
 
-       def __init__(self, sim_device: str | None = None):
-           self.sim_device = sim_device
-
        @abstractmethod
        def get_teleop_device_cfg(self, embodiment: object | None = None):
            """Return Isaac Lab DevicesCfg for the specific device."""
-           raise NotImplementedError
 
    @register_device
    class KeyboardTeleopDevice(TeleopDeviceBase):
@@ -28,7 +24,7 @@ The teleop device system is built around the ``TeleopDeviceBase`` abstract class
        def get_teleop_device_cfg(self, embodiment=None):
            return DevicesCfg(devices={"keyboard": Se3KeyboardCfg(...)})
 
-Devices are automatically discovered through decorator-based registration and provide Isaac Lab-compatible configurations for seamless integration.
+Devices are automatically discovered through decorator-based registration and provide Isaac Lab-compatible configurations.
 
 Teleop Devices in Detail
 -------------------------
@@ -53,8 +49,6 @@ Teleop Devices in Detail
 
    - **@register_device**: Automatic registration during module import
    - **Device Registry**: Central discovery mechanism for available devices
-   - **CLI Integration**: Command-line device selection and fallback handling
-   - **Runtime Creation**: Dynamic device instantiation based on environment requirements
 
 Environment Integration
 -----------------------
@@ -115,5 +109,3 @@ Usage Examples
        task=pick_and_place_task,
        teleop_device=keyboard_device
    )
-
-The teleop device system provides consistent human input interfaces across different robot embodiments and tasks, enabling demonstration collection, manual control, and interactive debugging through a unified abstraction layer.

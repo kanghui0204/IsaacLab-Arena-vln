@@ -1,12 +1,12 @@
 Creating a New Asset
 ====================
 
-This guide explains how to create a new asset using examples from the object library.
+Learn how to create assets using examples from the object library.
 
 Overview
 --------
 
-Assets are objects that can be spawned in Isaac Arena environments. They can be simple rigid bodies or complex articulated objects with affordances.
+Assets are objects you can spawn in environments. They can be simple rigid bodies or complex articulated objects with affordances.
 
 Basic Asset Structure
 ---------------------
@@ -34,8 +34,6 @@ Simple Rigid Object Example
 
     @register_asset
     class CrackerBox(LibraryObject):
-        """A simple rigid object for pick-and-place tasks."""
-
         name = "cracker_box"
         tags = ["object"]
         usd_path = "omniverse://isaac-dev.ov.nvidia.com/NVIDIA/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/003_cracker_box.usd"
@@ -46,7 +44,7 @@ Simple Rigid Object Example
 Interactive Object with Affordance
 ----------------------------------
 
-For objects with interactive capabilities:
+For interactive objects:
 
 .. code-block:: python
 
@@ -54,14 +52,11 @@ For objects with interactive capabilities:
 
     @register_asset
     class Microwave(LibraryObject, Openable):
-        """A microwave oven with openable door."""
-
         name = "microwave"
         tags = ["object", "openable"]
         usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/interactable_objects/microwave.usd"
         object_type = ObjectType.ARTICULATION
 
-        # Affordance parameters
         openable_joint_name = "microjoint"
         openable_open_threshold = 0.5
 
@@ -76,37 +71,37 @@ For objects with interactive capabilities:
 Key Components
 --------------
 
-**Required Class Attributes:**
-   - ``name``: Unique identifier for the asset
-   - ``tags``: List of descriptive tags (e.g., ["object", "openable"])
-   - ``usd_path``: Path to the USD file containing the 3D model
+**Required:**
+   - ``name``: Unique identifier
+   - ``tags``: Descriptive tags (e.g., ["object", "openable"])
+   - ``usd_path``: Path to USD file
 
-**Optional Class Attributes:**
+**Optional:**
    - ``object_type``: ``RIGID``, ``ARTICULATION``, or ``BASE`` (default: ``RIGID``)
-   - ``scale``: Scaling factor as tuple (default: ``(1.0, 1.0, 1.0)``)
+   - ``scale``: Scaling factor (default: ``(1.0, 1.0, 1.0)``)
 
 **Registration:**
-   - Use ``@register_asset`` decorator to automatically register with the system
-   - Registered assets can be discovered and instantiated by name
+   - Use ``@register_asset`` decorator
+   - Assets become discoverable by name
 
 **Affordance Integration:**
    - Use multiple inheritance: ``class MyObject(LibraryObject, Openable)``
-   - Set affordance-specific class attributes (e.g., joint names, thresholds)
-   - Pass affordance parameters to ``super().__init__()``
+   - Set affordance class attributes (joint names, thresholds)
+   - Pass parameters to ``super().__init__()``
 
 Object Types
 ------------
 
-**RIGID**: Simple objects without joints (boxes, bottles, tools)
+**RIGID**: Objects without joints (boxes, bottles, tools)
    - Fast physics simulation
    - Good for pickable objects
 
 **ARTICULATION**: Objects with joints (doors, drawers, robots)
-   - Supports complex interactions via affordances
+   - Supports interactions via affordances
    - Requires joint definitions in USD file
 
 **BASE**: Basic assets without physics
-   - Used for visual elements or references
+   - For visual elements or references
 
 Usage Example
 -------------
@@ -121,4 +116,4 @@ Usage Example
     microwave.open(env, env_ids=None, percentage=0.8)
     is_open = microwave.is_open(env)
 
-This simple pattern allows you to quickly create new assets that integrate seamlessly with Isaac Arena's simulation and task systems.
+This pattern lets you quickly create assets that integrate with Isaac Arena's simulation and task systems.

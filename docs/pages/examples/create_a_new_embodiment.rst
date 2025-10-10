@@ -1,12 +1,12 @@
 Creating a New Embodiment
 =========================
 
-This guide explains how to create a new embodiment using the ``FrankaEmbodiment`` as an example.
+Learn how to create embodiments using the ``FrankaEmbodiment`` as an example.
 
 Overview
 --------
 
-Embodiments define robot configurations for Isaac Arena environments. They encapsulate robot assets, control actions, observations, and reset events.
+Embodiments define robot configurations. They combine robot assets, control actions, observations, and reset events.
 
 Basic Structure
 ---------------
@@ -115,7 +115,7 @@ Implementation Tips
 Usage in Environments
 ---------------------
 
-Register and use embodiments in environment configurations:
+Register and use embodiments:
 
 .. code-block:: python
 
@@ -127,4 +127,4 @@ Register and use embodiments in environment configurations:
     action_cfg = franka.get_action_cfg()
     obs_cfg = franka.get_observation_cfg()
 
-This pattern enables modular robot definitions that can be easily swapped between different tasks and environments.
+This enables modular robot definitions that can be swapped between tasks and environments.

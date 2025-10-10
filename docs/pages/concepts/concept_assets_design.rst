@@ -1,37 +1,31 @@
 Assets Design
 =============
 
-Assets in Isaac Arena are the fundamental building blocks of simulation environments, representing all physical and logical entities that can be spawned and interacted with in simulation. The asset system provides a unified framework for managing robots, objects, backgrounds, and scene elements through a hierarchical architecture with standardized interfaces.
+Assets are the building blocks of simulation environments - robots, objects, backgrounds, and scene elements. The asset system provides a unified framework for managing these components through a hierarchical architecture.
 
 Core Architecture
 -----------------
 
-The asset system is built around a hierarchical class structure that provides increasing levels of specialization:
+The asset system uses a hierarchical class structure:
 
 .. code-block:: python
 
    class Asset:
        """Base class for all assets."""
-
        def __init__(self, name: str, tags: list[str] | None = None, **kwargs):
            self._name = name
            self.tags = tags
 
-       @property
-       def name(self) -> str:
-           return self._name
-
    class ObjectBase(Asset):
-       """Physical objects that can be spawned in simulation."""
-
+       """Physical objects that can be spawned."""
        def __init__(self, object_type: ObjectType, prim_path: str, **kwargs):
            self.object_type = object_type
            self.prim_path = prim_path
 
        def get_cfgs(self) -> dict[str, Any]:
-           """Generate Isaac Lab configurations based on object type."""
+           """Generate Isaac Lab configurations."""
 
-The system supports cooperative inheritance enabling complex compositions through mixins like affordances, while automatically generating Isaac Lab-compatible configurations.
+The system supports complex compositions through mixins like affordances while automatically generating Isaac Lab-compatible configurations.
 
 Assets in Detail
 ----------------
@@ -123,5 +117,3 @@ Usage Examples
        parent_asset=kitchen_background,
        object_type=ObjectType.RIGID
    )
-
-The asset system provides efficient composition of simulation environments from reusable components, with automatic configuration generation and seamless integration across different physics types and interaction capabilities.

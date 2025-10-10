@@ -1,12 +1,12 @@
 Creating a New Task
 ===================
 
-This guide explains how to create a new task using the ``PickAndPlaceTask`` as an example.
+Learn how to create tasks using the ``PickAndPlaceTask`` as an example.
 
 Overview
 --------
 
-Tasks define complete robotics scenarios in Isaac Arena. They combine scene elements, success conditions, reset behaviors, and performance metrics into executable environments.
+Tasks define complete robotics scenarios. They combine scene elements, success conditions, reset behaviors, and metrics into executable environments.
 
 Basic Structure
 ---------------
@@ -105,7 +105,7 @@ Implementation Tips
 -------------------
 
 **Asset Integration**
-   - Accept required assets (objects, tools, environments) as constructor parameters
+   - Accept required assets (objects, tools, environments) as parameters
    - Use asset methods like ``get_contact_sensor_cfg()`` for sensor setup
    - Reference assets by name in scene entity configurations
 
@@ -115,8 +115,8 @@ Implementation Tips
    - Set appropriate thresholds for physics-based detection
 
 **Event Management**
-   - Reset object poses to initial positions on environment reset
-   - Handle cases where assets don't have initial poses defined
+   - Reset object poses to initial positions on reset
+   - Handle cases where assets don't have defined poses
    - Use ``set_object_pose()`` function for consistent positioning
 
 **Configuration Classes**
@@ -125,14 +125,14 @@ Implementation Tips
    - Separate concerns (scene, terminations, events) into distinct configs
 
 **Metric Selection**
-   - Include standard metrics like ``SuccessRateMetric`` for task completion
+   - Include standard metrics like ``SuccessRateMetric``
    - Add task-specific metrics (object movement, interaction quality)
    - Consider multiple metrics for comprehensive evaluation
 
 Usage in Environments
 ---------------------
 
-Tasks integrate seamlessly with embodiments and environments:
+Tasks integrate with embodiments and environments:
 
 .. code-block:: python
 
@@ -147,5 +147,3 @@ Tasks integrate seamlessly with embodiments and environments:
     scene_cfg = task.get_scene_cfg()
     termination_cfg = task.get_termination_cfg()
     metrics = task.get_metrics()
-
-This pattern enables modular task definition that can work with different robots, environments, and asset combinations while maintaining consistent structure and behavior.

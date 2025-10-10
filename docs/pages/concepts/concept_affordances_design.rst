@@ -1,33 +1,29 @@
 Affordances Design
 ===================
 
-Affordances in Isaac Arena define object interaction capabilities, providing a standardized way to represent what actions can be performed on objects. They encapsulate specific behaviors like opening, pressing, or manipulating objects through well-defined interfaces that integrate with tasks and embodiments.
+Affordances define what interactions objects can perform - opening doors, pressing buttons, manipulating objects. They provide standardized interfaces that integrate with tasks and embodiments.
 
 Core Architecture
 -----------------
 
-The affordance system is built around the ``AffordanceBase`` abstract class and mixin pattern:
+Affordances use the ``AffordanceBase`` abstract class and mixin pattern:
 
 .. code-block:: python
 
    class AffordanceBase(ABC):
-       """Base class for affordances."""
-
        @property
        @abstractmethod
        def name(self) -> str:
            pass
 
    class Openable(AffordanceBase):
-       """Mixin for objects that can be opened/closed."""
-
        def open(self, env, env_ids, percentage=1.0):
            """Set opening percentage via joint control."""
 
        def is_open(self, env, threshold=None):
            """Query current open state."""
 
-Affordances are designed as mixin classes that combine with objects through multiple inheritance, operating on articulated objects via joint manipulation and state querying.
+Affordances are mixin classes that combine with objects through multiple inheritance, operating on articulated objects via joint control.
 
 Affordances in Detail
 ---------------------
@@ -109,5 +105,3 @@ Usage Examples
        print("Microwave is open enough")
 
    current_openness = microwave.get_openness(env)
-
-The affordance system provides consistent interaction abstractions that work across different object types and robot embodiments, enabling complex manipulation tasks while maintaining separation between object capabilities and task objectives.

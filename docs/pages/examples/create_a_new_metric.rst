@@ -1,12 +1,12 @@
 Creating a New Metric
 =====================
 
-This guide explains how to create a new metric using the ``SuccessRateMetric`` as an example.
+Learn how to create metrics using the ``SuccessRateMetric`` as an example.
 
 Overview
 --------
 
-Metrics measure performance during simulation episodes in Isaac Arena. They consist of recorders that collect data during simulation and metric classes that compute final values.
+Metrics measure performance during simulation. They have recorders that collect data and metric classes that compute final values.
 
 Basic Structure
 ---------------
@@ -56,8 +56,8 @@ Key Components
    - Computes final scalar value from accumulated data
 
 **4. Recording Methods**
-   - ``record_post_step()``: Records data after each simulation step
-   - ``record_pre_reset()``: Records data before environment reset
+   - ``record_post_step()``: Records data after each step
+   - ``record_pre_reset()``: Records data before reset
    - Return format: ``(recorder_name, data_tensor)``
 
 Example: Success Rate Metric
@@ -104,7 +104,7 @@ Implementation Tips
 **Recording Patterns**
    - Use ``record_post_step()`` for continuous data (velocities, positions)
    - Use ``record_pre_reset()`` for episode outcomes (success, failure states)
-   - Handle first reset appropriately to avoid recording invalid data
+   - Handle first reset to avoid recording invalid data
 
 **Data Processing**
    - Process ``list[np.ndarray]`` where each array represents one episode
@@ -112,7 +112,7 @@ Implementation Tips
    - Return single ``float`` value as final metric
 
 **Multi-Environment Support**
-   - Recorders automatically handle multiple parallel environments
+   - Recorders handle multiple parallel environments
    - Data tensors include batch dimension for all environments
    - Metrics aggregate across all environments and episodes
 
@@ -124,7 +124,7 @@ Implementation Tips
 Usage in Environments
 ---------------------
 
-Metrics are automatically integrated when defined in task configurations:
+Metrics integrate automatically when defined in task configurations:
 
 .. code-block:: python
 
@@ -134,5 +134,3 @@ Metrics are automatically integrated when defined in task configurations:
     # Recorders collect data during simulation
     # Metrics compute final values after episodes
     final_success_rate = success_metric.compute_metric_from_recording(recorded_data)
-
-This pattern enables flexible performance measurement across different tasks and environments while maintaining consistent data collection and processing.

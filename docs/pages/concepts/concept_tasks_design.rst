@@ -1,27 +1,27 @@
 Tasks Design
 ============
 
-Tasks in Isaac Arena define objectives, success criteria, and behavior logic for environments. They provide configurations for termination conditions, event handling, metrics collection, and demonstration generation, integrating seamlessly with Isaac Lab's manager-based environment system while remaining embodiment and scene agnostic.
+Tasks define objectives, success criteria, and behavior logic for environments. They provide configurations for termination conditions, event handling, metrics collection, and demonstration generation.
 
 Core Architecture
 -----------------
 
-The task system is built around the ``TaskBase`` abstract class that defines task interface requirements:
+Tasks use the ``TaskBase`` abstract class:
 
 .. code-block:: python
 
    class TaskBase(ABC):
        @abstractmethod
        def get_scene_cfg(self) -> Any:
-           """Additional scene configurations for the task."""
+           """Additional scene configurations."""
 
        @abstractmethod
        def get_termination_cfg(self) -> Any:
-           """Success and failure termination conditions."""
+           """Success and failure conditions."""
 
        @abstractmethod
        def get_events_cfg(self) -> Any:
-           """Reset and randomization event handling."""
+           """Reset and randomization handling."""
 
        @abstractmethod
        def get_metrics(self) -> list[MetricBase]:
@@ -31,7 +31,7 @@ The task system is built around the ``TaskBase`` abstract class that defines tas
        def get_mimic_env_cfg(self, embodiment_name: str) -> Any:
            """Demonstration generation configuration."""
 
-Tasks encapsulate all task-specific logic while maintaining clear separation of concerns between objectives and physical layout, enabling reuse across different embodiments and scenes.
+Tasks encapsulate task-specific logic while maintaining separation between objectives and physical layout, enabling reuse across different embodiments and scenes.
 
 Tasks in Detail
 ---------------
@@ -124,5 +124,3 @@ Usage Examples
    destination_bin = asset_registry.get_asset_by_name("sorting_bin")()
 
    task = G1LocomanipPickAndPlaceTask(pick_object, destination_bin, galileo_scene)
-
-The task system provides modular objective definitions that integrate seamlessly with embodiments and scenes while maintaining clear separation of concerns between physical layout and behavioral goals.

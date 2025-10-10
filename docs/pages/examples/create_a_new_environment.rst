@@ -1,12 +1,12 @@
 Creating a New Environment
 ==========================
 
-This tutorial shows how to create a custom environment using the Isaac Arena framework, based on the kitchen pick and place environment example.
+Learn how to create custom environments using the kitchen pick and place example.
 
 Overview
 --------
 
-An Isaac Arena environment consists of five main components:
+Isaac Arena environments have five main components:
 
 1. **Background**: The scene/world where the task takes place
 2. **Objects**: Interactive objects that can be manipulated
@@ -55,7 +55,7 @@ Let's create a kitchen pick and place environment step by step:
 2. **Get Assets from Registry**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The asset registry provides access to all registered backgrounds, objects, and embodiments:
+The asset registry provides access to all registered assets:
 
 .. code-block:: python
 

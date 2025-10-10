@@ -1,19 +1,16 @@
 Policy Design
 =============
 
-Policies in Isaac Arena define how agents generate actions from observations, providing a unified framework for integrating different control strategies, learning algorithms, and demonstration replay systems. The policy system supports everything from simple baselines to sophisticated neural network models with consistent interfaces.
+Policies define how agents generate actions from observations. The system provides a unified framework for different control strategies, learning algorithms, and demonstration replay systems.
 
 Core Architecture
 -----------------
 
-The policy system is built around the ``PolicyBase`` abstract class that defines a standard interface:
+Policies use the ``PolicyBase`` abstract class:
 
 .. code-block:: python
 
    class PolicyBase(ABC):
-       def __init__(self):
-           """Base class for policies."""
-
        @abstractmethod
        def get_action(self, env: gym.Env, observation: GymSpacesDict) -> torch.Tensor:
            """Compute an action given the environment and observation.
@@ -26,7 +23,7 @@ The policy system is built around the ``PolicyBase`` abstract class that defines
                torch.Tensor: The action to take
            """
 
-This abstraction enables seamless swapping between different policy implementations while maintaining consistent integration with Isaac Arena environments and the policy runner system.
+This enables seamless swapping between different policy implementations while maintaining consistent integration with Isaac Arena environments.
 
 Policies in Detail
 ------------------
@@ -45,14 +42,6 @@ Policies in Detail
    - **Dataset-Driven**: Load and replay recorded trajectories (ReplayActionPolicy)
    - **Neural Networks**: Process visual and proprioceptive inputs for learned behaviors (GR00T policies)
    - **Action Chunking**: Generate multiple future actions per observation for temporal consistency
-
-**Integration System**
-   Policy runner framework handles execution lifecycle:
-
-   - **Environment Interaction**: Standard observation-action loop with automatic resets
-   - **CLI Interface**: Command-line policy selection and configuration
-   - **Data Management**: Loading demonstration data and policy configurations
-   - **Performance Monitoring**: Step counting and execution timing
 
 Environment Integration
 -----------------------
@@ -108,5 +97,3 @@ Usage Examples
 
    policy = CustomPolicy()
    actions = policy.get_action(environment, observations)
-
-The policy system provides a flexible foundation for robotic control research, supporting diverse approaches from simple baselines to state-of-the-art foundation models while maintaining consistent interfaces across the Isaac Arena ecosystem.

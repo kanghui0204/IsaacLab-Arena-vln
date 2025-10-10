@@ -1,19 +1,17 @@
 Environment Compilation Design
 ================================
 
-Environment compilation in Isaac Arena transforms modular Isaac Arena components into complete Isaac Lab environment configurations. The compilation system handles configuration merging, environment registration, and seamless integration with Isaac Lab's manager-based architecture while supporting both standard and mimic environment modes.
+Environment compilation transforms modular Isaac Arena components into complete Isaac Lab environment configurations. The system handles configuration merging, environment registration, and integration with Isaac Lab's architecture.
 
 Core Architecture
 -----------------
 
-The compilation system is built around the ``ArenaEnvBuilder`` class that orchestrates the transformation process:
+Compilation uses the ``ArenaEnvBuilder`` class:
 
 .. code-block:: python
 
    class ArenaEnvBuilder:
        """Compose Isaac Arena → Isaac Lab configs"""
-
-       DEFAULT_SCENE_CFG = InteractiveSceneCfg(num_envs=4096, env_spacing=30.0, replicate_physics=False)
 
        def __init__(self, arena_env: IsaacArenaEnvironment, args: argparse.Namespace):
            self.arena_env = arena_env
@@ -21,7 +19,6 @@ The compilation system is built around the ``ArenaEnvBuilder`` class that orches
 
        def compose_manager_cfg(self) -> IsaacArenaManagerBasedRLEnvCfg:
            """Combine configurations from all components."""
-           # Merge scene configurations from multiple sources
            scene_cfg = combine_configclass_instances(
                "SceneCfg",
                self.DEFAULT_SCENE_CFG,
@@ -30,7 +27,7 @@ The compilation system is built around the ``ArenaEnvBuilder`` class that orches
                self.arena_env.task.get_scene_cfg()
            )
 
-The builder takes an Isaac Arena environment definition and transforms it into Isaac Lab's configuration format through systematic component integration.
+The builder transforms Isaac Arena environment definitions into Isaac Lab's configuration format through systematic component integration.
 
 Compilation in Detail
 ---------------------
@@ -44,29 +41,15 @@ Compilation in Detail
    - **Event Configuration**: Combines reset and randomization logic from embodiment, scene, and task
    - **Termination Configuration**: Merges success/failure conditions from task and scene components
    - **Metrics Configuration**: Automatic recorder manager setup for performance evaluation
+   - **XR Configuration**: XR device locations for teleop integration (optional)
+   - **Teleop Device Configuration**: Teleop device configuration from embodiment
+   - **Recorder Manager Configuration**: Recorder manager configuration for performance evaluation
 
 **Environment Modes**
    Support for different Isaac Lab environment types:
 
-   - **Standard Mode**: Full RL environment with observations, actions, events, terminations, and metrics
-   - **Mimic Mode**: Demonstration generation environment with subtask decomposition and constraint handling
-   - **Teleop Integration**: Optional human input device configuration for demonstration collection
-   - **XR Support**: Extended reality camera configurations for immersive teleoperation
-
-**Registration Process**
-   Automatic Gymnasium environment registration and configuration parsing:
-
-   - **Dynamic Registration**: Creates unique environment IDs and entry points
-   - **Configuration Parsing**: Applies runtime parameters (device, num_envs, fabric settings)
-   - **Entry Point Selection**: Chooses appropriate Isaac Lab environment class based on mode
-   - **Environment Creation**: Instantiates configured environments ready for execution
-
-**Configuration Validation**
-   Automatic conflict resolution and compatibility checking:
-
-   - **Component Compatibility**: Ensures scene, embodiment, and task configurations are compatible
-   - **Isaac Lab Integration**: Validates configurations meet Isaac Lab manager requirements
-   - **Default Handling**: Provides sensible defaults for optional configuration elements
+   - **Standard Mode**: Full environment with observations, actions, events, terminations, and metrics
+   - **Mimic Mode**: Mimic environment with subtask definitions
 
 Environment Integration
 -----------------------
@@ -145,5 +128,3 @@ Usage Examples
        use_fabric=True
    )
    env = gym.make(name, cfg=cfg).unwrapped
-
-The compilation system provides seamless transformation from Isaac Arena's modular component architecture to Isaac Lab's manager-based environment system, enabling rapid deployment of complex simulation scenarios while maintaining full compatibility with existing Isaac Lab workflows.

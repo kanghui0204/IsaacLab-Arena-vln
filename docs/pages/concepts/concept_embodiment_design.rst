@@ -1,12 +1,12 @@
 Embodiment Design
 ==================
 
-Embodiments in Isaac Arena define robot-specific configurations and behaviors, providing a modular way to integrate different robots into environments. Each embodiment encapsulates all robot-specific aspects including kinematics, control actions, observations, specialized behaviors, and camera systems.
+Embodiments define robot-specific configurations and behaviors. They provide a modular way to integrate different robots into environments, encapsulating kinematics, control actions, observations, and camera systems.
 
 Core Architecture
 -----------------
 
-The embodiment system is built around the ``EmbodimentBase`` abstract class that extends the asset system:
+Embodiments use the ``EmbodimentBase`` abstract class that extends the asset system:
 
 .. code-block:: python
 
@@ -18,10 +18,7 @@ The embodiment system is built around the ``EmbodimentBase`` abstract class that
            self.scene_config: Any | None = None
            self.action_config: Any | None = None
            self.observation_config: Any | None = None
-           self.event_config: Any | None = None
-           self.camera_config: Any | None = None
-           self.xr_config: Any | None = None
-           self.mimic_env_config: Any | None = None
+           # ... other configs
 
        @abstractmethod
        def get_scene_cfg(self) -> Any:
@@ -31,7 +28,7 @@ The embodiment system is built around the ``EmbodimentBase`` abstract class that
        def get_action_cfg(self) -> Any:
            """Control interface definition."""
 
-Embodiments provide complete robot definitions that integrate seamlessly with Isaac Arena's environment composition system while maintaining robot-specific behaviors and capabilities.
+Embodiments provide complete robot definitions that integrate with Isaac Arena's environment composition system while maintaining robot-specific behaviors.
 
 Embodiments in Detail
 ---------------------
@@ -54,9 +51,6 @@ Embodiments in Detail
    - **Unitree G1**: Humanoid with WBC, dual-arm manipulation, locomotion
    - **GR1T2**: Humanoid optimized for manipulation with dual end-effector control
    - **Control Variants**: Joint space vs. inverse kinematics control modes
-
-**Control Interface Abstraction**
-   Standardized action spaces that work across different robot morphologies while supporting robot-specific control paradigms like whole-body control for humanoids.
 
 **Camera Integration**
    Optional camera systems that add observation terms when enabled, supporting both manipulation and perception tasks with head-mounted or external cameras.
@@ -118,5 +112,3 @@ Usage Examples
        scene=scene,
        task=task
    )
-
-The embodiment system provides consistent robot integration across different morphologies and control paradigms, enabling rapid deployment of manipulation and locomotion tasks while maintaining robot-specific capabilities and behaviors.

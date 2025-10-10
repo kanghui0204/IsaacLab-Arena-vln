@@ -1,19 +1,17 @@
 Environment Design
 ==================
 
-Environments in Isaac Arena are the top-level abstraction that brings together all components needed for simulation and learning. They provide a unified interface for combining embodiments, scenes, tasks, and teleoperation devices into complete, executable simulation experiences that integrate seamlessly with Isaac Lab's manager-based environment system.
+Environments are the top-level abstraction that combines all components for simulation and learning. They unify embodiments, scenes, tasks, and teleoperation devices into complete simulation experiences that integrate with Isaac Lab.
 
 Core Architecture
 -----------------
 
-Isaac Arena environments follow a compositional design pattern built around four primary components:
+Environments use a compositional design with four primary components:
 
 .. code-block:: python
 
    @configclass
    class IsaacArenaEnvironment:
-       """Describes an environment in Isaac Arena."""
-
        name: str = MISSING
        embodiment: EmbodimentBase = MISSING
        scene: Scene = MISSING
@@ -22,14 +20,13 @@ Isaac Arena environments follow a compositional design pattern built around four
 
    class ArenaEnvBuilder:
        """Compose Isaac Arena → Isaac Lab configs."""
-
        def compose_manager_cfg(self) -> IsaacArenaManagerBasedRLEnvCfg:
            # Combine configurations from all components
            scene_cfg = combine_configclass_instances(...)
            observation_cfg = self.arena_env.embodiment.get_observation_cfg()
            actions_cfg = self.arena_env.embodiment.get_action_cfg()
 
-Each component contributes specific aspects to the final environment configuration, with automatic integration handled by the environment builder system.
+Each component contributes to the final environment configuration, with automatic integration handled by the environment builder.
 
 Environments in Detail
 ----------------------
@@ -41,22 +38,6 @@ Environments in Detail
    - **Scene**: Physical asset layout, spatial relationships, physics properties
    - **Task**: Objectives, success criteria, termination conditions, performance metrics
    - **Teleop Device**: Human input interfaces for demonstration and control (optional)
-
-**Configuration Composition**
-   Systematic combination of component contributions:
-
-   - **Scene Configuration**: Physical elements from scene, embodiment, and task components
-   - **Observation Configuration**: Sensor data and state information from embodiment
-   - **Action Configuration**: Control interfaces defined by embodiment
-   - **Event Configuration**: Resets, randomization from all components
-   - **Termination Configuration**: Success/failure conditions from tasks
-   - **Metrics Configuration**: Performance evaluation from tasks
-
-**Environment Builder System**
-   ``ArenaEnvBuilder`` orchestrates composition into Isaac Lab configurations:
-
-   - **Configuration Merging**: Automatic combination with conflict resolution
-   - **Manager Assembly**: Creates Isaac Lab observation, action, event, termination managers
 
 Environment Integration
 -----------------------
@@ -125,5 +106,3 @@ Usage Examples
 
    # Teleop demonstration
    python policy_runner.py --teleop_device spacemouse kitchen_pick_and_place --object mustard_bottle
-
-The environment design provides a powerful framework for creating complex robot simulation scenarios through modular component composition, enabling rapid development while maintaining consistency and reusability across different use cases.

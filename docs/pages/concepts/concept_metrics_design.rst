@@ -1,30 +1,28 @@
 Metrics Design
 ==============
 
-Metrics in Isaac Arena provide a systematic framework for evaluating robot performance and task completion across different simulation scenarios. The metrics system integrates with Isaac Lab's recorder manager to capture simulation data and compute meaningful performance indicators that support research, development, and benchmarking efforts.
+Metrics evaluate robot performance and task completion. The system integrates with Isaac Lab's recorder manager to capture simulation data and compute performance indicators.
 
 Core Architecture
 -----------------
 
-The metrics system is built around a two-component architecture that separates data collection from metric computation:
+Metrics use two-component architecture separating data collection from metric computation:
 
 .. code-block:: python
 
    class MetricBase(ABC):
-       """Base class for all metrics."""
-
        name: str
        recorder_term_name: str
 
        @abstractmethod
        def get_recorder_term_cfg(self) -> RecorderTermCfg:
-           """Define what data to record during simulation."""
+           """Define what data to record."""
 
        @abstractmethod
        def compute_metric_from_recording(self, recorded_metric_data: list[np.ndarray]) -> float:
            """Compute final metric from recorded data."""
 
-Each metric consists of a **RecorderTerm** that collects data during simulation and a **MetricBase** implementation that processes recorded data into performance indicators.
+Each metric has a **RecorderTerm** that collects data and a **MetricBase** implementation that processes recorded data into performance indicators.
 
 Metrics in Detail
 -----------------
@@ -122,5 +120,3 @@ Usage Examples
 
        def compute_metric_from_recording(self, recorded_data) -> float:
            return self._compute_custom_evaluation(recorded_data)
-
-The metrics system provides comprehensive performance evaluation capabilities through automatic data collection and standardized computation workflows, enabling quantitative assessment of robot behavior across different tasks and embodiments.
