@@ -17,7 +17,7 @@ import torch
 import tqdm
 
 from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
-from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
+from isaac_arena.tests.utils.subprocess import run_in_persistent_sim
 
 NUM_STEPS = 2
 HEADLESS = True
@@ -85,7 +85,7 @@ def _test_all_devices_in_registry(simulation_app):
 
 def test_all_devices_in_registry():
     # Basic test that just adds all our pick-up objects to the scene and checks that nothing crashes.
-    result = run_simulation_app_function_in_separate_process(
+    result = run_in_persistent_sim(
         _test_all_devices_in_registry,
         headless=HEADLESS,
     )

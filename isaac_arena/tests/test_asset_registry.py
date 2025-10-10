@@ -16,7 +16,7 @@ import torch
 import tqdm
 
 from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
-from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
+from isaac_arena.tests.utils.subprocess import run_in_persistent_sim
 from isaac_arena.utils.pose import Pose
 
 NUM_STEPS = 2
@@ -43,7 +43,7 @@ def _test_default_assets_registered(simulation_app):
 
 def test_default_assets_registered():
     # Basic test that just adds all our pick-up objects to the scene and checks that nothing crashes.
-    result = run_simulation_app_function_in_separate_process(
+    result = run_in_persistent_sim(
         _test_default_assets_registered,
     )
     assert result, "Test failed"
@@ -98,6 +98,8 @@ def _test_all_assets_in_registry(simulation_app):
 
     builder = ArenaEnvBuilder(isaac_arena_environment, args_cli)
     env = builder.make_registered()
+    # disable control on stop
+    env.unwrapped.sim._app_control_on_stop_handle = None
     env.reset()
 
     # Run
@@ -122,7 +124,7 @@ def _test_all_assets_in_registry(simulation_app):
 
 def test_all_assets_in_registry():
     # Basic test that just adds all our pick-up objects to the scene and checks that nothing crashes.
-    result = run_simulation_app_function_in_separate_process(
+    result = run_in_persistent_sim(
         _test_all_assets_in_registry,
         headless=HEADLESS,
     )

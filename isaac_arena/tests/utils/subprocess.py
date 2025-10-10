@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import multiprocessing
+import multiprocessing as mp
 import subprocess
 import sys
+import traceback
+import uuid
 from collections.abc import Callable
-from typing import Any
 
 from isaac_arena.cli.isaac_arena_cli import get_isaac_arena_cli_parser
 from isaac_arena.utils.isaaclab_utils.simulation_app import SimulationAppContext
@@ -42,71 +43,124 @@ def run_subprocess(cmd, env=None):
         raise
 
 
-def runner(
-    q: multiprocessing.Queue,
-    function: Callable[[SimulationAppContext, Any], bool],
-    headless: bool,
-    enable_cameras: bool = False,
-    **kwargs,
-):
-    # The runner runs a function in a way that a result is returned to the main process, before
-    # simulation_app.close() can ruin everything.
-    # Simulation app args. For now, we just make these default + headless.
-    # TODO(alexmillane, 2025.09.01): We're eventually going to want a way to override the args.
+def _worker_main(task_q: mp.Queue, result_q: mp.Queue, headless: bool, enable_cameras: bool):
+    """Lives in a separate process. Creates SimulationAppContext once and serves tasks."""
     parser = get_isaac_arena_cli_parser()
-    simulation_app_args = parser.parse_args([])
-    simulation_app_args.headless = headless
-    simulation_app_args.enable_cameras = enable_cameras
-    # Launch the simulator
-    with SimulationAppContext(simulation_app_args) as simulation_app:
-        # Run the function
-        try:
-            test_passed = function(simulation_app, **kwargs)
-        except Exception as e:
-            print(f"Exception occurred while running the function: {e}")
-            test_passed = False
-        finally:
-            # NOTE(alexmillane, 2025.04.09): Put the test result in the queue, so that the main process
-            # can get it after the simulation app is closed.
-            print("Communicating test result to main process...")
-            q.put_nowait(test_passed)
+    args = parser.parse_args([])
+    args.headless = headless
+    args.enable_cameras = enable_cameras
+
+    # Create the simulation app ONCE
+    with SimulationAppContext(args) as simulation_app:
+        while True:
+            task = task_q.get()
+            if task is None:  # sentinel for clean shutdown
+                break
+            task_id = task["id"]
+            func = task["func"]  # must be a top-level callable (pickleable)
+            kwargs = task.get("kwargs", {})
+            import omni.usd
+
+            omni.usd.get_context().new_stage()
+            try:
+                ok = bool(func(simulation_app, **kwargs))
+            except Exception as e:
+                print(f"[sim-worker] Exception in task {task_id}: {e}", file=sys.stderr)
+                traceback.print_exc()
+                ok = False
+            # return result to caller
+            result_q.put((task_id, ok))
 
 
-def run_simulation_app_function_in_separate_process(
-    function: Callable[..., bool], headless: bool = True, enable_cameras: bool = False, **kwargs
+class SimulationAppWorker:
+    """Client-side controller for the persistent simulation process."""
+
+    def __init__(self, headless: bool = True, enable_cameras: bool = False):
+        self.headless = headless
+        self.enable_cameras = enable_cameras
+        self._proc: mp.Process | None = None
+        self._task_q: mp.Queue | None = None
+        self._result_q: mp.Queue | None = None
+        self._pending = {}
+
+    def start(self):
+        if self._proc and self._proc.is_alive():
+            return
+        mp.set_start_method("spawn", force=True)  # keep your CUDA note
+        self._task_q = mp.Queue()
+        self._result_q = mp.Queue()
+        self._proc = mp.Process(
+            target=_worker_main,
+            args=(self._task_q, self._result_q, self.headless, self.enable_cameras),
+            daemon=True,
+        )
+        self._proc.start()
+
+    def stop(self, timeout: float = 30.0):
+        if not self._proc:
+            return
+        if self._proc.is_alive():
+            # ask worker to exit
+            self._task_q.put(None)
+            self._proc.join(timeout=timeout)
+            if self._proc.is_alive():
+                self._proc.terminate()
+        self._proc = None
+        self._task_q = None
+        self._result_q = None
+        self._pending.clear()
+
+    def ensure_config(self, headless: bool, enable_cameras: bool):
+        """Restart the worker if flags changed between tests."""
+        if self._proc is None:
+            self.headless = headless
+            self.enable_cameras = enable_cameras
+            self.start()
+            return
+        if self.headless != headless or self.enable_cameras != enable_cameras:
+            self.stop()
+            self.headless = headless
+            self.enable_cameras = enable_cameras
+            self.start()
+
+    def run(self, func: Callable[..., bool], timeout: float | None = None, **kwargs) -> bool:
+        if not (self._proc and self._proc.is_alive()):
+            self.start()
+        task_id = str(uuid.uuid4())
+        self._task_q.put({"id": task_id, "func": func, "kwargs": kwargs})
+
+        # If you only run tests serially, the next get() will be ours.
+        # To be robust, handle out-of-order (e.g., if you add concurrency later).
+        while True:
+            rid, ok = self._result_q.get(timeout=timeout)
+            if rid == task_id:
+                return ok
+            self._pending[rid] = ok  # stash unexpected (out-of-order) results
+
+
+# ---- A simple module-level singleton and helper for easy use in tests ----
+_global_worker: SimulationAppWorker | None = None
+
+
+def run_in_persistent_sim(
+    function: Callable[..., bool],
+    headless: bool = True,
+    enable_cameras: bool = False,
+    timeout: float | None = None,
+    **kwargs,
 ) -> bool:
-    """Run a simulation app in a separate process.
+    """Submit a function to the persistent SimulationApp process."""
+    global _global_worker
+    if _global_worker is None:
+        _global_worker = SimulationAppWorker(headless=headless, enable_cameras=enable_cameras)
+        _global_worker.start()
+    else:
+        _global_worker.ensure_config(headless, enable_cameras)
+    return _global_worker.run(function, timeout=timeout, **kwargs)
 
-    This is sometimes required to prevent simulation app shutdown interrupting pytest.
 
-    Args:
-        function: The function to run in the simulation app.
-            - The function should take a SimulationAppContext instance as its first argument,
-            and then a variable number of additional arguments.
-            - The function should return a boolean indicating whether the test passed.
-        *args: The arguments to pass to the function (after the SimulationAppContext instance).
-
-    Returns:
-        The boolean result of the function.
-    """
-    # NOTE(alexmillane, 2025.04.10): I got CUDA issues without this.
-    multiprocessing.set_start_method("spawn", force=True)
-    # Queue to communicate the test result to the main process.
-    q = multiprocessing.Queue()
-    # Start the test
-    # NOTE(alexmillane, 2025.04.10): We need to start the test in a separate process
-    # because the simulation app cannot be closed in the main process, because it
-    # kills the entire pytest process.
-    p = multiprocessing.Process(target=runner, args=(q, function, headless, enable_cameras), kwargs=kwargs)
-    p.start()
-    p.join()
-
-    # NOTE(alexmillane, 2025.04.10): This is sort of a useless check, because the calls to
-    # close the simulation app in the child process appear to eat exceptions, so the exitcode
-    # is always 0.
-    assert p.exitcode == 0, "The closed loop dummy policy failed to run."
-
-    # Get the test result from the child process.
-    test_result = q.get()
-
-    return test_result
+def shutdown_persistent_sim():
+    global _global_worker
+    if _global_worker is not None:
+        _global_worker.stop()
+        _global_worker = None

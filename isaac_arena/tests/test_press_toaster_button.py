@@ -15,7 +15,7 @@
 import gymnasium as gym
 import torch
 
-from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
+from isaac_arena.tests.utils.subprocess import run_in_persistent_sim
 
 NUM_STEPS = 10
 HEADLESS = True
@@ -60,6 +60,8 @@ def get_test_environment(num_envs: int):
     env_builder = ArenaEnvBuilder(isaac_arena_environment, args_cli)
     name, cfg = env_builder.build_registered()
     env = gym.make(name, cfg=cfg).unwrapped
+    # disable control on stop
+    env.unwrapped.sim._app_control_on_stop_handle = None
     env.reset()
 
     return env, toaster
@@ -169,7 +171,7 @@ def _test_press_button_toaster_multiple_envs(simulation_app) -> bool:
 
 
 def test_press_button_toaster():
-    result = run_simulation_app_function_in_separate_process(
+    result = run_in_persistent_sim(
         _test_press_button_toaster,
         headless=HEADLESS,
     )
@@ -177,7 +179,7 @@ def test_press_button_toaster():
 
 
 def test_press_button_toaster_multiple_envs():
-    result = run_simulation_app_function_in_separate_process(
+    result = run_in_persistent_sim(
         _test_press_button_toaster_multiple_envs,
         headless=HEADLESS,
     )

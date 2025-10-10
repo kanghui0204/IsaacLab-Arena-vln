@@ -15,7 +15,7 @@
 import torch
 import tqdm
 
-from isaac_arena.tests.utils.subprocess import run_simulation_app_function_in_separate_process
+from isaac_arena.tests.utils.subprocess import run_in_persistent_sim
 
 NUM_STEPS = 2
 HEADLESS = True
@@ -59,6 +59,8 @@ def _test_camera_observation(simulation_app) -> bool:
     # Compile an IsaacLab compatible arena environment configuration
     builder = ArenaEnvBuilder(isaac_arena_environment, args_cli)
     env = builder.make_registered()
+    # disable control on stop
+    env.unwrapped.sim._app_control_on_stop_handle = None
     env.reset()
 
     for _ in tqdm.tqdm(range(NUM_STEPS)):
@@ -78,7 +80,7 @@ def _test_camera_observation(simulation_app) -> bool:
 
 
 def test_camera_observation():
-    result = run_simulation_app_function_in_separate_process(
+    result = run_in_persistent_sim(
         _test_camera_observation,
         headless=HEADLESS,
         enable_cameras=ENABLE_CAMERAS,
