@@ -32,10 +32,10 @@ Below are some example environments built using ``isaaclab_arena``.
 
     * - .. image:: images/g1_galileo_arena_box_pnp_locomanip.gif
           :height: 400px
-          :target: pages/workflows/locomanipulation_workflow.html
+          :target: pages/workflows/gr00t_workflows.html
     * - .. image:: images/kitchen_gr1_arena.gif
           :height: 400px
-          :target: pages/workflows/manipulation_workflow.html
+          :target: pages/workflows/gr00t_workflows.html
 
 
 License
@@ -67,8 +67,7 @@ This code is under an `open-source license <https://github.com/isaac-sim/isaac_a
    :maxdepth: 1
    :caption: Workflows
 
-   pages/workflows/locomanipulation_workflow
-   pages/workflows/manipulation_workflow
+   pages/workflows/gr00t_workflows
 
 .. toctree::
    :maxdepth: 1
