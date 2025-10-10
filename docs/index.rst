@@ -1,15 +1,15 @@
-``Isaac Lab Arena`` Documentation
+``IsaacLab-Arena`` Documentation
 =================================
 
-``Isaac Lab Arena`` is an extension to `Isaac Lab <https://isaac-sim.github.io/IsaacLab/main/index.html>`_
+``IsaacLab-Arena`` is an extension to `Isaac Lab <https://isaac-sim.github.io/IsaacLab/main/index.html>`_
 for providing an environment for robotic policy evaluation.
 
-Isaac Lab Arena is a comprehensive robotics simulation framework that enhances NVIDIA Isaac Lab by providing a composable,
+IsaacLab-Arena is a comprehensive robotics simulation framework that enhances NVIDIA Isaac Lab by providing a composable,
 scalable system for creating diverse simulation environments and evaluating robot learning policies.
 The framework enables researchers and developers to rapidly prototype and test robotic tasks with various robot embodiments,
 objects, and environments.
 
-A key feature of ``Isaac Lab Arena`` is an easier, more composable interface for creating environments.
+A key feature of ``IsaacLab-Arena`` is an easier, more composable interface for creating environments.
 
 
 .. _quickstart:
