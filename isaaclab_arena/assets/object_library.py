@@ -109,7 +109,7 @@ class LightWheelKettle21(LibraryObject):
 
     name = "lightwheel_kettle_21"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/sample_assets/lightwheel/kettle/Kettle021/Kettle021.usd"
+    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/sample_assets/lightwheel/kettle/Kettle021/Kettle021.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -123,9 +123,7 @@ class LightWheelPot51(LibraryObject):
 
     name = "lightwheel_pot_51"
     tags = ["object"]
-    usd_path = (
-        "omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/sample_assets/lightwheel/pot/Pot051/Pot051.usd"
-    )
+    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/sample_assets/lightwheel/pot/Pot051/Pot051.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -140,7 +138,7 @@ class SketchFabSprayCan3(LibraryObject):
     name = "sketchfab_spray_can_3"
     tags = ["object"]
     prim_path = ("{ENV_REGEX_NS}/target_sketchfab_spray_can_3",)
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/sample_assets/sketchfab/spray_bottle/spray_bottle_3/spray_bottle_3.usd"
+    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/sample_assets/sketchfab/spray_bottle/spray_bottle_3/spray_bottle_3.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -166,7 +164,7 @@ class Microwave(LibraryObject, Openable):
 
     name = "microwave"
     tags = ["object", "openable"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/interactable_objects/microwave.usd"
+    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/interactable_objects/microwave.usd"
     object_type = ObjectType.ARTICULATION
 
     # Openable affordance parameters
@@ -190,7 +188,7 @@ class Toaster(LibraryObject, Pressable):
 
     name = "toaster"
     tags = ["object", "pressable"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/interactable_objects/toaster.usd"
+    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/interactable_objects/toaster.usd"
     object_type = ObjectType.ARTICULATION
 
     # Openable affordance parameters

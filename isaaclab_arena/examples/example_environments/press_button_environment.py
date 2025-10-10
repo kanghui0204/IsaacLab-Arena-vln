@@ -27,8 +27,8 @@ class PressButtonEnvironment(ExampleEnvironmentBase):
 
     name: str = "press_button"
 
-    def get_env(self, args_cli: argparse.Namespace):  # -> IsaacArenaEnvironment:
-        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    def get_env(self, args_cli: argparse.Namespace):  # -> IsaacLabArenaEnvironment:
+        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
         from isaaclab_arena.tasks.press_button_task import PressButtonTask
         from isaaclab_arena.utils.pose import Pose
@@ -52,7 +52,7 @@ class PressButtonEnvironment(ExampleEnvironmentBase):
         # Compose the scene
         scene = Scene(assets=assets)
 
-        isaaclab_arena_environment = IsaacArenaEnvironment(
+        isaaclab_arena_environment = IsaacLabArenaEnvironment(
             name=self.name,
             embodiment=embodiment,
             scene=scene,

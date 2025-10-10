@@ -55,7 +55,7 @@ def _test_all_assets_in_registry(simulation_app):
     from isaaclab_arena.assets.object import Object
     from isaaclab_arena.embodiments.franka.franka import FrankaEmbodiment
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.dummy_task import DummyTask
 
@@ -85,7 +85,7 @@ def _test_all_assets_in_registry(simulation_app):
 
     scene = Scene(assets=[background, *objects_in_registry])
 
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="dummy_task",
         embodiment=FrankaEmbodiment(),
         scene=scene,

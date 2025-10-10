@@ -27,8 +27,8 @@ class Gr1OpenMicrowaveEnvironment(ExampleEnvironmentBase):
 
     name: str = "gr1_open_microwave"
 
-    def get_env(self, args_cli: argparse.Namespace):  # -> IsaacArenaEnvironment:
-        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    def get_env(self, args_cli: argparse.Namespace):  # -> IsaacLabArenaEnvironment:
+        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
         from isaaclab_arena.tasks.open_door_task import OpenDoorTask
         from isaaclab_arena.utils.pose import Pose
@@ -67,7 +67,7 @@ class Gr1OpenMicrowaveEnvironment(ExampleEnvironmentBase):
         # Compose the scene
         scene = Scene(assets=assets)
 
-        isaaclab_arena_environment = IsaacArenaEnvironment(
+        isaaclab_arena_environment = IsaacLabArenaEnvironment(
             name=self.name,
             embodiment=embodiment,
             scene=scene,

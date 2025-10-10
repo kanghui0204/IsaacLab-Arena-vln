@@ -27,7 +27,7 @@ All environments inherit from ``ExampleEnvironmentBase`` and must implement two 
        name: str = "my_environment"
 
        def get_env(self, args_cli: argparse.Namespace):
-           # Create and return IsaacArenaEnvironment
+           # Create and return IsaacLabArenaEnvironment
            pass
 
        @staticmethod
@@ -47,7 +47,7 @@ Let's create a kitchen pick and place environment step by step:
 
    from isaaclab_arena.assets.object_base import ObjectType
    from isaaclab_arena.assets.object_reference import ObjectReference
-   from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+   from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
    from isaaclab_arena.scene.scene import Scene
    from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
    from isaaclab_arena.utils.pose import Pose
@@ -141,7 +141,7 @@ Create the final environment:
 
 .. code-block:: python
 
-   isaaclab_arena_environment = IsaacArenaEnvironment(
+   isaaclab_arena_environment = IsaacLabArenaEnvironment(
        name=self.name,
        embodiment=embodiment,
        scene=scene,
@@ -188,7 +188,7 @@ Complete Example
        def get_env(self, args_cli: argparse.Namespace):
            from isaaclab_arena.assets.object_base import ObjectType
            from isaaclab_arena.assets.object_reference import ObjectReference
-           from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+           from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
            from isaaclab_arena.scene.scene import Scene
            from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
            from isaaclab_arena.utils.pose import Pose
@@ -224,7 +224,7 @@ Complete Example
            task = PickAndPlaceTask(pick_up_object, destination_location, background)
 
            # Build environment
-           return IsaacArenaEnvironment(
+           return IsaacLabArenaEnvironment(
                name=self.name,
                embodiment=embodiment,
                scene=scene,

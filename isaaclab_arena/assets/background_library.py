@@ -101,7 +101,7 @@ class LightwheelKitchenBackground(LibraryBackground):
 
     name = "lightwheel_kitchen"
     tags = ["background"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/lightwheel_assets_for_deletion/robocasakitchen-4-2/scene.usd"
+    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/lightwheel_assets_for_deletion/robocasakitchen-4-2/scene.usd"
     initial_pose = Pose(position_xyz=(-1.20, 1.70, -0.92), rotation_wxyz=(1.0, 0, 0, 0))
     object_min_z = -0.2
 

@@ -29,7 +29,7 @@ def _test_robot_initial_position(simulation_app):
     from isaaclab_arena.assets.asset_registry import AssetRegistry
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.dummy_task import DummyTask
     from isaaclab_arena.utils.pose import Pose
@@ -46,7 +46,7 @@ def _test_robot_initial_position(simulation_app):
     embodiment.set_initial_pose(Pose(position_xyz=robot_init_position, rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
     scene = Scene(assets=[background, cracker_box])
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="robot_initial_position",
         embodiment=embodiment,
         scene=scene,

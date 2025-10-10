@@ -33,7 +33,7 @@ class ExampleEnvironmentBase(ABC):
         self.device_registry = DeviceRegistry()
 
     @abstractmethod
-    def get_env(self, args_cli: argparse.Namespace):  # -> IsaacArenaEnvironment:
+    def get_env(self, args_cli: argparse.Namespace):  # -> IsaacLabArenaEnvironment:
         pass
 
     @abstractmethod

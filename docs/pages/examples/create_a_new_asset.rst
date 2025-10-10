@@ -54,7 +54,7 @@ For interactive objects:
     class Microwave(LibraryObject, Openable):
         name = "microwave"
         tags = ["object", "openable"]
-        usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/interactable_objects/microwave.usd"
+        usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/interactable_objects/microwave.usd"
         object_type = ObjectType.ARTICULATION
 
         openable_joint_name = "microjoint"

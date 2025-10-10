@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
 
 @configclass
-class IsaacArenaEnvironment:
+class IsaacLabArenaEnvironment:
     """Describes an environment in IsaacLab Arena."""
 
     name: str = MISSING

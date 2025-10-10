@@ -11,7 +11,7 @@ Environments use a compositional design with four primary components:
 .. code-block:: python
 
    @configclass
-   class IsaacArenaEnvironment:
+   class IsaacLabArenaEnvironment:
        name: str = MISSING
        embodiment: EmbodimentBase = MISSING
        scene: Scene = MISSING
@@ -20,7 +20,7 @@ Environments use a compositional design with four primary components:
 
    class ArenaEnvBuilder:
        """Compose IsaacLab Arena → Isaac Lab configs."""
-       def compose_manager_cfg(self) -> IsaacArenaManagerBasedRLEnvCfg:
+       def compose_manager_cfg(self) -> IsaacLabArenaManagerBasedRLEnvCfg:
            # Combine configurations from all components
            scene_cfg = combine_configclass_instances(...)
            observation_cfg = self.arena_env.embodiment.get_observation_cfg()
@@ -54,7 +54,7 @@ Environment Integration
    scene = Scene(assets=[background, pick_object])
    task = PickAndPlaceTask(pick_object, destination, background)
 
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        name="manipulation_task",
        embodiment=embodiment,
        scene=scene,
@@ -80,7 +80,7 @@ Usage Examples
    scene = Scene(assets=[kitchen, cracker_box])
    task = PickAndPlaceTask(cracker_box, destination, kitchen)
 
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        name="kitchen_manipulation",
        embodiment=franka,
        scene=scene,
@@ -95,7 +95,7 @@ Usage Examples
    microwave = asset_registry.get_asset_by_name("microwave")()
 
    task = OpenDoorTask(microwave, openness_threshold=0.8)
-   environment = IsaacArenaEnvironment(embodiment=g1, task=task, scene=scene)
+   environment = IsaacLabArenaEnvironment(embodiment=g1, task=task, scene=scene)
 
 **Command Line Usage**
 

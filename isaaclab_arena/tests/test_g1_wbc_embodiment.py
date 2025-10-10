@@ -56,7 +56,7 @@ def get_test_environment(num_envs: int, pink_ik_enabled: bool):
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.embodiments.g1.g1 import G1WBCJointEmbodiment, G1WBCPinkEmbodiment
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.dummy_task import DummyTask
     from isaaclab_arena.utils.pose import Pose
@@ -73,7 +73,7 @@ def get_test_environment(num_envs: int, pink_ik_enabled: bool):
     robot_init_base_pose = np.array([0, 0, 0])
     embodiment.set_initial_pose(Pose(position_xyz=robot_init_base_pose, rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="g1_standing_test",
         embodiment=embodiment,
         scene=scene,

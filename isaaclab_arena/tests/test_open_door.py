@@ -28,7 +28,7 @@ def get_test_environment(remove_reset_door_state_event: bool, num_envs: int):
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.embodiments.franka.franka import FrankaEmbodiment
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.open_door_task import OpenDoorTask
     from isaaclab_arena.utils.pose import Pose
@@ -50,7 +50,7 @@ def get_test_environment(remove_reset_door_state_event: bool, num_envs: int):
 
     scene = Scene(assets=[background, microwave])
 
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="open_door",
         embodiment=FrankaEmbodiment(),
         scene=scene,

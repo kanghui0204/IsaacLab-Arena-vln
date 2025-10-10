@@ -21,7 +21,7 @@ from isaaclab_arena.metrics.metric_base import MetricBase
 
 
 @configclass
-class IsaacArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
+class IsaacLabArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for an IsaacLab Arena environment."""
 
     # NOTE(alexmillane, 2025-07-29): The following definitions are taken from the base class.
@@ -56,7 +56,7 @@ class IsaacArenaManagerBasedRLEnvCfg(ManagerBasedRLEnvCfg):
 
 
 @configclass
-class IsaacArenaManagerBasedMimicEnvCfg(IsaacArenaManagerBasedRLEnvCfg, MimicEnvCfg):
+class IsaacLabArenaManagerBasedMimicEnvCfg(IsaacLabArenaManagerBasedRLEnvCfg, MimicEnvCfg):
     """Configuration for an IsaacLab Arena environment."""
 
     def __post_init__(self):

@@ -90,7 +90,7 @@ def _test_auto_object_type(simulation_app):
     from isaaclab_arena.assets.object_base import ObjectType
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
 
@@ -116,7 +116,7 @@ def _test_auto_object_type(simulation_app):
         )
 
         scene = Scene(assets=[background, cracker_box, microwave])
-        isaaclab_arena_environment = IsaacArenaEnvironment(
+        isaaclab_arena_environment = IsaacLabArenaEnvironment(
             name="auto_object_type_test",
             embodiment=embodiment,
             scene=scene,

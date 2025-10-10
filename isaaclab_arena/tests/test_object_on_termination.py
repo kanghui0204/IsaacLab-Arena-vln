@@ -33,7 +33,7 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.embodiments.franka.franka import FrankaEmbodiment
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
     from isaaclab_arena.tasks.terminations import object_on_destination
@@ -59,7 +59,7 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
 
     scene = Scene(assets=[background, cracker_box, destination_location])
 
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="kitchen",
         embodiment=FrankaEmbodiment(),
         scene=scene,

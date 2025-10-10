@@ -26,7 +26,7 @@ simulation_app = AppLauncher()
 from isaaclab_arena.assets.asset_registry import AssetRegistry
 from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
 from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
 from isaaclab_arena.scene.scene import Scene
 from isaaclab_arena.tasks.dummy_task import DummyTask
 from isaaclab_arena.utils.pose import Pose
@@ -40,7 +40,7 @@ cracker_box = asset_registry.get_asset_by_name("cracker_box")()
 cracker_box.set_initial_pose(Pose(position_xyz=(0.4, 0.0, 0.1), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
 scene = Scene(assets=[background, cracker_box])
-isaaclab_arena_environment = IsaacArenaEnvironment(
+isaaclab_arena_environment = IsaacLabArenaEnvironment(
     name="reference_object_test",
     embodiment=embodiment,
     scene=scene,

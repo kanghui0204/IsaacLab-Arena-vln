@@ -45,7 +45,7 @@ def _test_success_rate_metric(simulation_app):
     from isaaclab_arena.assets.object_reference import ObjectReference
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.metrics.metrics import compute_metrics
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
@@ -64,7 +64,7 @@ def _test_success_rate_metric(simulation_app):
     )
 
     scene = Scene(assets=[background, cracker_box])
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="robot_initial_position",
         embodiment=embodiment,
         scene=scene,

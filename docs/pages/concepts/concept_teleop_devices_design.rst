@@ -61,7 +61,7 @@ Environment Integration
        teleop_device = device_registry.get_device_by_name(args_cli.teleop_device)()
 
    # Environment composition with teleop support
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        name="manipulation_task",
        embodiment=embodiment,
        scene=scene,
@@ -103,7 +103,7 @@ Usage Examples
    # Programmatic teleop device usage
    keyboard_device = device_registry.get_device_by_name("keyboard")()
 
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        embodiment=franka_embodiment,
        scene=kitchen_scene,
        task=pick_and_place_task,

@@ -28,7 +28,7 @@ def _test_camera_observation(simulation_app) -> bool:
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.embodiments.gr1t2.gr1t2 import GR1T2PinkEmbodiment
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.dummy_task import DummyTask
     from isaaclab_arena.utils.pose import Pose
@@ -49,7 +49,7 @@ def _test_camera_observation(simulation_app) -> bool:
 
     scene = Scene(assets=[background, cracker_box])
 
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="camera_observation_test",
         embodiment=GR1T2PinkEmbodiment(enable_cameras=True),
         scene=scene,

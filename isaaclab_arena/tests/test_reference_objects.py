@@ -39,7 +39,7 @@ def get_test_background():
             super().__init__(
                 name="kitchen",
                 tags=["background", "pick_and_place"],
-                usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/isaaclab_arena/assets_for_tests/reference_object_test_kitchen.usd",
+                usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/assets_for_tests/reference_object_test_kitchen.usd",
                 initial_pose=Pose(position_xyz=(0.772, 3.39, -0.895), rotation_wxyz=(0.70711, 0, 0, -0.70711)),
                 object_min_z=-0.2,
             )
@@ -57,7 +57,7 @@ def _test_reference_objects(simulation_app) -> bool:
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.embodiments.franka.franka import FrankaEmbodiment
     from isaaclab_arena.environments.compile_env import ArenaEnvBuilder
-    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
 
@@ -93,7 +93,7 @@ def _test_reference_objects(simulation_app) -> bool:
     scene = Scene(assets=[background, cracker_box, microwave])
 
     # Build the environment
-    isaaclab_arena_environment = IsaacArenaEnvironment(
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="reference_object_test",
         embodiment=embodiment,
         scene=scene,

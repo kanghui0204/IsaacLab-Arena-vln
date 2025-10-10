@@ -13,11 +13,11 @@ Compilation uses the ``ArenaEnvBuilder`` class:
    class ArenaEnvBuilder:
        """Compose IsaacLab Arena → Isaac Lab configs"""
 
-       def __init__(self, arena_env: IsaacArenaEnvironment, args: argparse.Namespace):
+       def __init__(self, arena_env: IsaacLabArenaEnvironment, args: argparse.Namespace):
            self.arena_env = arena_env
            self.args = args
 
-       def compose_manager_cfg(self) -> IsaacArenaManagerBasedRLEnvCfg:
+       def compose_manager_cfg(self) -> IsaacLabArenaManagerBasedRLEnvCfg:
            """Combine configurations from all components."""
            scene_cfg = combine_configclass_instances(
                "SceneCfg",
@@ -57,7 +57,7 @@ Environment Integration
 .. code-block:: python
 
    # Create IsaacLab Arena environment definition
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        name="kitchen_manipulation",
        embodiment=franka_embodiment,
        scene=kitchen_scene,

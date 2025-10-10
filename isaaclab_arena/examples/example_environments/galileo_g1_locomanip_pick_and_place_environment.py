@@ -22,7 +22,7 @@ class GalileoG1LocomanipPickAndPlaceEnvironment(ExampleEnvironmentBase):
     name: str = "galileo_g1_locomanip_pick_and_place"
 
     def get_env(self, args_cli: argparse.Namespace):
-        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacArenaEnvironment
+        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
         from isaaclab_arena.tasks.g1_locomanip_pick_and_place_task import G1LocomanipPickAndPlaceTask
         from isaaclab_arena.utils.pose import Pose
@@ -74,7 +74,7 @@ class GalileoG1LocomanipPickAndPlaceEnvironment(ExampleEnvironmentBase):
             ]
 
         scene = Scene(assets=[background, pick_up_object, blue_sorting_bin])
-        isaaclab_arena_environment = IsaacArenaEnvironment(
+        isaaclab_arena_environment = IsaacLabArenaEnvironment(
             name=self.name,
             embodiment=embodiment,
             scene=scene,
