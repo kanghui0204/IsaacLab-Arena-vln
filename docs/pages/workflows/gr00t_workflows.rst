@@ -1,7 +1,7 @@
 Gr00t Workflows
 ===============
 
-This example demonstrates how to work with **GR1 tabletop manipulation** and **G1 locomanipulation** tasks in Isaac Lab - Arena, covering the complete workflow from generating demonstrations to running closed-loop policy inference.
+This example demonstrates how to work with **GR1 manipulation** and **G1 loco-manipulation** tasks in Isaac Lab - Arena, covering the complete workflow from generating demonstrations to running closed-loop policy (GR00T N1.5) inference and evaluation.
 
 
  .. list-table::
@@ -12,7 +12,8 @@ This example demonstrates how to work with **GR1 tabletop manipulation** and **G
 
         .. image:: ../../images/g1_galileo_arena_box_pnp_locomanip.gif
           :height: 400px
-    * - **GR1 Tabletop Manipulation**
+
+    * - **GR1 Manipulation**
 
         .. image:: ../../images/kitchen_gr1_arena.gif
           :height: 400px
@@ -20,14 +21,14 @@ This example demonstrates how to work with **GR1 tabletop manipulation** and **G
 Overview
 --------
 
-The pipeline includes the following steps for both **GR1 tabletop manipulation** and **G1 locomanipulation** tasks:
+The pipeline includes the following steps for both **GR1 manipulation** and **G1 loco-manipulation** tasks:
 
 0. **Human Demonstration Collection** (Optional): Collect task-specific demonstrations
 1. **Annotation and Augmentation using Isaac Lab Mimic** (Optional): Multiplying demonstrations using Isaac Lab Mimic
 2. **Converting To LeRobot Format** (Optional): Converting recorded data to LeRobot format for GR00T training
 3. **Replaying Recorded Data**: Replaying original HDF5 demonstrations for validation
-4. **Replaying LeRobot Converted Data**: Replaying converted LeRobot dataset trajectories
-5. **Post-training and Closed-loop Policy Inference**: Taining and running GR00T policies in closed-loop
+4. **Replaying LeRobot Converted Data**: Replaying converted LeRobot dataset trajectories for validation
+5. **Post-training and Closed-loop Policy Inference**: Taining and running GR00T N1.5 policies in closed-loop
 
 .. note::
    Steps 0-2 are optional. You can skip one or more of these steps by using our ready-to-use datasets for each step by downloading them from the `Download Ready-To-Use Data`_ section.
@@ -46,7 +47,7 @@ You can either record your own demonstrations by teleoperating a robot in Isaac 
       Isaac Lab Arena does not support collecting data for G1 loco-manipulation task yet. Please use the provided datasets in the `Download Ready-To-Use Annotated Dataset`_ section below.
 
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
 
       See the following sections on how to record upper body manipulation demonstrations for the GR1 humanoid.
       For recording demonstrations for the GR1 humanoid, we support the `Apple Vision Pro <https://www.apple.com/vision-pro/>`_ as a teleoperation device.
@@ -156,7 +157,7 @@ increase diversity. For more information about Isaac Lab Mimic, please visit the
          --object brown_box \
          --embodiment g1_wbc_pink
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
 
       1. The recorded demonstrations need to be segmented into subtasks before the next step. This is done by manual annotation, following the instructions printed to the terminal after running the following command:
 
@@ -238,7 +239,7 @@ Convert the HDF5 demonstrations to LeRobot format for GR00T training:
              chunks_size: 1000
 
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
 
        .. code-block:: bash
 
@@ -268,10 +269,6 @@ Replay original HDF5 demonstrations to validate data quality:
 .. tabs::
     .. tab:: G1 Loco-Manipulation
 
-       .. TODO::
-
-          (xinjie.yao, 2025-10-03): verify this command
-
        .. code-block:: bash
 
           python isaac_arena/examples/policy_runner.py \
@@ -282,11 +279,8 @@ Replay original HDF5 demonstrations to validate data quality:
             --object brown_box \
             --embodiment g1_wbc_joint
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
 
-       .. TODO::
-
-          (xinjie.yao, 2025-10-03): verify this command
 
        .. code-block:: bash
 
@@ -350,7 +344,7 @@ Replay trajectories from the converted LeRobot dataset:
           # Task mode
           task_mode: g1_locomanipulation
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
 
        .. code-block:: bash
 
@@ -371,21 +365,99 @@ Key features:
 Post-training and Closed-loop Policy Inference
 ----------------------------------------------
 
-To post-train the GR00T N1.x policy on the converted LeRobot dataset, you can use the following command:
+[GR00T N1.5](https://github.com/NVIDIA/Isaac-GR00T?tab=readme-ov-file#nvidia-isaac-gr00t) is a foundation model for generalized humanoid robot reasoning and skills, trained on an extensive multimodal dataset that includes real-world, synthetic, and internet-scale data. The model is designed for cross-embodiment generalization and can be efficiently adapted to new robot embodiments, tasks, and environments through post training.
 
-.. TODO::
-   (xinjie.yao, 2025-10-03): add post-training policy command
-
-Download the trained GR00T N1.x checkpoints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Download the trained GR00T N1.x policy checkpoints from `huggingface: GN1x-Tuned-Arena-G1-Loco-Manipulation <https://huggingface.co/nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation>`_.
+Make sure you are running the docker container with GR00T dependencies. You can do this by running the following command:
 
 .. code-block:: bash
 
-    huggingface-cli download \
-        nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation \
-        --local-dir /checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation
+    ./docker/run_docker.sh -g -G base # Include other docker arguments if needed
+
+To post-train the GR00T N1.5 policy on the converted LeRobot dataset, you can use the following command:
+
+.. tabs::
+    .. tab:: G1 Loco-Manipulation
+
+       .. code-block:: bash
+
+         cd submodules/Isaac-GR00T
+         # Provide the directory where the GR00T-Lerobot data is stored as DATASET_PATH
+         # Please use full path, instead of relative path
+
+         python scripts/gr00t_finetune.py \
+            --dataset_path=${DATASET_PATH} \
+            --output_dir=${OUTPUT_DIR} \
+            --data_config=unitree_g1_sim_wbc \
+            --batch_size=24 \ # Adjust this to adapt your GPU memory
+            --max_steps=20000 \
+            --num_gpus=8 \
+            --save_steps=5000 \
+            --base_model_path=nvidia/GR00T-N1.5-3B \
+            --no_tune_llm  \
+            --tune_visual \
+            --tune_projector \
+            --tune_diffusion_model \
+            --no-resume \
+            --dataloader_num_workers=16 \
+            --report_to=wandb \
+            --embodiment_tag=new_embodiment
+
+    .. tab:: GR1 Manipulation
+
+       .. code-block:: bash
+
+         cd submodules/Isaac-GR00T
+         # Provide the directory where the GR00T-Lerobot data is stored as DATASET_PATH
+         # Please use full path, instead of relative path
+
+         python scripts/gr00t_finetune.py \
+            --dataset_path=${DATASET_PATH} \
+            --output_dir=${OUTPUT_DIR} \
+            --data_config=gr1_arms_only \
+            --batch_size=24 \    # Adjust this to adapt your GPU memory
+            --max_steps=20000 \
+            --num_gpus=8 \
+            --save_steps=5000 \
+            --base_model_path=nvidia/GR00T-N1.5-3B \
+            --no_tune_llm  \
+            --tune_visual \
+            --tune_projector \
+            --tune_diffusion_model \
+            --no-resume \
+            --dataloader_num_workers=16 \
+            --report_to=wandb \
+            --embodiment_tag=new_embodiment
+
+.. hint::
+
+1. Tuning with visual backend, action projector and diffusion model generally yields smaller trajectories errors (MSE), and higher closed-loop success rates.
+
+2. If you prefer tuning with less powerful GPUs, please follow the [reference guidelines](https://github.com/NVIDIA/Isaac-GR00T/tree/n1-release?tab=readme-ov-file#3-fine-tuning) about other finetuning options.
+
+Download the trained GR00T N1.5 checkpoints
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+.. tabs::
+    .. tab:: G1 Loco-Manipulation
+
+       Download the trained GR00T N1.5 policy checkpoints from `huggingface: GN1x-Tuned-Arena-G1-Loco-Manipulation <https://huggingface.co/nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation>`_.
+
+       .. code-block:: bash
+
+         huggingface-cli download \
+            nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation \
+            --local-dir /checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation
+
+    .. tab:: GR1 Manipulation
+
+       Download the trained GR00T N1.5 policy checkpoints from `huggingface: GN1x-Tuned-Arena-GR1-Manipulation <https://huggingface.co/nvidia/GN1x-Tuned-Arena-GR1-Manipulation>`_.
+
+       .. code-block:: bash
+
+         huggingface-cli download \
+            nvidia/GN1x-Tuned-Arena-GR1-Manipulation \
+            --local-dir /checkpoints/GN1x-Tuned-Arena-GR1-Manipulation
 
 Closed-loop Policy Inference and Evaluation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -396,43 +468,83 @@ Make sure you are running the docker container with GR00T dependencies. You can 
 
     ./docker/run_docker.sh -g -G base # Include other docker arguments if needed
 
-.. TODO::
-   (xinjie.yao, 2025-10-03): add evaluation command
 
 Run trained GR00T policies in closed-loop:
 
-.. code-block:: bash
+.. tabs::
+    .. tab:: G1 Loco-Manipulation
 
-   python isaac_arena/examples/policy_runner.py \
-     --policy_type gr00t_closedloop \
-     --policy_config_yaml_path isaac_arena/policy/gr00t/g1_locomanip_gr00t_closedloop_config.yaml \
-     --num_steps 1000 \
-     --enable_cameras \
-     galileo_g1_locomanip_pick_and_place \
-     --object brown_box \
-     --embodiment g1_wbc_joint
+       .. code-block:: bash
 
-Configuration file (``g1_locomanip_gr00t_closedloop_config.yaml``):
+         python isaac_arena/examples/policy_runner.py \
+         --policy_type gr00t_closedloop \
+         --policy_config_yaml_path isaac_arena/arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml \
+         --num_steps 1000 \
+         --enable_cameras \
+         galileo_g1_locomanip_pick_and_place \
+         --object brown_box \
+         --embodiment g1_wbc_joint
 
-.. code-block:: yaml
+    .. tab:: GR1 Manipulation
 
-   # Model configuration
-   model_path: /checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation
-   embodiment_tag: new_embodiment
-   data_config: unitree_g1_sim_wbc
+       .. code-block:: bash
 
-   # Task configuration
-   language_instruction: "Pick up the brown box and place it in the blue bin"
-   task_mode: g1_locomanipulation
+         python isaac_arena/examples/policy_runner.py \
+         --policy_type gr00t_closedloop \
+         --policy_config_yaml_path isaac_arena/arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml \
+         --num_steps 1000 \
+         --enable_cameras \
+         gr1_open_microwave \
+         --embodiment gr1_joint
 
-   # Inference parameters
-   denoising_steps: 10
-   policy_device: cuda
-   target_image_size: [256, 256, 3]
+Configuration file for closed-loop inference of GR00T N1.5 policy
 
-   # Joint mappings
-   gr00t_joints_config_path: isaac_arena/policy/config/g1/gr00t_43dof_joint_space.yaml
-   action_joints_config_path: isaac_arena/policy/config/g1/43dof_joint_space.yaml
+.. tabs::
+    .. tab:: G1 Loco-Manipulation
+
+       .. code-block:: yaml
+
+          # Model configuration
+          model_path: /checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation
+          embodiment_tag: new_embodiment
+          data_config: unitree_g1_sim_wbc
+
+          # Task configuration
+          language_instruction: "Pick up the brown box and place it in the blue bin"
+          task_mode_name: g1_locomanipulation
+
+          # Inference parameters
+          denoising_steps: 10
+          policy_device: cuda
+          target_image_size: [256, 256, 3]
+
+          # Joint mappings
+          gr00t_joints_config_path: isaac_arena/policy/config/g1/gr00t_43dof_joint_space.yaml
+          action_joints_config_path: isaac_arena/policy/config/g1/43dof_joint_space.yaml
+          state_joints_config_path: isaac_arena/policy/config/g1/43dof_joint_space.yaml
+
+    .. tab:: GR1 Manipulation
+
+       .. code-block:: yaml
+
+          # Model configuration
+          model_path: /checkpoints/GN1x-Tuned-Arena-GR1-Manipulation
+          embodiment_tag: gr1
+          data_config: gr1_arms_only
+
+          # Task configuration
+          language_instruction: "Reach out to the microwave and open it."
+          task_mode_name: gr1_manipulation
+
+          # Inference parameters
+          denoising_steps: 10
+          policy_device: cuda
+          target_image_size: [256, 256, 3]
+
+          # Joint mappings
+          gr00t_joints_config_path: isaac_arena/policy/config/gr1/gr00t_26dof_joint_space.yaml
+          action_joints_config_path: isaac_arena/policy/config/gr1/36dof_joint_space.yaml
+          state_joints_config_path: isaac_arena/policy/config/gr1/54dof_joint_space.yaml
 
 Policy features:
 
@@ -440,7 +552,7 @@ Policy features:
 - **Action Chunking**: Predicts multiple future actions for smooth control
 - **Joint Space Control**: Outputs joint position targets
 - **Real-time Inference**: Runs at simulation frequency (50Hz)
-- **Whole Body Control**: Uses Whole Body Control (WBC) for robot control
+- **Whole Body Control(G1 Loco-Manipulation Only)**: Uses Whole Body Control (WBC) for robot control
 
 
 Download Ready-To-Use Data
@@ -476,10 +588,10 @@ Download Ready-To-Use Annotated Dataset
            --embodiment g1_wbc_pink
 
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
 
         Download the pre-recorded annotated dataset from `TODO(cvolk, 2025-10-10): add link here <https://>`_ and place it
-        under ``isaac_arena/datasets/Arena-GR1-Tabletop-Manipulation-Task/``.
+        under ``isaac_arena/datasets/Arena-GR1-Manipulation-Task/``.
 
         .. hint::
            The annotated dataset can be visualized using the ``replay_demos.py`` script.
@@ -495,7 +607,7 @@ Download Ready-To-Use Annotated Dataset
 
            python isaac_arena/scripts/replay_demos.py \
            --enable_cameras \
-           --dataset_file /datasets/Arena-GR1-Tabletop-Manipulation-Task/arena_gr1_tabletop_manipulation_dataset_annotated.hdf5 \
+           --dataset_file /datasets/Arena-GR1-Manipulation-Task/arena_gr1_manipulation_dataset_annotated.hdf5 \
            --device cpu gr1_open_microwave \
            --embodiment gr1_joint
 
@@ -516,7 +628,7 @@ If you skipped the `Annotation and Augmentation using Isaac Lab Mimic`_ step of 
                 nvidia/Arena-G1-Loco-Manipulation-Task \
                 --local-dir /datasets/Arena-G1-Loco-Manipulation-Task
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
         Download a pre-generated HDF5 dataset from TODO(cvolk, 2025-10-10): add link here <>.
 
         .. code-block:: bash
@@ -539,8 +651,12 @@ Download Ready-To-Use Converted LeRobot Data
                nvidia/Arena-G1-Loco-Manipulation-Task \
                --local-dir /datasets/Arena-G1-Loco-Manipulation-Task
 
-    .. tab:: GR1 Table-top Manipulation
+    .. tab:: GR1 Manipulation
 
+      Download the converted LeRobot data from `huggingface: Arena-GR1-Manipulation-Task <https://huggingface.co/datasets/nvidia/Arena-GR1-Manipulation-Task>`_.
 
-       .. TODO::
-         (cvolk, 2025-10-10): Upload data and link here.
+      .. code-block:: bash
+
+          huggingface-cli download \
+              nvidia/Arena-GR1-Manipulation-Task \
+              --local-dir /datasets/Arena-GR1-Manipulation-Task
