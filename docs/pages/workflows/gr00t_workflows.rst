@@ -430,9 +430,9 @@ To post-train the GR00T N1.5 policy on the converted LeRobot dataset, you can us
 
 .. hint::
 
-1. Tuning with visual backend, action projector and diffusion model generally yields smaller trajectories errors (MSE), and higher closed-loop success rates.
+    1. Tuning with visual backend, action projector and diffusion model generally yields smaller trajectories errors (MSE), and higher closed-loop success rates.
 
-2. If you prefer tuning with less powerful GPUs, please follow the [reference guidelines](https://github.com/NVIDIA/Isaac-GR00T/tree/n1-release?tab=readme-ov-file#3-fine-tuning) about other finetuning options.
+    2. If you prefer tuning with less powerful GPUs, please follow the [reference guidelines](https://github.com/NVIDIA/Isaac-GR00T/tree/n1-release?tab=readme-ov-file#3-fine-tuning) about other finetuning options.
 
 Download the trained GR00T N1.5 checkpoints
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
