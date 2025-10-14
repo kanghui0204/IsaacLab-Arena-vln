@@ -21,6 +21,7 @@ from isaaclab.utils import configclass
 
 if TYPE_CHECKING:
     from isaac_arena.embodiments.embodiment_base import EmbodimentBase
+    from isaac_arena.orchestrator.orchestrator_base import OrchestratorBase
     from isaac_arena.scene.scene import Scene
     from isaac_arena.tasks.task_base import TaskBase
     from isaac_arena.teleop_devices.teleop_device_base import TeleopDeviceBase
@@ -44,3 +45,6 @@ class IsaacArenaEnvironment:
 
     teleop_device: TeleopDeviceBase | None = None
     """The teleop device to use in the environment."""
+
+    orchestrator: OrchestratorBase | None = None
+    """The orchestrator to use in the environment."""
