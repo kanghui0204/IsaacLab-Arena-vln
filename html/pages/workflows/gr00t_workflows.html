@@ -362,7 +362,7 @@
                   
   <section id="gr00t-workflows">
 <h1>Gr00t Workflows<a class="headerlink" href="#gr00t-workflows" title="Link to this heading">#</a></h1>
-<p>This example demonstrates how to work with <strong>GR1 tabletop manipulation</strong> and <strong>G1 locomanipulation</strong> tasks in Isaac Lab - Arena, covering the complete workflow from generating demonstrations to running closed-loop policy inference.</p>
+<p>This example demonstrates how to work with <strong>GR1 manipulation</strong> and <strong>G1 loco-manipulation</strong> tasks in Isaac Lab - Arena, covering the complete workflow from generating demonstrations to running closed-loop policy (GR00T N1.5) inference and evaluation.</p>
 <blockquote>
 <div><div class="pst-scrollable-table-container"><table class="gallery table">
 <tbody>
@@ -371,7 +371,7 @@
 </a>
 </td>
 </tr>
-<tr class="row-even"><td><p><strong>GR1 Tabletop Manipulation</strong></p>
+<tr class="row-even"><td><p><strong>GR1 Manipulation</strong></p>
 <a class="reference internal image-reference" href="../../_images/kitchen_gr1_arena.gif"><img alt="../../_images/kitchen_gr1_arena.gif" src="../../_images/kitchen_gr1_arena.gif" style="height: 400px;" />
 </a>
 </td>
@@ -382,14 +382,14 @@
 </div></blockquote>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p>The pipeline includes the following steps for both <strong>GR1 tabletop manipulation</strong> and <strong>G1 locomanipulation</strong> tasks:</p>
+<p>The pipeline includes the following steps for both <strong>GR1 manipulation</strong> and <strong>G1 loco-manipulation</strong> tasks:</p>
 <ol class="arabic simple" start="0">
 <li><p><strong>Human Demonstration Collection</strong> (Optional): Collect task-specific demonstrations</p></li>
 <li><p><strong>Annotation and Augmentation using Isaac Lab Mimic</strong> (Optional): Multiplying demonstrations using Isaac Lab Mimic</p></li>
 <li><p><strong>Converting To LeRobot Format</strong> (Optional): Converting recorded data to LeRobot format for GR00T training</p></li>
 <li><p><strong>Replaying Recorded Data</strong>: Replaying original HDF5 demonstrations for validation</p></li>
-<li><p><strong>Replaying LeRobot Converted Data</strong>: Replaying converted LeRobot dataset trajectories</p></li>
-<li><p><strong>Post-training and Closed-loop Policy Inference</strong>: Taining and running GR00T policies in closed-loop</p></li>
+<li><p><strong>Replaying LeRobot Converted Data</strong>: Replaying converted LeRobot dataset trajectories for validation</p></li>
+<li><p><strong>Post-training and Closed-loop Policy Inference</strong>: Taining and running GR00T N1.5 policies in closed-loop</p></li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -400,7 +400,7 @@
 <h2>Human Demonstration Collection<a class="headerlink" href="#human-demonstration-collection" title="Link to this heading">#</a></h2>
 <p>You can either record your own demonstrations by teleoperating a robot in Isaac Lab or use the provided datasets.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><p>Isaac Lab Arena does not support collecting data for G1 loco-manipulation task yet. Please use the provided datasets in the <a class="reference internal" href="#download-ready-to-use-annotated-dataset">Download Ready-To-Use Annotated Dataset</a> section below.</p>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><p>Isaac Lab Arena does not support collecting data for G1 loco-manipulation task yet. Please use the provided datasets in the <a class="reference internal" href="#download-ready-to-use-annotated-dataset">Download Ready-To-Use Annotated Dataset</a> section below.</p>
 </div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><p>See the following sections on how to record upper body manipulation demonstrations for the GR1 humanoid.
 For recording demonstrations for the GR1 humanoid, we support the <a class="reference external" href="https://www.apple.com/vision-pro/">Apple Vision Pro</a> as a teleoperation device.
 Find additional details on recording demonstrations for the GR1 humanoid in the <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/v2.1.0/source/overview/teleop_imitation.html#demo-data-generation-and-policy-training-for-a-humanoid-robot">Isaac Lab humanoid data generation documentation</a>.</p>
@@ -461,7 +461,7 @@ from a small set of annotated demonstrations by using rigid body transformations
 object initial poses are randomized to introduce variation and boost dataset diversity. Noise is added to the robot’s actions to further
 increase diversity. For more information about Isaac Lab Mimic, please visit the Isaac Lab documentation <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/main/source/overview/imitation-learning/teleop_imitation.html#teleoperation-and-imitation-learning-with-isaac-lab-mimic">here</a>.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><p>Use the annotated dataset (from <a class="reference internal" href="#download-ready-to-use-annotated-dataset">Download Ready-To-Use Annotated Dataset</a> section) and Isaac Lab Mimic to generate a new dataset of 100 demonstrations for GR00T training .</p>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><p>Use the annotated dataset (from <a class="reference internal" href="#download-ready-to-use-annotated-dataset">Download Ready-To-Use Annotated Dataset</a> section) and Isaac Lab Mimic to generate a new dataset of 100 demonstrations for GR00T training .</p>
 <p>Before proceeding, make sure you are inside the Isaac Lab - Arena docker container:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
 </pre></div>
@@ -539,7 +539,7 @@ To do this, we provide a script that performs the following steps:</p>
 </div>
 <p>Convert the HDF5 demonstrations to LeRobot format for GR00T training:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/policy/data_utils/convert_hdf5_to_lerobot.py<span class="w"> </span><span class="se">\</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/policy/data_utils/convert_hdf5_to_lerobot.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--config_yaml_path<span class="w"> </span>isaac_arena/policy/config/g1_locomanip_config.yaml
 </pre></div>
 </div>
@@ -588,11 +588,7 @@ To do this, we provide a script that performs the following steps:</p>
 <h2>Replaying Recorded Data<a class="headerlink" href="#replaying-recorded-data" title="Link to this heading">#</a></h2>
 <p>Replay original HDF5 demonstrations to validate data quality:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>(xinjie.yao, 2025-10-03): verify this command</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--policy_type<span class="w"> </span>replay<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--replay_file_path<span class="w"> </span>/datasets/my_g1_demos.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--episode_name<span class="w"> </span>episode_0<span class="w"> </span><span class="se">\</span>
@@ -601,11 +597,7 @@ To do this, we provide a script that performs the following steps:</p>
 <span class="w">  </span>--embodiment<span class="w"> </span>g1_wbc_joint
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-3-3-1" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-1" name="3-1" role="tabpanel" tabindex="0"><div class="admonition-todo admonition" id="id2">
-<p class="admonition-title">Todo</p>
-<p>(xinjie.yao, 2025-10-03): verify this command</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
+</div><div aria-labelledby="tab-3-3-1" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-1" name="3-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--policy_type<span class="w"> </span>replay<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--replay_file_path<span class="w"> </span>/datasets/my_gr1_demos.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--episode_name<span class="w"> </span>episode_0<span class="w"> </span><span class="se">\</span>
@@ -629,7 +621,7 @@ To do this, we provide a script that performs the following steps:</p>
 </div>
 <p>Replay trajectories from the converted LeRobot dataset:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-4-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-4-4-0" name="4-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-4-4-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-4-4-1" name="4-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-4-4-0" class="sphinx-tabs-panel" id="panel-4-4-0" name="4-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-4-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-4-4-0" name="4-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-4-4-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-4-4-1" name="4-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-4-4-0" class="sphinx-tabs-panel" id="panel-4-4-0" name="4-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--policy_type<span class="w"> </span>replay_lerobot<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--config_yaml_path<span class="w"> </span>isaac_arena/policy/gr00t/g1_locomanip_replay_action_config.yaml<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--trajectory_index<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
@@ -676,19 +668,83 @@ To do this, we provide a script that performs the following steps:</p>
 </section>
 <section id="post-training-and-closed-loop-policy-inference">
 <h2>Post-training and Closed-loop Policy Inference<a class="headerlink" href="#post-training-and-closed-loop-policy-inference" title="Link to this heading">#</a></h2>
-<p>To post-train the GR00T N1.x policy on the converted LeRobot dataset, you can use the following command:</p>
-<div class="admonition-todo admonition" id="id3">
-<p class="admonition-title">Todo</p>
-<p>(xinjie.yao, 2025-10-03): add post-training policy command</p>
-</div>
-<section id="download-the-trained-gr00t-n1-x-checkpoints">
-<h3>Download the trained GR00T N1.x checkpoints<a class="headerlink" href="#download-the-trained-gr00t-n1-x-checkpoints" title="Link to this heading">#</a></h3>
-<p>Download the trained GR00T N1.x policy checkpoints from <a class="reference external" href="https://huggingface.co/nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation">huggingface: GN1x-Tuned-Arena-G1-Loco-Manipulation</a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--local-dir<span class="w"> </span>/checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation
+<p>[GR00T N1.5](<a class="github reference external" href="https://github.com/NVIDIA/Isaac-GR00T?tab=readme-ov-file#nvidia-isaac-gr00t">NVIDIA/Isaac-GR00T</a>) is a foundation model for generalized humanoid robot reasoning and skills, trained on an extensive multimodal dataset that includes real-world, synthetic, and internet-scale data. The model is designed for cross-embodiment generalization and can be efficiently adapted to new robot embodiments, tasks, and environments through post training.</p>
+<p>Make sure you are running the docker container with GR00T dependencies. You can do this by running the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh<span class="w"> </span>-g<span class="w"> </span>-G<span class="w"> </span>base<span class="w"> </span><span class="c1"># Include other docker arguments if needed</span>
 </pre></div>
 </div>
+<p>To post-train the GR00T N1.5 policy on the converted LeRobot dataset, you can use the following command:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-5-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-5-5-0" name="5-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-5-5-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-5-5-1" name="5-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-5-5-0" class="sphinx-tabs-panel" id="panel-5-5-0" name="5-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>submodules/Isaac-GR00T
+<span class="c1"># Provide the directory where the GR00T-Lerobot data is stored as DATASET_PATH</span>
+<span class="c1"># Please use full path, instead of relative path</span>
+
+python<span class="w"> </span>scripts/gr00t_finetune.py<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--dataset_path<span class="o">=</span><span class="si">${</span><span class="nv">DATASET_PATH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--output_dir<span class="o">=</span><span class="si">${</span><span class="nv">OUTPUT_DIR</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--data_config<span class="o">=</span>unitree_g1_sim_wbc<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--batch_size<span class="o">=</span><span class="m">24</span><span class="w"> </span><span class="se">\ </span><span class="c1"># Adjust this to adapt your GPU memory</span>
+<span class="w">   </span>--max_steps<span class="o">=</span><span class="m">20000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--num_gpus<span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--save_steps<span class="o">=</span><span class="m">5000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--base_model_path<span class="o">=</span>nvidia/GR00T-N1.5-3B<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--no_tune_llm<span class="w">  </span><span class="se">\</span>
+<span class="w">   </span>--tune_visual<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--tune_projector<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--tune_diffusion_model<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--no-resume<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--dataloader_num_workers<span class="o">=</span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--report_to<span class="o">=</span>wandb<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--embodiment_tag<span class="o">=</span>new_embodiment
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-5-1" class="sphinx-tabs-panel" hidden="true" id="panel-5-5-1" name="5-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>submodules/Isaac-GR00T
+<span class="c1"># Provide the directory where the GR00T-Lerobot data is stored as DATASET_PATH</span>
+<span class="c1"># Please use full path, instead of relative path</span>
+
+python<span class="w"> </span>scripts/gr00t_finetune.py<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--dataset_path<span class="o">=</span><span class="si">${</span><span class="nv">DATASET_PATH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--output_dir<span class="o">=</span><span class="si">${</span><span class="nv">OUTPUT_DIR</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--data_config<span class="o">=</span>gr1_arms_only<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--batch_size<span class="o">=</span><span class="m">24</span><span class="w"> </span><span class="se">\ </span><span class="w">   </span><span class="c1"># Adjust this to adapt your GPU memory</span>
+<span class="w">   </span>--max_steps<span class="o">=</span><span class="m">20000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--num_gpus<span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--save_steps<span class="o">=</span><span class="m">5000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--base_model_path<span class="o">=</span>nvidia/GR00T-N1.5-3B<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--no_tune_llm<span class="w">  </span><span class="se">\</span>
+<span class="w">   </span>--tune_visual<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--tune_projector<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--tune_diffusion_model<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--no-resume<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--dataloader_num_workers<span class="o">=</span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--report_to<span class="o">=</span>wandb<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--embodiment_tag<span class="o">=</span>new_embodiment
+</pre></div>
+</div>
+</div></div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<ol class="arabic simple">
+<li><p>Tuning with visual backend, action projector and diffusion model generally yields smaller trajectories errors (MSE), and higher closed-loop success rates.</p></li>
+<li><p>If you prefer tuning with less powerful GPUs, please follow the [reference guidelines](<a class="github reference external" href="https://github.com/NVIDIA/Isaac-GR00T/tree/n1-release?tab=readme-ov-file#3-fine-tuning">NVIDIA/Isaac-GR00T</a>) about other finetuning options.</p></li>
+</ol>
+</div>
+<section id="download-the-trained-gr00t-n1-5-checkpoints">
+<h3>Download the trained GR00T N1.5 checkpoints<a class="headerlink" href="#download-the-trained-gr00t-n1-5-checkpoints" title="Link to this heading">#</a></h3>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-6-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-6-6-0" name="6-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-6-6-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-6-6-1" name="6-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-6-6-0" class="sphinx-tabs-panel" id="panel-6-6-0" name="6-0" role="tabpanel" tabindex="0"><p>Download the trained GR00T N1.5 policy checkpoints from <a class="reference external" href="https://huggingface.co/nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation">huggingface: GN1x-Tuned-Arena-G1-Loco-Manipulation</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--local-dir<span class="w"> </span>/checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-6-1" class="sphinx-tabs-panel" hidden="true" id="panel-6-6-1" name="6-1" role="tabpanel" tabindex="0"><p>Download the trained GR00T N1.5 policy checkpoints from <a class="reference external" href="https://huggingface.co/nvidia/GN1x-Tuned-Arena-GR1-Manipulation">huggingface: GN1x-Tuned-Arena-GR1-Manipulation</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>nvidia/GN1x-Tuned-Arena-GR1-Manipulation<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--local-dir<span class="w"> </span>/checkpoints/GN1x-Tuned-Arena-GR1-Manipulation
+</pre></div>
+</div>
+</div></div>
 </section>
 <section id="closed-loop-policy-inference-and-evaluation">
 <h3>Closed-loop Policy Inference and Evaluation<a class="headerlink" href="#closed-loop-policy-inference-and-evaluation" title="Link to this heading">#</a></h3>
@@ -696,30 +752,38 @@ To do this, we provide a script that performs the following steps:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh<span class="w"> </span>-g<span class="w"> </span>-G<span class="w"> </span>base<span class="w"> </span><span class="c1"># Include other docker arguments if needed</span>
 </pre></div>
 </div>
-<div class="admonition-todo admonition" id="id4">
-<p class="admonition-title">Todo</p>
-<p>(xinjie.yao, 2025-10-03): add evaluation command</p>
-</div>
 <p>Run trained GR00T policies in closed-loop:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--policy_type<span class="w"> </span>gr00t_closedloop<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--policy_config_yaml_path<span class="w"> </span>isaac_arena/policy/gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--num_steps<span class="w"> </span><span class="m">1000</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--object<span class="w"> </span>brown_box<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--embodiment<span class="w"> </span>g1_wbc_joint
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-7-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-7-7-0" name="7-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-7-7-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-7-7-1" name="7-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-7-7-0" class="sphinx-tabs-panel" id="panel-7-7-0" name="7-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
+--policy_type<span class="w"> </span>gr00t_closedloop<span class="w"> </span><span class="se">\</span>
+--policy_config_yaml_path<span class="w"> </span>isaac_arena/arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
+--num_steps<span class="w"> </span><span class="m">1000</span><span class="w"> </span><span class="se">\</span>
+--enable_cameras<span class="w"> </span><span class="se">\</span>
+galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
+--object<span class="w"> </span>brown_box<span class="w"> </span><span class="se">\</span>
+--embodiment<span class="w"> </span>g1_wbc_joint
 </pre></div>
 </div>
-<p>Configuration file (<code class="docutils literal notranslate"><span class="pre">g1_locomanip_gr00t_closedloop_config.yaml</span></code>):</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Model configuration</span>
+</div><div aria-labelledby="tab-7-7-1" class="sphinx-tabs-panel" hidden="true" id="panel-7-7-1" name="7-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
+--policy_type<span class="w"> </span>gr00t_closedloop<span class="w"> </span><span class="se">\</span>
+--policy_config_yaml_path<span class="w"> </span>isaac_arena/arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
+--num_steps<span class="w"> </span><span class="m">1000</span><span class="w"> </span><span class="se">\</span>
+--enable_cameras<span class="w"> </span><span class="se">\</span>
+gr1_open_microwave<span class="w"> </span><span class="se">\</span>
+--embodiment<span class="w"> </span>gr1_joint
+</pre></div>
+</div>
+</div></div>
+<p>Configuration file for closed-loop inference of GR00T N1.5 policy</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-8-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-8-8-0" name="8-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-8-8-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-8-8-1" name="8-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-8-8-0" class="sphinx-tabs-panel" id="panel-8-8-0" name="8-0" role="tabpanel" tabindex="0"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Model configuration</span>
 <span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation</span>
 <span class="nt">embodiment_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_embodiment</span>
 <span class="nt">data_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unitree_g1_sim_wbc</span>
 
 <span class="c1"># Task configuration</span>
 <span class="nt">language_instruction</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Pick</span><span class="nv"> </span><span class="s">up</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">brown</span><span class="nv"> </span><span class="s">box</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">place</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">blue</span><span class="nv"> </span><span class="s">bin&quot;</span>
-<span class="nt">task_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">g1_locomanipulation</span>
+<span class="nt">task_mode_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">g1_locomanipulation</span>
 
 <span class="c1"># Inference parameters</span>
 <span class="nt">denoising_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
@@ -729,7 +793,38 @@ To do this, we provide a script that performs the following steps:</p>
 <span class="c1"># Joint mappings</span>
 <span class="nt">gr00t_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaac_arena/policy/config/g1/gr00t_43dof_joint_space.yaml</span>
 <span class="nt">action_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaac_arena/policy/config/g1/43dof_joint_space.yaml</span>
+<span class="nt">state_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaac_arena/policy/config/g1/43dof_joint_space.yaml</span>
 </pre></div>
+</div>
+</div><div aria-labelledby="tab-8-8-1" class="sphinx-tabs-panel" hidden="true" id="panel-8-8-1" name="8-1" role="tabpanel" tabindex="0"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Model configuration</span>
+<span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/checkpoints/GN1x-Tuned-Arena-GR1-Manipulation</span>
+<span class="nt">embodiment_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1</span>
+<span class="nt">data_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1_arms_only</span>
+
+<span class="c1"># Task configuration</span>
+<span class="nt">language_instruction</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Reach</span><span class="nv"> </span><span class="s">out</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">microwave</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">open</span><span class="nv"> </span><span class="s">it.&quot;</span>
+<span class="nt">task_mode_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1_manipulation</span>
+
+<span class="c1"># Inference parameters</span>
+<span class="nt">denoising_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">policy_device</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cuda</span>
+<span class="nt">target_image_size</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">256</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">256</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Joint mappings</span>
+<span class="nt">gr00t_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaac_arena/policy/config/gr1/gr00t_26dof_joint_space.yaml</span>
+<span class="nt">action_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaac_arena/policy/config/gr1/36dof_joint_space.yaml</span>
+<span class="nt">state_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaac_arena/policy/config/gr1/54dof_joint_space.yaml</span>
+</pre></div>
+</div>
+</div></div>
+<p>When the simulation app closes, you will see related metrics in the terminal.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-9-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-9-9-0" name="9-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-9-9-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-9-9-1" name="9-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-9-9-0" class="sphinx-tabs-panel" id="panel-9-9-0" name="9-0" role="tabpanel" tabindex="0"><p>Metrics: {success_rate: 0.5, num_episodes: 2}</p>
+</div><div aria-labelledby="tab-9-9-1" class="sphinx-tabs-panel" hidden="true" id="panel-9-9-1" name="9-1" role="tabpanel" tabindex="0"><p>Metrics: {success_rate: 1.0, door_moved_rate: 1.0, num_episodes: 2}</p>
+</div></div>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>(xinjie.yao, 2025-10-13): Add parallel env metrics example.</p>
 </div>
 <p>Policy features:</p>
 <ul class="simple">
@@ -737,7 +832,7 @@ To do this, we provide a script that performs the following steps:</p>
 <li><p><strong>Action Chunking</strong>: Predicts multiple future actions for smooth control</p></li>
 <li><p><strong>Joint Space Control</strong>: Outputs joint position targets</p></li>
 <li><p><strong>Real-time Inference</strong>: Runs at simulation frequency (50Hz)</p></li>
-<li><p><strong>Whole Body Control</strong>: Uses Whole Body Control (WBC) for robot control</p></li>
+<li><p><strong>Whole Body Control(G1 Loco-Manipulation Only)</strong>: Uses Whole Body Control (WBC) for robot control</p></li>
 </ul>
 </section>
 </section>
@@ -746,7 +841,7 @@ To do this, we provide a script that performs the following steps:</p>
 <section id="download-ready-to-use-annotated-dataset">
 <h3>Download Ready-To-Use Annotated Dataset<a class="headerlink" href="#download-ready-to-use-annotated-dataset" title="Link to this heading">#</a></h3>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-5-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-5-5-0" name="5-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-5-5-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-5-5-1" name="5-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-5-5-0" class="sphinx-tabs-panel" id="panel-5-5-0" name="5-0" role="tabpanel" tabindex="0"><p>Download the pre-recorded annotated dataset from <a class="reference external" href="https://">TODO(xyao, 2025-10-10): add link here</a> and place it
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-10-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-10-10-0" name="10-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-10-10-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-10-10-1" name="10-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-10-10-0" class="sphinx-tabs-panel" id="panel-10-10-0" name="10-0" role="tabpanel" tabindex="0"><p>Download the pre-recorded annotated dataset from <a class="reference external" href="https://">TODO(xyao, 2025-10-10): add link here</a> and place it
 under <code class="docutils literal notranslate"><span class="pre">isaac_arena/datasets/Arena-G1-Loco-Manipulation-Task/</span></code>.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -765,8 +860,8 @@ Enter the Isaac Lab - Arena docker container:</p>
 --embodiment<span class="w"> </span>g1_wbc_pink
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-5-5-1" class="sphinx-tabs-panel" hidden="true" id="panel-5-5-1" name="5-1" role="tabpanel" tabindex="0"><p>Download the pre-recorded annotated dataset from <a class="reference external" href="https://">TODO(cvolk, 2025-10-10): add link here</a> and place it
-under <code class="docutils literal notranslate"><span class="pre">isaac_arena/datasets/Arena-GR1-Tabletop-Manipulation-Task/</span></code>.</p>
+</div><div aria-labelledby="tab-10-10-1" class="sphinx-tabs-panel" hidden="true" id="panel-10-10-1" name="10-1" role="tabpanel" tabindex="0"><p>Download the pre-recorded annotated dataset from <a class="reference external" href="https://">TODO(cvolk, 2025-10-10): add link here</a> and place it
+under <code class="docutils literal notranslate"><span class="pre">isaac_arena/datasets/Arena-GR1-Manipulation-Task/</span></code>.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>The annotated dataset can be visualized using the <code class="docutils literal notranslate"><span class="pre">replay_demos.py</span></code> script.
@@ -778,7 +873,7 @@ Enter the Isaac Lab - Arena docker container:</p>
 <p>Run the following command to play back the dataset:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/scripts/replay_demos.py<span class="w"> </span><span class="se">\</span>
 --enable_cameras<span class="w"> </span><span class="se">\</span>
---dataset_file<span class="w"> </span>/datasets/Arena-GR1-Tabletop-Manipulation-Task/arena_gr1_tabletop_manipulation_dataset_annotated.hdf5<span class="w"> </span><span class="se">\</span>
+--dataset_file<span class="w"> </span>/datasets/Arena-GR1-Manipulation-Task/arena_gr1_manipulation_dataset_annotated.hdf5<span class="w"> </span><span class="se">\</span>
 --device<span class="w"> </span>cpu<span class="w"> </span>gr1_open_microwave<span class="w"> </span><span class="se">\</span>
 --embodiment<span class="w"> </span>gr1_joint
 </pre></div>
@@ -789,13 +884,13 @@ Enter the Isaac Lab - Arena docker container:</p>
 <h3>Download Ready-To-Use Augmented Mimic Data<a class="headerlink" href="#download-ready-to-use-augmented-mimic-data" title="Link to this heading">#</a></h3>
 <p>If you skipped the <a class="reference internal" href="#annotation-and-augmentation-using-isaac-lab-mimic">Annotation and Augmentation using Isaac Lab Mimic</a> step of this example, you can download a pre-generated dataset for use.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-6-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-6-6-0" name="6-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-6-6-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-6-6-1" name="6-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-6-6-0" class="sphinx-tabs-panel" id="panel-6-6-0" name="6-0" role="tabpanel" tabindex="0"><p>Download a pre-generated HDF5 dataset from <a class="reference external" href="https://huggingface.co/datasets/nvidia/Arena-G1-Loco-Manipulation-Task">Arena-G1-Loco-Manipulation-Task</a>.</p>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-11-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-11-11-0" name="11-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-11-11-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-11-11-1" name="11-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-11-11-0" class="sphinx-tabs-panel" id="panel-11-11-0" name="11-0" role="tabpanel" tabindex="0"><p>Download a pre-generated HDF5 dataset from <a class="reference external" href="https://huggingface.co/datasets/nvidia/Arena-G1-Loco-Manipulation-Task">Arena-G1-Loco-Manipulation-Task</a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>nvidia/Arena-G1-Loco-Manipulation-Task<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--local-dir<span class="w"> </span>/datasets/Arena-G1-Loco-Manipulation-Task
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-6-6-1" class="sphinx-tabs-panel" hidden="true" id="panel-6-6-1" name="6-1" role="tabpanel" tabindex="0"><p>Download a pre-generated HDF5 dataset from TODO(cvolk, 2025-10-10): add link here &lt;&gt;.</p>
+</div><div aria-labelledby="tab-11-11-1" class="sphinx-tabs-panel" hidden="true" id="panel-11-11-1" name="11-1" role="tabpanel" tabindex="0"><p>Download a pre-generated HDF5 dataset from TODO(cvolk, 2025-10-10): add link here &lt;&gt;.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TODO<span class="o">(</span>cvolk,<span class="w"> </span><span class="m">2025</span>-10-10<span class="o">)</span>:<span class="w"> </span>add<span class="w"> </span>link<span class="w"> </span>here.
 </pre></div>
 </div>
@@ -804,15 +899,17 @@ Enter the Isaac Lab - Arena docker container:</p>
 <section id="download-ready-to-use-converted-lerobot-data">
 <h3>Download Ready-To-Use Converted LeRobot Data<a class="headerlink" href="#download-ready-to-use-converted-lerobot-data" title="Link to this heading">#</a></h3>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-7-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-7-7-0" name="7-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-7-7-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-7-7-1" name="7-1" role="tab" tabindex="-1">GR1 Table-top Manipulation</button></div><div aria-labelledby="tab-7-7-0" class="sphinx-tabs-panel" id="panel-7-7-0" name="7-0" role="tabpanel" tabindex="0"><p>Download the converted LeRobot data from <a class="reference external" href="https://huggingface.co/datasets/nvidia/Arena-G1-Loco-Manipulation-Task">huggingface: Arena-G1-Loco-Manipulation-Task</a>.</p>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-12-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-12-12-0" name="12-0" role="tab" tabindex="0">G1 Loco-Manipulation</button><button aria-controls="panel-12-12-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-12-12-1" name="12-1" role="tab" tabindex="-1">GR1 Manipulation</button></div><div aria-labelledby="tab-12-12-0" class="sphinx-tabs-panel" id="panel-12-12-0" name="12-0" role="tabpanel" tabindex="0"><p>Download the converted LeRobot data from <a class="reference external" href="https://huggingface.co/datasets/nvidia/Arena-G1-Loco-Manipulation-Task">huggingface: Arena-G1-Loco-Manipulation-Task</a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>nvidia/Arena-G1-Loco-Manipulation-Task<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--local-dir<span class="w"> </span>/datasets/Arena-G1-Loco-Manipulation-Task
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-7-7-1" class="sphinx-tabs-panel" hidden="true" id="panel-7-7-1" name="7-1" role="tabpanel" tabindex="0"><div class="admonition-todo admonition" id="id5">
-<p class="admonition-title">Todo</p>
-<p>(cvolk, 2025-10-10): Upload data and link here.</p>
+</div><div aria-labelledby="tab-12-12-1" class="sphinx-tabs-panel" hidden="true" id="panel-12-12-1" name="12-1" role="tabpanel" tabindex="0"><p>Download the converted LeRobot data from <a class="reference external" href="https://huggingface.co/datasets/nvidia/Arena-GR1-Manipulation-Task">huggingface: Arena-GR1-Manipulation-Task</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>nvidia/Arena-GR1-Manipulation-Task<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--local-dir<span class="w"> </span>/datasets/Arena-GR1-Manipulation-Task
+</pre></div>
 </div>
 </div></div>
 </section>
@@ -875,7 +972,7 @@ Enter the Isaac Lab - Arena docker container:</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replaying-recorded-data">Replaying Recorded Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replaying-lerobot-converted-data">Replaying LeRobot Converted Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-training-and-closed-loop-policy-inference">Post-training and Closed-loop Policy Inference</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#download-the-trained-gr00t-n1-x-checkpoints">Download the trained GR00T N1.x checkpoints</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#download-the-trained-gr00t-n1-5-checkpoints">Download the trained GR00T N1.5 checkpoints</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#closed-loop-policy-inference-and-evaluation">Closed-loop Policy Inference and Evaluation</a></li>
 </ul>
 </li>
