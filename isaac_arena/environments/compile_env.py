@@ -40,6 +40,13 @@ class ArenaEnvBuilder:
         self.arena_env = arena_env
         self.args = args
 
+    def orchestrate(self) -> None:
+        """Orchestrate the environment member interaction"""
+        if self.arena_env.orchestrator is not None:
+            self.arena_env.orchestrator.orchestrate(
+                self.arena_env.embodiment, self.arena_env.scene, self.arena_env.task
+            )
+
     def compose_manager_cfg(self) -> IsaacArenaManagerBasedRLEnvCfg:
         """Return base ManagerBased cfg (scene+events+terminations+xr), no registration."""
 
@@ -118,6 +125,8 @@ class ArenaEnvBuilder:
     ) -> tuple[str, IsaacArenaManagerBasedRLEnvCfg]:
         """Register Gym env and parse runtime cfg."""
         name = self.arena_env.name
+        # orchestrate the environment member interaction
+        self.orchestrate()
         cfg_entry = env_cfg if env_cfg is not None else self.compose_manager_cfg()
         entry_point = self.get_entry_point()
         gym.register(
