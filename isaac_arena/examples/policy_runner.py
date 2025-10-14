@@ -54,9 +54,17 @@ def main():
             with torch.inference_mode():
                 actions = policy.get_action(env, obs)
                 obs, _, terminated, truncated, _ = env.step(actions)
-                # Only reset if all envs are done
-                if terminated.all() or truncated.all():
-                    obs, _ = env.reset()
+                # NOTE(xinjieyao, 2025-10-13): For policy closedloop, if any env succeeds, reset the policy; As in parallel
+                # envs, each env is running async, it may be cases where one env succeeds when others are not done.
+                # Given GR00T policy is a single-shot policy, it is safe to reset the policy. However, for other policies, we need to be careful.
+                if env.unwrapped.termination_manager.get_term("success").any():
+                    policy.reset()
+                # Only break out of the loop if all envs are done
+                # NOTE(xinjieyao, 2025-10-13): In single env, closedloop policy runs until num_steps is reached. Keep resetting if task is completed.
+                # In multi env, closedloop policy runs until all envs are done. Depending on num_steps, it could have more than 1 eposides with single env.
+                if args_cli.num_envs > 1:
+                    if terminated.all() or truncated.all():
+                        break
 
         metrics = compute_metrics(env)
         print(f"Metrics: {metrics}")
