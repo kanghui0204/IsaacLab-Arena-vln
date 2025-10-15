@@ -45,6 +45,9 @@ class Registry(metaclass=SingletonMeta):
         Args:
             name (str): The name of the component.
         """
+        # For AssetRegistry, ensure assets are registered before checking
+        if isinstance(self, AssetRegistry):
+            ensure_assets_registered()
         return name in self.components
 
     def get_component_by_name(self, name: str) -> Any:
@@ -70,6 +73,7 @@ class AssetRegistry(Registry):
         Args:
             name (str): The name of the asset.
         """
+        ensure_assets_registered()
         return self.get_component_by_name(name)
 
     def get_assets_by_tag(self, tag: str) -> list[type["Asset"]]:
@@ -81,6 +85,7 @@ class AssetRegistry(Registry):
         Returns:
             list[Asset]: The list of assets.
         """
+        ensure_assets_registered()
         return [asset for asset in self.components.values() if tag in asset.tags]
 
     def get_random_asset_by_tag(self, tag: str) -> type["Asset"]:
@@ -92,6 +97,7 @@ class AssetRegistry(Registry):
         Returns:
             Asset: The random asset.
         """
+        ensure_assets_registered()
         assets = self.get_assets_by_tag(tag)
         if len(assets) == 0:
             raise ValueError(f"No assets found with tag {tag}")
@@ -112,10 +118,18 @@ class DeviceRegistry(Registry):
         return self.get_component_by_name(name)
 
 
-# Register all the assets. Down here at the bottom of the file because
-# the assets use the AssetRegistry class in order to register themselves,
-# so it needs to be fully defined to avoid a circular import.
-from isaac_arena.assets.background_library import *  # noqa: F403, F401
-from isaac_arena.assets.object_library import *  # noqa: F403, F401
-from isaac_arena.embodiments import *  # noqa: F403, F401
-from isaac_arena.teleop_devices import *  # noqa: F403, F401
+# Lazy registration to avoid circular imports
+_assets_registered = False
+
+
+def ensure_assets_registered():
+    """Ensure all assets are registered. Call this before accessing the registry."""
+    global _assets_registered
+    if not _assets_registered:
+        # Import modules to trigger asset registration via decorators
+        import isaac_arena.assets.background_library  # noqa: F401
+        import isaac_arena.assets.object_library  # noqa: F401
+        import isaac_arena.embodiments  # noqa: F401
+        import isaac_arena.teleop_devices  # noqa: F401
+
+        _assets_registered = True
