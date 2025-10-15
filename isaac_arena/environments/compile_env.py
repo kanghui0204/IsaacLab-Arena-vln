@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import argparse
 import gymnasium as gym
-from dataclasses import fields
+from dataclasses import fields, is_dataclass
 
 from isaaclab.envs import ManagerBasedRLMimicEnv
 from isaaclab.envs.manager_based_env import ManagerBasedEnv
@@ -48,7 +48,7 @@ class ArenaEnvBuilder:
                 self.arena_env.embodiment, self.arena_env.scene, self.arena_env.task
             )
 
-    # Overwrite the simulation parameters set in the environment. Not checked if the attributes are compatible.
+    # Overwrite the simulation parameters set in the environment.
     # This is a workaround to allow the user to override the simulation parameters at runtime.
     # TODO(Vik): Rework this.
     def override_simulation_parameters(self, env_cfg: IsaacArenaManagerBasedRLEnvCfg) -> IsaacArenaManagerBasedRLEnvCfg:
@@ -59,8 +59,22 @@ class ArenaEnvBuilder:
             self.arena_env.embodiment.get_simulation_parameters(),
             self.arena_env.scene.get_simulation_parameters(),
         )
+        if not is_dataclass(simulation_parameters):
+            raise TypeError("simulation_parameters must be a dataclass/configclass class or instance")
         for f in fields(simulation_parameters):
-            setattr(env_cfg, f.name, getattr(simulation_parameters, f.name))
+            if not hasattr(env_cfg, f.name):
+                continue
+
+            val = getattr(env_cfg, f.name)
+            if val is not None:
+                types_compatible = isinstance(val, type(getattr(simulation_parameters, f.name)))
+                if not types_compatible:
+                    raise TypeError(
+                        f"Attribute {f.name} is of type {type(val)} but should be of type"
+                        f" {type(getattr(simulation_parameters, f.name))}"
+                    )
+
+                setattr(env_cfg, f.name, getattr(simulation_parameters, f.name))
 
         return env_cfg
 
