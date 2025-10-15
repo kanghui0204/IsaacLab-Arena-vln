@@ -15,6 +15,8 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+from isaaclab.managers.recorder_manager import RecorderManagerBaseCfg
+
 from isaac_arena.metrics.metric_base import MetricBase
 
 
@@ -43,3 +45,6 @@ class TaskBase(ABC):
     @abstractmethod
     def get_metrics(self) -> list[MetricBase]:
         raise NotImplementedError("Function not implemented yet.")
+
+    def get_recorder_term_cfg(self) -> RecorderManagerBaseCfg:
+        return None
