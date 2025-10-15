@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 class Registry(metaclass=SingletonMeta):
 
     def __init__(self):
-        self.components = {}
+        self._components = {}
 
     def register(self, component: Any):
         """Register an asset with a name.
@@ -35,9 +35,9 @@ class Registry(metaclass=SingletonMeta):
             name (str): The name of the asset.
             asset (Asset): The asset to register.
         """
-        assert component.name not in self.components, f"component {component.name} already registered"
+        assert component.name not in self._components, f"component {component.name} already registered"
         assert component.name is not None, "component name is not set"
-        self.components[component.name] = component
+        self._components[component.name] = component
 
     def is_registered(self, name: str) -> bool:
         """Check if an component is registered.
@@ -48,7 +48,7 @@ class Registry(metaclass=SingletonMeta):
         # For AssetRegistry and DeviceRegistry, ensure assets are registered before checking
         if isinstance(self, (AssetRegistry, DeviceRegistry)):
             ensure_assets_registered()
-        return name in self.components
+        return name in self._components
 
     def get_component_by_name(self, name: str) -> Any:
         """Get an component by name.
@@ -62,7 +62,7 @@ class Registry(metaclass=SingletonMeta):
         # For AssetRegistry and DeviceRegistry, ensure assets are registered before accessing
         if isinstance(self, (AssetRegistry, DeviceRegistry)):
             ensure_assets_registered()
-        return self.components[name]
+        return self._components[name]
 
 
 class AssetRegistry(Registry):
@@ -89,7 +89,7 @@ class AssetRegistry(Registry):
             list[Asset]: The list of assets.
         """
         ensure_assets_registered()
-        return [asset for asset in self.components.values() if tag in asset.tags]
+        return [asset for asset in self._components.values() if tag in asset.tags]
 
     def get_random_asset_by_tag(self, tag: str) -> type["Asset"]:
         """Gets a random asset which has the given tag.
