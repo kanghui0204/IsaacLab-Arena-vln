@@ -56,9 +56,9 @@ class ArenaEnvBuilder:
         """Override the simulation parameters"""
         simulation_parameters = combine_configclass_instances(
             "SimulationParameters",
-            self.arena_env.task.get_simulation_parameters(),
-            self.arena_env.embodiment.get_simulation_parameters(),
-            self.arena_env.scene.get_simulation_parameters(),
+            self.arena_env.task.get_simulation_parameters(env_cfg),
+            self.arena_env.embodiment.get_simulation_parameters(env_cfg),
+            self.arena_env.scene.get_simulation_parameters(env_cfg),
         )
         if not is_dataclass(simulation_parameters):
             raise TypeError("simulation_parameters must be a dataclass/configclass class or instance")
@@ -100,6 +100,7 @@ class ArenaEnvBuilder:
         termination_cfg = combine_configclass_instances(
             "TerminationCfg",
             self.arena_env.task.get_termination_cfg(),
+            self.arena_env.embodiment.get_termination_cfg(),
             self.arena_env.scene.get_termination_cfg(),
         )
         actions_cfg = self.arena_env.embodiment.get_action_cfg()
@@ -116,6 +117,7 @@ class ArenaEnvBuilder:
             "RecorderManagerCfg",
             metrics_recorder_manager_cfg,
             self.arena_env.task.get_recorder_term_cfg(),
+            self.arena_env.embodiment.get_recorder_term_cfg(),
             bases=(RecorderManagerBaseCfg,),
         )
 

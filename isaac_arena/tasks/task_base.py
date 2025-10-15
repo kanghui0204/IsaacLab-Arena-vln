@@ -15,6 +15,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+from isaaclab.envs import ManagerBasedEnvCfg
 from isaaclab.managers.recorder_manager import RecorderManagerBaseCfg
 
 from isaac_arena.metrics.metric_base import MetricBase
@@ -46,8 +47,8 @@ class TaskBase(ABC):
     def get_metrics(self) -> list[MetricBase]:
         raise NotImplementedError("Function not implemented yet.")
 
-    def get_simulation_parameters(self) -> Any:
-       return None
- 
+    def get_simulation_parameters(self, env_cfg: ManagerBasedEnvCfg) -> Any:
+        return None
+
     def get_recorder_term_cfg(self) -> RecorderManagerBaseCfg:
         return None

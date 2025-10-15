@@ -14,6 +14,7 @@
 
 from typing import Any, Union
 
+from isaaclab.envs import ManagerBasedEnvCfg
 from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
 from isaaclab.assets.articulation.articulation_cfg import ArticulationCfg
 from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
@@ -63,5 +64,5 @@ class Scene:
     def get_termination_cfg(self) -> Any:
         return self.termination_cfg
 
-    def get_simulation_parameters(self) -> Any:
+    def get_simulation_parameters(self, env_cfg: ManagerBasedEnvCfg) -> Any:
         return None
