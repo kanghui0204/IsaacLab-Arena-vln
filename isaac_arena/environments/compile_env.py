@@ -88,6 +88,8 @@ class ArenaEnvBuilder:
             bases=(RecorderManagerBaseCfg,),
         )
 
+        isaac_arena_env = self.arena_env
+
         # Build the environment configuration
         if not self.args.mimic:
             env_cfg = IsaacArenaManagerBasedRLEnvCfg(
@@ -100,6 +102,7 @@ class ArenaEnvBuilder:
                 teleop_devices=teleop_device_cfg,
                 recorders=recorder_manager_cfg,
                 metrics=metrics,
+                isaac_arena_env=isaac_arena_env,
             )
         else:
             task_mimic_env_cfg = self.arena_env.task.get_mimic_env_cfg(embodiment_name=self.arena_env.embodiment.name)
@@ -119,6 +122,7 @@ class ArenaEnvBuilder:
                 # I assume that they're not needed for the mimic env.
                 # recorders=recorder_manager_cfg,
                 # metrics=metrics,
+                isaac_arena_env=isaac_arena_env,
             )
         return env_cfg
 
