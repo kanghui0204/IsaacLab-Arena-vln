@@ -109,6 +109,5 @@ class EmbodimentBase(Asset):
     def get_termination_cfg(self) -> Any:
         return self.termination_cfg
 
-    @abstractmethod
     def modify_env_cfg(self, env_cfg: IsaacArenaManagerBasedRLEnvCfg) -> IsaacArenaManagerBasedRLEnvCfg:
         return env_cfg

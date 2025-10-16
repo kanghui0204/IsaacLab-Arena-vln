@@ -50,6 +50,5 @@ class TaskBase(ABC):
     def get_recorder_term_cfg(self) -> RecorderManagerBaseCfg:
         return None
 
-    @abstractmethod
     def modify_env_cfg(self, env_cfg: IsaacArenaManagerBasedRLEnvCfg) -> IsaacArenaManagerBasedRLEnvCfg:
         return env_cfg
