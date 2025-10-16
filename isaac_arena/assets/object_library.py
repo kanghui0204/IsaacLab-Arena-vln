@@ -162,9 +162,15 @@ class PowerDrill(LibraryObject):
 class Microwave(LibraryObject, Openable):
     """A microwave oven."""
 
+    # Only required when using Lightwheel SDK
+    from lightwheel_sdk.loader import object_loader
+
     name = "microwave"
     tags = ["object", "openable"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/g1_locomanip_assets/asset_release/object_library/microwave/microwave.usd"
+    file_path, object_name, metadata = object_loader.acquire_by_registry(
+        registry_type="fixtures", registry_name=["microwave"], file_type="USD"
+    )
+    usd_path = file_path
     object_type = ObjectType.ARTICULATION
 
     # Openable affordance parameters
@@ -186,9 +192,15 @@ class Toaster(LibraryObject, Pressable):
     Encapsulates the pick-up object config for a pick-and-place environment.
     """
 
+    # Only required when using Lightwheel SDK
+    from lightwheel_sdk.loader import object_loader
+
     name = "toaster"
     tags = ["object", "pressable"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/g1_locomanip_assets/asset_release/object_library/toaster/toaster.usd"
+    file_path, object_name, metadata = object_loader.acquire_by_registry(
+        registry_type="fixtures", registry_name=["electric_kettle"], file_type="USD"
+    )
+    usd_path = file_path
     object_type = ObjectType.ARTICULATION
 
     # Openable affordance parameters
