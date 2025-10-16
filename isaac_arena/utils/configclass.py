@@ -17,6 +17,7 @@ import keyword
 import types
 from collections import OrderedDict
 from collections.abc import Callable
+from typing import Any
 
 from isaaclab.utils import configclass
 
@@ -72,6 +73,7 @@ def make_configclass(
     annotations = {}
     defaults = {}
     for item in fields:
+        print(item)
         if isinstance(item, str):
             name = item
             tp = "typing.Any"
@@ -121,6 +123,24 @@ def make_configclass(
     )
 
 
+def get_field_info(field: dataclasses.Field) -> tuple[str, type, Any]:
+    """Get the field info of a configclass.
+    Args:
+        config_class: The configclass to get the field info of.
+    Returns:
+        A list of tuples, where each tuple contains:
+            - the name
+      - the type
+      - and the (optional) default value or default factory of a field.
+    """
+    field_info = (field.name, field.type)
+    if field.default is not dataclasses.MISSING:
+        field_info += (field.default,)
+    elif field.default_factory is not dataclasses.MISSING:
+        field_info += (field.default_factory,)
+    return field_info
+
+
 def combine_configclasses(name: str, *input_configclasses: type, bases: tuple[type, ...] = ()) -> configclass:
     field_map: "OrderedDict[str, tuple]" = OrderedDict()
     for cls in input_configclasses:
@@ -131,7 +151,8 @@ def combine_configclasses(name: str, *input_configclasses: type, bases: tuple[ty
                 if previous_field.type == current_field.type:
                     continue
                 raise ValueError(f"Field {current_field.name} has different types in the input configclasses")
-            field_map[current_field.name] = current_field
+            field_info = get_field_info(current_field)
+            field_map[current_field.name] = field_info
 
     new_configclass = make_configclass(name, list(field_map.values()), bases=bases)
     new_configclass.__post_init__ = combine_post_inits(*input_configclasses)
