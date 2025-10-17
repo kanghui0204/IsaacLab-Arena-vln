@@ -114,7 +114,7 @@ class ObjectReference(ObjectBase):
         """Get prim position, rotation and scale in world coordinates"""
         xformable = UsdGeom.Xformable(prim)
         if not xformable:
-            return None, None
+            raise ValueError(f"Prim {prim.GetName()} is not a xformable")
         matrix = xformable.ComputeLocalToWorldTransform(Usd.TimeCode.Default())
         try:
             pos, rot, _ = UsdSkel.DecomposeTransform(matrix)
@@ -123,7 +123,7 @@ class ObjectReference(ObjectBase):
             return pos_list, quat_list
         except Exception as e:
             print(f"Error decomposing transform for {prim.GetName()}: {e}")
-            return None, None
+            raise ValueError(f"Error decomposing transform for {prim.GetName()}: {e}")
 
 
 class OpenableObjectReference(ObjectReference, Openable):
