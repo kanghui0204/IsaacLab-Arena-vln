@@ -39,6 +39,7 @@ from isaac_arena.arena_g1.g1_env.mdp.actions.g1_decoupled_wbc_joint_action_cfg i
 from isaac_arena.arena_g1.g1_env.mdp.actions.g1_decoupled_wbc_pink_action_cfg import G1DecoupledWBCPinkActionCfg
 from isaac_arena.assets.register import register_asset
 from isaac_arena.embodiments.embodiment_base import EmbodimentBase
+from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 from isaac_arena.utils.isaaclab_utils.resets import reset_all_articulation_joints
 from isaac_arena.utils.pose import Pose
 
@@ -100,7 +101,7 @@ class G1SceneCfg:
     # TODO(xinjie.yao, 2025.09.15): Add G1 USD to isaac arena assets
     robot: ArticulationCfg = ArticulationCfg(
         spawn=sim_utils.UsdFileCfg(
-            usd_path="omniverse://isaac-dev.ov.nvidia.com/Isaac/Samples/Groot/Robots/g1_29dof_with_hand_rev_1_0.usd",
+            usd_path=f"{ISAAC_NUCLEUS_DIR}/Samples/Groot/Robots/g1_29dof_with_hand_rev_1_0.usd",
             activate_contact_sensors=True,
             rigid_props=sim_utils.RigidBodyPropertiesCfg(
                 disable_gravity=False,
