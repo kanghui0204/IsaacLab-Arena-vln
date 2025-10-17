@@ -138,7 +138,7 @@ class G1HomiePolicyV2(WBCPolicy):
         n_joints = len(body_indices)
 
         # Extract joint data
-        num_envs = observation["q"].shape[0]
+        assert self.num_envs == observation["q"].shape[0]
         qj = observation["q"][:, body_indices].copy()
         dqj = observation["dq"][:, body_indices].copy()
 

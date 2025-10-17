@@ -67,10 +67,12 @@ class G1EmbodimentBase(EmbodimentBase):
             anchor_rot=(0.70711, 0.0, 0.0, -0.70711),
         )
 
+
 # Default camera offset pose
 _DEFAULT_G1_CAMERA_OFFSET = Pose(
     position_xyz=(0.04485, 0.0, 0.35325), rotation_wxyz=(0.32651, -0.62721, 0.62721, -0.32651)
 )
+
 
 @register_asset
 class G1WBCJointEmbodiment(G1EmbodimentBase):
@@ -330,8 +332,8 @@ class G1CameraCfg:
     def __post_init__(self):
         # Get configuration from private attributes set by embodiment constructor
         # These use getattr with defaults to avoid scene parser treating them as assets
-        is_tiled_camera = getattr(self, '_is_tiled_camera', True)
-        camera_offset = getattr(self, '_camera_offset', _DEFAULT_G1_CAMERA_OFFSET)
+        is_tiled_camera = getattr(self, "_is_tiled_camera", True)
+        camera_offset = getattr(self, "_camera_offset", _DEFAULT_G1_CAMERA_OFFSET)
 
         CameraClass = TiledCameraCfg if is_tiled_camera else CameraCfg
         OffsetClass = CameraClass.OffsetCfg
@@ -356,9 +358,6 @@ class G1CameraCfg:
         )
 
         self.robot_head_cam = CameraClass(offset=offset, **common_kwargs)
-
-
-
 
 
 @configclass

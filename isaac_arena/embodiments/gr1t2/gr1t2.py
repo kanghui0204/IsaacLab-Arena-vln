@@ -111,7 +111,6 @@ class GR1T2EmbodimentBase(EmbodimentBase):
         )
 
 
-
 @register_asset
 class GR1T2JointEmbodiment(GR1T2EmbodimentBase):
     """Embodiment for the GR1T2 robot with joint position control.
@@ -347,8 +346,8 @@ class GR1T2CameraCfg:
     def __post_init__(self):
         # Get configuration from private attributes set by embodiment constructor
         # These use getattr with defaults to avoid scene parser treating them as assets
-        is_tiled_camera = getattr(self, '_is_tiled_camera', True)
-        camera_offset = getattr(self, '_camera_offset', _DEFAULT_CAMERA_OFFSET)
+        is_tiled_camera = getattr(self, "_is_tiled_camera", True)
+        camera_offset = getattr(self, "_camera_offset", _DEFAULT_CAMERA_OFFSET)
 
         CameraClass = TiledCameraCfg if is_tiled_camera else CameraCfg
         OffsetClass = CameraClass.OffsetCfg
