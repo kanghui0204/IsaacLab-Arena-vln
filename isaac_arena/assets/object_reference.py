@@ -24,6 +24,7 @@ from isaac_arena.assets.object_base import ObjectBase, ObjectType
 from isaac_arena.utils.pose import Pose
 
 
+# Somewhat hacky way to open the stage and ensure it is closed after use.
 @contextmanager
 def open_stage(path):
     stage = Usd.Stage.Open(path)
@@ -39,6 +40,7 @@ class ObjectReference(ObjectBase):
 
     def __init__(self, parent_asset: Asset, **kwargs):
         super().__init__(**kwargs)
+        # We open the stage as its the only way to get the initial pose of the reference prim.
         with open_stage(parent_asset.usd_path) as parent_stage:
             reference_prim = self._return_reference_prim_in_parent_usd(parent_asset, parent_stage)
             reference_pos, reference_quat = self._get_prim_pos_rot_in_world(reference_prim)
@@ -93,11 +95,13 @@ class ObjectReference(ObjectBase):
 
     def _return_reference_prim_in_parent_usd(self, parent_asset: Asset, parent_stage: Usd.Stage) -> Usd.Prim:
         # TODO(Vik, 2025.10.17): Make this neater.
+        # Currently, we take the last part of the prim path to find the prim in the scene.
         prim_name_in_scene = self.prim_path.split("/")[-1]
         reference_prims = []
         reference_prims = self._get_prim_by_name(parent_stage.GetPseudoRoot(), prim_name_in_scene)
         if len(reference_prims) == 0:
             raise ValueError(f"No prim found with name {prim_name_in_scene} in {parent_asset.usd_path}")
+        # We return the first prim found.
         return reference_prims[0]
 
     def _get_prim_by_name(self, prim, name, only_xform=True):
