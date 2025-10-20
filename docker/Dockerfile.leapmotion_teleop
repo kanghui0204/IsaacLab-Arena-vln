@@ -55,6 +55,15 @@ RUN /isaac-sim/python.sh -m pip install --upgrade pip && \
   # NOTE(xinjieyao, 2025-09-15): Needed for WBC running onnx compiled policy
   onnxruntime
 
+# lwlabs deps
+RUN /isaac-sim/python.sh -m pip install --upgrade pip && \
+  /isaac-sim/python.sh -m pip install \
+  vuer[all] \
+  lightwheel-sdk
+
+# Lightwheel server
+ENV LW_API_ENDPOINT="https://api-dev.lightwheel.net"
+
 ###############################
 # Install GR00T and CUDA 12.8 #
 ###############################
@@ -87,6 +96,7 @@ RUN if [ "$INSTALL_GROOT" = "true" ]; then \
 # Copy the rest of the files
 COPY *.* ${WORKDIR}/
 COPY isaac_arena ${WORKDIR}/isaac_arena
+COPY docs ${WORKDIR}/docs
 
 # Install Isaac Arena
 RUN /isaac-sim/python.sh -m pip install -e ${WORKDIR}/
