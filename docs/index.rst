@@ -48,8 +48,9 @@ The following code snippet shows a simple example(open a microwave door) of how 
    env_builder = ArenaEnvBuilder(isaac_arena_environment, args_cli)
    env = env_builder.make_registered() # This will register the environment with the gym registry.
 
-.. figure:: images/isaaclab_arena_workflow.png
-   :width: 100%
+.. figure:: images/kitchen_gr1_arena.gif
+   :height: 400px
+   :target: pages/workflows/gr00t_workflows.html
    :alt: GR1 Open Microwave Task
    :align: center
 
@@ -81,17 +82,18 @@ Below are some example environments built using ``isaaclab_arena``.
 
         G1 — Locomanipulation: Box Pick & Place
 
-   * - .. figure:: images/kitchen_gr1_arena.gif
+   * - .. figure:: images/franka_kitchen_pickup.gif
         :height: 400px
-        :target: pages/workflows/gr00t_workflows.html
-        :alt: GR1 Open Microwave Task
+        :alt: Franka Kitchen Pickup Task
         :align: center
         :figclass: gallery-fig
 
-        GR1 — Open Microwave Task
+        Franka — Kitchen Pickup Task
+
+Check out more of our examples environments here: `Isaac Arena Examples <https://github.com/isaac-sim/IsaacLab-Arena/tree/main/isaac_arena/examples/example_environments>`_.
 
 License
--------
+========
 This code is under an `open-source license <https://github.com/isaac-sim/IsaacLab-Arena/blob/main/LICENSE.md>`_ (Apache 2.0).
 
 TABLE OF CONTENTS
