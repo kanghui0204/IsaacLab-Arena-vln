@@ -8,7 +8,7 @@ scalable system for creating diverse simulation environments and evaluating robo
 The framework enables researchers and developers to rapidly prototype and test robotic tasks with various robot embodiments,
 objects, and environments.
 
-.. figure:: images/isaaclab_arena_workflow.png
+.. figure:: images/isaaclab_arena_core_framework.png
    :width: 100%
    :alt: Isaac Lab Arena Workflow
    :align: center
