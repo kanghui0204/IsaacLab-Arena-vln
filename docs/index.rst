@@ -71,7 +71,6 @@ Installation
 ============
 
 ``isaaclab_arena`` version ``v0.1`` only supports installation from source in a docker container.
-See :doc:`pages/installation` for more options.
 
 Examples
 ========
@@ -113,7 +112,8 @@ TABLE OF CONTENTS
    :maxdepth: 1
    :caption: User's Guide
 
-   pages/installation
+   pages/quickstart/installation
+   pages/quickstart/first_arena_env
 
 .. toctree::
    :maxdepth: 1
