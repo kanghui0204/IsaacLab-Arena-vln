@@ -42,28 +42,28 @@ The following script demonstrates how to create the simple kitchen environment f
     from isaac_arena.tasks.dummy_task import DummyTask
     from isaac_arena.utils.pose import Pose
 
-    # Initialize the asset registry
+    # Step 1: Initialize and get the assets from the registry
     asset_registry = AssetRegistry()
 
-    # Step 1: Get required assets from the registry
     background = asset_registry.get_asset_by_name("kitchen")()
     embodiment = asset_registry.get_asset_by_name("franka")()
     cracker_box = asset_registry.get_asset_by_name("cracker_box")()
-
-    # Step 2: Position the object in the scene
     cracker_box.set_initial_pose(
         Pose(position_xyz=(0.4, 0.0, 0.1), rotation_wxyz=(1.0, 0.0, 0.0, 0.0))
     )
 
-    # Step 3: Create a scene with the assets
+    # Step 2: Create a scene with the assets
     scene = Scene(assets=[background, cracker_box])
+
+    # Step 3: Create a task
+    task = DummyTask()
 
     # Step 4: Create the Isaac Arena environment
     isaac_arena_environment = IsaacArenaEnvironment(
         name="my_first_arena_env",
         embodiment=embodiment,
         scene=scene,
-        task=DummyTask(),
+        task=task,
         teleop_device=None,
     )
 
@@ -107,7 +107,17 @@ See :doc:`../concepts/concept_assets_design` for details on asset architecture.
 
 See :doc:`../concepts/concept_scene_design` for scene composition details.
 
-**3. Create the Environment**
+**3. Create a Task**
+
+A task defines the objective, success criteria, and behavior logic for the environment. For this example, we use the ``DummyTask``.
+
+.. code-block:: python
+
+    task = DummyTask()
+
+See :doc:`../concepts/concept_tasks_design` for task creation details.
+
+**4. Create the Isaac Arena Environment**
 
 .. code-block:: python
 
@@ -123,7 +133,7 @@ This puts everything together into an ``IsaacArenaEnvironment`` object.
 
 See :doc:`../concepts/concept_environment_design` for environment composition details.
 
-**4. Build and Run**
+**5. Build the Environment**
 
 .. code-block:: python
 
@@ -135,7 +145,7 @@ See :doc:`../concepts/concept_environment_design` for environment composition de
 The ``ArenaEnvBuilder`` compiles the high-level environment description into Isaac Lab configurations.
 See :doc:`../concepts/concept_environment_compilation` for compilation details.
 
-**5. Simulation Loop**
+**6. Run the Simulation**
 
 .. code-block:: python
 
