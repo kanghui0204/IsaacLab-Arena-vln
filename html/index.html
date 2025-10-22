@@ -51,7 +51,7 @@
     <link rel="icon" href="_static/favicon.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="pages/installation.html" />
+    <link rel="next" title="Installation" href="pages/quickstart/installation.html" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -279,7 +279,8 @@
   <p class="bd-links__title" role="heading" aria-level="1">Table of Contents</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">User's Guide</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="pages/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/quickstart/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/quickstart/first_arena_env.html">First Arena Environment</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Concepts</span></p>
 <ul class="nav bd-sidenav">
@@ -296,8 +297,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Sample Tasks</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="pages/Sample%20Tasks/g1_locomanipulation_box_pick_and_place_task.html">G1 Loco-Manipulation Box Pick and Place Task</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pages/Sample%20Tasks/gr1_open_microwave_task.html">GR1 Open Microwave Door Task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/sample_tasks/g1_locomanipulation_box_pick_and_place_task.html">G1 Loco-Manipulation Box Pick and Place Task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/sample_tasks/gr1_open_microwave_task.html">GR1 Open Microwave Door Task</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul class="nav bd-sidenav">
@@ -336,44 +337,109 @@
                   
   <section id="isaac-lab-arena-documentation">
 <h1><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> Documentation<a class="headerlink" href="#isaac-lab-arena-documentation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> is an extension to <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/main/index.html">Isaac Lab</a>
-for providing an environment for robotic policy evaluation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> is an extension to <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/main/index.html">Isaac Lab</a>.</p>
 <p>Isaac Lab Arena is a comprehensive robotics simulation framework that enhances NVIDIA Isaac Lab by providing a composable,
 scalable system for creating diverse simulation environments and evaluating robot learning policies.
 The framework enables researchers and developers to rapidly prototype and test robotic tasks with various robot embodiments,
 objects, and environments.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/isaaclab_arena_core_framework.png"><img alt="Isaac Lab Arena Workflow" src="_images/isaaclab_arena_core_framework.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">IsaacLab Arena Workflow Overview</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The key components of the workflow are:</p>
+<ul class="simple">
+<li><p><strong>Scene Setup</strong>: Define the scene layout, add asset configurations to interact with objects in interest in the scene. See <a class="reference internal" href="pages/concepts/concept_scene_design.html"><span class="doc">Scene Design</span></a> for more details.</p></li>
+<li><p><strong>Embodiment Setup</strong>: Define the robot embodiment, its observations, actions, sensors etc. See <a class="reference internal" href="pages/concepts/concept_embodiment_design.html"><span class="doc">Embodiment Design</span></a> for more details.</p></li>
+<li><p><strong>Task Setup</strong>: Define the task and its metrics. See <a class="reference internal" href="pages/concepts/concept_tasks_design.html"><span class="doc">Tasks Design</span></a> for more details.</p></li>
+<li><p><strong>Affordance Setup</strong>: Define the affordances(interactable objects) and their interactions. See <a class="reference internal" href="pages/concepts/concept_affordances_design.html"><span class="doc">Affordances Design</span></a> for more details.</p></li>
+<li><p><strong>Evaluation</strong>: Evaluate the policy and its performance in a simple and straightforward manner. See <a class="reference internal" href="pages/concepts/concept_metrics_design.html"><span class="doc">Metrics Design</span></a> for more details.</p></li>
+</ul>
 <p>A key feature of <code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> is an easier, more composable interface for creating environments.</p>
 </section>
+<section id="usage-example">
+<h1>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading">#</a></h1>
+<p>The following code snippet shows a simple example(pick up a tomato soup can and place it in the destination location) of how to set up a manager-based RL environment using <code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">embodiment</span> <span class="o">=</span> <span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="s2">&quot;franka&quot;</span><span class="p">)(</span><span class="n">enable_cameras</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">background</span> <span class="o">=</span> <span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="s2">&quot;kitchen&quot;</span><span class="p">)()</span>
+<span class="n">tomato_soup_can</span> <span class="o">=</span> <span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="s2">&quot;tomato_soup_can&quot;</span><span class="p">)()</span>
+<span class="n">destination_location</span> <span class="o">=</span> <span class="n">ObjectReference</span><span class="p">(</span>
+         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;destination_location&quot;</span><span class="p">,</span>
+         <span class="n">prim_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{ENV_REGEX_NS}</span><span class="s2">/kitchen/Cabinet_B_02&quot;</span><span class="p">,</span>
+         <span class="n">parent_asset</span><span class="o">=</span><span class="n">background</span><span class="p">,</span>
+         <span class="n">object_type</span><span class="o">=</span><span class="n">ObjectType</span><span class="o">.</span><span class="n">RIGID</span><span class="p">,</span>
+     <span class="p">)</span>
+<span class="n">teleop_device</span> <span class="o">=</span> <span class="n">device_registry</span><span class="o">.</span><span class="n">get_device_by_name</span><span class="p">(</span><span class="s2">&quot;keyboard&quot;</span><span class="p">)()</span>
+
+<span class="c1"># Compose the scene</span>
+<span class="n">scene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">([</span><span class="n">background</span><span class="p">,</span> <span class="n">tomato_soup_can</span><span class="p">])</span>
+
+<span class="n">isaac_arena_environment</span> <span class="o">=</span> <span class="n">IsaacArenaEnvironment</span><span class="p">(</span>
+   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;franka_kitchen_pickup&quot;</span><span class="p">,</span>
+   <span class="n">embodiment</span><span class="o">=</span><span class="n">embodiment</span><span class="p">,</span>
+   <span class="n">scene</span><span class="o">=</span><span class="n">scene</span><span class="p">,</span>
+   <span class="n">task</span><span class="o">=</span><span class="n">PickAndPlaceTask</span><span class="p">(</span><span class="n">tomato_soup_can</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">background</span><span class="p">),</span>
+   <span class="n">teleop_device</span><span class="o">=</span><span class="n">teleop_device</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">env_builder</span> <span class="o">=</span> <span class="n">ArenaEnvBuilder</span><span class="p">(</span><span class="n">isaac_arena_environment</span><span class="p">,</span> <span class="n">args_cli</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">env_builder</span><span class="o">.</span><span class="n">make_registered</span><span class="p">()</span> <span class="c1"># This will register the environment with the gym registry.</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/franka_kitchen_pickup.gif"><img alt="Franka Kitchen Pickup Task" src="_images/franka_kitchen_pickup.gif" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Franka — Kitchen Pickup Task</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>To get started with <code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code>, please finish the installation process by following the instructions in <a class="reference internal" href="pages/quickstart/installation.html"><span class="doc">Installation</span></a> and refer to the <a class="reference internal" href="pages/quickstart/first_arena_env.html"><span class="doc">First Arena Environment</span></a> example.</p>
+</section>
 <section id="installation">
-<span id="quickstart"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code> version <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> only supports installation from source in a docker container.
-See <a class="reference internal" href="pages/installation.html"><span class="doc">Installation</span></a> for more options.</p>
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code> version <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> only supports installation from source in a docker container.</p>
 </section>
 <section id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h1>
 <p>Below are some example environments built using <code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code>.</p>
-<blockquote>
-<div><div class="pst-scrollable-table-container"><table class="gallery table">
+<div class="pst-scrollable-table-container"><table class="gallery table">
 <tbody>
-<tr class="row-odd"><td><a class="reference external image-reference" href="pages/workflows/gr00t_workflows.html"><img alt="_images/g1_galileo_arena_box_pnp_locomanip.gif" src="_images/g1_galileo_arena_box_pnp_locomanip.gif" style="height: 400px;" />
+<tr class="row-odd"><td><figure class="gallery-fig align-center" id="id3">
+<a class="reference external image-reference" href="pages/sample_tasks/g1_locomanipulation_box_pick_and_place_task.html"><img alt="G1 Locomanipulation Box Pick and Place Task" src="_images/g1_galileo_arena_box_pnp_locomanip.gif" style="height: 400px;" />
 </a>
+<figcaption>
+<p><span class="caption-text">G1 — Locomanipulation: Box Pick &amp; Place</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference external image-reference" href="pages/workflows/gr00t_workflows.html"><img alt="_images/kitchen_gr1_arena.gif" src="_images/kitchen_gr1_arena.gif" style="height: 400px;" />
+<tr class="row-even"><td><figure class="gallery-fig align-center" id="id4">
+<a class="reference external image-reference" href="pages/sample_tasks/gr1_open_microwave_task.html"><img alt="GR1 Open Microwave Task" src="_images/kitchen_gr1_arena.gif" style="height: 400px;" />
 </a>
+<figcaption>
+<p><span class="caption-text">GR1 — Open Microwave Task</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</div></blockquote>
+<p>Check out more of our examples environments here: <a class="reference external" href="https://github.com/isaac-sim/IsaacLab-Arena/tree/main/isaac_arena/examples/example_environments">Isaac Arena Examples</a>.</p>
+</section>
 <section id="license">
-<h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
-<p>This code is under an <a class="reference external" href="https://github.com/isaac-sim/isaac_arena/blob/main/LICENSE.md">open-source license</a> (Apache 2.0).</p>
+<h1>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h1>
+<p>This code is under an <a class="reference external" href="https://github.com/isaac-sim/IsaacLab-Arena/blob/main/LICENSE.md">open-source license</a> (Apache 2.0).</p>
+</section>
+<section id="table-of-contents">
+<h1>TABLE OF CONTENTS<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">User's Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pages/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/quickstart/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/quickstart/first_arena_env.html">First Arena Environment</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -394,8 +460,8 @@ See <a class="reference internal" href="pages/installation.html"><span class="do
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Sample Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pages/Sample%20Tasks/g1_locomanipulation_box_pick_and_place_task.html">G1 Loco-Manipulation Box Pick and Place Task</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pages/Sample%20Tasks/gr1_open_microwave_task.html">GR1 Open Microwave Door Task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/sample_tasks/g1_locomanipulation_box_pick_and_place_task.html">G1 Loco-Manipulation Box Pick and Place Task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/sample_tasks/gr1_open_microwave_task.html">GR1 Open Microwave Door Task</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -410,7 +476,6 @@ See <a class="reference internal" href="pages/installation.html"><span class="do
 </ul>
 </div>
 </section>
-</section>
 
 
                 </article>
@@ -423,7 +488,7 @@ See <a class="reference internal" href="pages/installation.html"><span class="do
                   
 <div class="prev-next-area">
     <a class="right-next"
-       href="pages/installation.html"
+       href="pages/quickstart/installation.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
@@ -453,11 +518,11 @@ See <a class="reference internal" href="pages/installation.html"><span class="do
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> Documentation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-example">Usage Example</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a><ul class="nav section-nav flex-column">
-</ul>
-</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">TABLE OF CONTENTS</a><ul class="visible nav section-nav flex-column">
 </ul>
 </li>
 </ul>
