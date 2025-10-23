@@ -92,7 +92,10 @@ class PickAndPlaceTask(TaskBase):
         return [SuccessRateMetric(), ObjectMovedRateMetric(self.pick_up_object)]
 
     def get_viewer_cfg(self) -> ViewerCfg:
-        return get_viewer_cfg_look_at_object(lookat_object=self.pick_up_object, offset=np.array([-1.5, -1.5, 1.5]))
+        return get_viewer_cfg_look_at_object(
+            lookat_object=self.pick_up_object,
+            offset=np.array([-1.5, -1.5, 1.5]),
+        )
 
 
 @configclass
