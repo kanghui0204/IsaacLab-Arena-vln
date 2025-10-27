@@ -70,6 +70,7 @@ To visualize the data produced, you can replay the dataset using the following c
 .. code-block:: bash
 
    python isaaclab_arena/scripts/replay_demos.py \
+     --device cpu \
      --enable_cameras \
      --dataset_file <OUTPUT_DATASET_PATH> \
      galileo_g1_locomanip_pick_and_place \

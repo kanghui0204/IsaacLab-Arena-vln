@@ -59,7 +59,14 @@ Start the Arena Docker container:
 Step 2: Download a test dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TBD
+Download the pre-generated test dataset (replace ``<INPUT_DATASET_PATH>`` with the actual path):
+
+.. code-block:: bash
+
+   huggingface-cli download \
+       nvidia/Arena-G1-Loco-Manipulation-Task \
+       arena_g1_loco_manipulation_dataset_generated_small.hdf5 \
+       --local-dir <YOUR_LOCAL_DATA_DIR>   # Make sure this is a directory on your local machine, and virtually mounted to the container.
 
 
 Step 3: Validate Environment with Demo Replay
@@ -70,8 +77,9 @@ Replay the generated dataset to verify the environment setup:
 .. code-block:: bash
 
    python isaaclab_arena/scripts/replay_demos.py \
+     --device cpu \
      --enable_cameras \
-     --dataset_file /datasets/Arena-G1-Loco-Manipulation-Task/arena_g1_loco_manipulation_dataset_generated.hdf5 \
+     --dataset_file /datasets/Arena-G1-Loco-Manipulation-Task/arena_g1_loco_manipulation_dataset_generated_small.hdf5 \
      galileo_g1_locomanip_pick_and_place \
      --object brown_box \
      --embodiment g1_wbc_pink
