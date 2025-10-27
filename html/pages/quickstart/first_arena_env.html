@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=42eea36e" />
   
   <!-- So that users can add custom icons -->
@@ -47,11 +48,12 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'pages/quickstart/first_arena_env';</script>
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Affordances Design" href="../concepts/concept_affordances_design.html" />
+    <link rel="next" title="G1 Loco-Manipulation Box Pick and Place Task" href="../example_workflows/locomanipulation/index.html" />
     <link rel="prev" title="Installation" href="installation.html" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -283,6 +285,24 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">First Arena Environment</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_workflows/locomanipulation/index.html">G1 Loco-Manipulation Box Pick and Place Task</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/locomanipulation/step_1_environment_setup.html">Environment Setup and Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/locomanipulation/step_2_data_generation.html">Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/locomanipulation/step_3_policy_training.html">Policy Post-Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/locomanipulation/step_4_evaluation.html">Closed-Loop Policy Inference and Evaluation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_workflows/static_manipulation/index.html">GR1 Open Microwave Door Task</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/static_manipulation/step_1_environment_setup.html">Environment Setup and Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/static_manipulation/step_2_teleoperation.html">Teleoperation Data Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/static_manipulation/step_3_data_generation.html">Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/static_manipulation/step_4_policy_training.html">Policy Post-training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_workflows/static_manipulation/step_5_evaluation.html">Closed-Loop Policy Inference and Evaluation</a></li>
+</ul>
+</details></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Concepts</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../concepts/concept_affordances_design.html">Affordances Design</a></li>
@@ -296,19 +316,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/concept_tasks_design.html">Tasks Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/concept_teleop_devices_design.html">Teleop Devices Design</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sample Tasks</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../sample_tasks/g1_locomanipulation_box_pick_and_place_task.html">G1 Loco-Manipulation Box Pick and Place Task</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sample_tasks/gr1_open_microwave_task.html">GR1 Open Microwave Door Task</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../examples/create_a_new_affordance.html">Creating a New Affordance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../examples/create_a_new_asset.html">Creating a New Asset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../examples/create_a_new_embodiment.html">Creating a New Embodiment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../examples/create_a_new_environment.html">Creating a New Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../examples/create_a_new_metric.html">Creating a New Metric</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../examples/create_a_new_task.html">Creating a New Task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/create_a_new_affordance.html">Creating a New Affordance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/create_a_new_asset.html">Creating a New Asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/create_a_new_embodiment.html">Creating a New Embodiment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/create_a_new_environment.html">Creating a New Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/create_a_new_metric.html">Creating a New Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/create_a_new_task.html">Creating a New Task</a></li>
 </ul>
 </div>
 </nav></div>
@@ -362,17 +377,20 @@
                   
   <section id="first-arena-environment">
 <h1>First Arena Environment<a class="headerlink" href="#first-arena-environment" title="Link to this heading">#</a></h1>
-<p>After setting up the docker container and installing <code class="docutils literal notranslate"><span class="pre">isaac_arena</span></code>, learn how to compose your first simple Isaac Arena environment by combining assets, scenes, and tasks.</p>
+<p>After setting up the docker container and installing <code class="docutils literal notranslate"><span class="pre">isaac_arena</span></code>, learn how
+to compose your first simple Isaac Arena environment by combining assets, scenes, and tasks.</p>
 <p>Once within the docker container, run the following command to compile your first Isaac Arena environment:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaac_arena/examples/compile_env_notebook.py
 </pre></div>
 </div>
-<p>The compiled environment will spawn in an Isaac Sim instance and run for some steps with zero actions. You should see the following scene:</p>
+<p>The compiled environment will spawn in an Isaac Sim instance and run for some steps with zero actions.
+You should see the following scene:</p>
 <a class="reference internal image-reference" href="../../_images/franka_kitchen.png"><img alt="../../_images/franka_kitchen.png" class="align-center" src="../../_images/franka_kitchen.png" style="width: 100%;" />
 </a>
 <section id="code-explanation">
 <h2>Code Explanation<a class="headerlink" href="#code-explanation" title="Link to this heading">#</a></h2>
-<p>The following script demonstrates how to create the simple kitchen environment from above with a Franka robot and a cracker box object using the <code class="docutils literal notranslate"><span class="pre">isaac_arena</span></code> API.</p>
+<p>The following script demonstrates how to create the simple kitchen environment from
+above with a Franka robot and a cracker box object using the <code class="docutils literal notranslate"><span class="pre">isaac_arena</span></code> API.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
 
@@ -492,7 +510,7 @@ See <a class="reference internal" href="../concepts/concept_environment_compilat
 <li><p><a class="reference internal" href="../concepts/concept_tasks_design.html"><span class="doc">Tasks Design</span></a> - Create custom tasks with rewards and terminations</p></li>
 <li><p><a class="reference internal" href="../concepts/concept_assets_design.html"><span class="doc">Assets Design</span></a> - Discover available assets and create custom ones</p></li>
 <li><p><a class="reference internal" href="../concepts/concept_affordances_design.html"><span class="doc">Affordances Design</span></a> - Add interactive behaviors to objects</p></li>
-<li><p><a class="reference internal" href="../examples/create_a_new_affordance.html"><span class="doc">Creating a New Affordance</span></a> - Implement custom affordances</p></li>
+<li><p><a class="reference internal" href="../tutorials/create_a_new_affordance.html"><span class="doc">Creating a New Affordance</span></a> - Implement custom affordances</p></li>
 </ul>
 <p>Explore pre-built example environments in <code class="docutils literal notranslate"><span class="pre">isaac_arena/examples/example_environments/</span></code> for more complex scenarios.</p>
 </section>
@@ -518,11 +536,11 @@ See <a class="reference internal" href="../concepts/concept_environment_compilat
       </div>
     </a>
     <a class="right-next"
-       href="../concepts/concept_affordances_design.html"
+       href="../example_workflows/locomanipulation/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Affordances Design</p>
+        <p class="prev-next-title">G1 Loco-Manipulation Box Pick and Place Task</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
