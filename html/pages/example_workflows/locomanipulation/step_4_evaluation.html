@@ -394,7 +394,7 @@ This step requires the Hugging Face CLI, which can be installed by following the
 </details><section id="step-1-configure-closed-loop-inference">
 <h2>Step 1: Configure Closed-Loop Inference<a class="headerlink" href="#step-1-configure-closed-loop-inference" title="Link to this heading">#</a></h2>
 <p>Create or verify the inference configuration file:</p>
-<p><strong>Configuration</strong> (<code class="docutils literal notranslate"><span class="pre">isaaclab_arena/arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml</span></code>):</p>
+<p><strong>Configuration</strong> (<code class="docutils literal notranslate"><span class="pre">isaaclab_arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml</span></code>):</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Model configuration</span>
 <span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation</span>
 <span class="nt">embodiment_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_embodiment</span>
@@ -426,7 +426,7 @@ and onto the command line. Then change the statement above.</p>
 <p>Test the policy in a single environment with visualization via the GUI run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--policy_type<span class="w"> </span>gr00t_closedloop<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--policy_config_yaml_path<span class="w"> </span>isaaclab_arena/arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--policy_config_yaml_path<span class="w"> </span>isaaclab_arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_steps<span class="w"> </span><span class="m">1200</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
@@ -456,7 +456,7 @@ To perform a parallel evaluation across 16 environments, we set <code class="doc
 by running the following command.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--policy_type<span class="w"> </span>gr00t_closedloop<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--policy_config_yaml_path<span class="w"> </span>isaaclab_arena/arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--policy_config_yaml_path<span class="w"> </span>isaaclab_arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_steps<span class="w"> </span><span class="m">1200</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_envs<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
