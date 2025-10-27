@@ -170,5 +170,5 @@ Now that you have created your first environment, explore:
 
 Explore pre-built example environments in ``isaac_arena/examples/example_environments/`` for more complex scenarios.
 
-To move on to data generation and training(Imitation Learning), please refer to the :doc:`../sample_tasks/g1_locomanipulation_box_pick_and_place_task` or
+To move on to data generation and training (Imitation Learning), please refer to the :doc:`../sample_tasks/g1_locomanipulation_box_pick_and_place_task` or
 :doc:`../sample_tasks/gr1_open_microwave_task` pages.
