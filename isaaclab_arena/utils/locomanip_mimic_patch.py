@@ -22,7 +22,7 @@ from isaaclab.managers.recorder_manager import RecorderTerm, RecorderTermCfg
 from isaaclab.utils import configclass
 from isaaclab_mimic.datagen.waypoint import MultiWaypoint
 
-from isaaclab_arena.arena_g1.g1_whole_body_controller.wbc_policy.policy.action_constants import (
+from isaaclab_arena_g1.g1_whole_body_controller.wbc_policy.policy.action_constants import (
     NAVIGATE_CMD_END_IDX,
     NAVIGATE_CMD_START_IDX,
 )
