@@ -117,6 +117,13 @@ TABLE OF CONTENTS
 
 .. toctree::
    :maxdepth: 1
+   :caption: Example Workflows
+
+   pages/example_workflows/locomanipulation/index
+   pages/example_workflows/static_manipulation/index
+
+.. toctree::
+   :maxdepth: 1
    :caption: Concepts
 
    pages/concepts/concept_overview
@@ -130,10 +137,3 @@ TABLE OF CONTENTS
    pages/concepts/concept_assets_design
    pages/concepts/concept_affordances_design
    pages/concepts/concept_policy_design
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Sample Tasks
-
-   pages/sample_tasks/gr1_open_microwave_task
-   pages/sample_tasks/g1_locomanipulation_box_pick_and_place_task
