@@ -52,8 +52,8 @@ This code is under an `open-source license <https://github.com/isaac-sim/isaac_a
    :maxdepth: 1
    :caption: Workflows
 
-   pages/workflows/g1_locomanipulation_box_pick_and_place_task
-   pages/workflows/gr1_open_microwave_task
+   pages/workflows/locomanipulation/index
+   pages/workflows/static_manipulation/index
 
 .. toctree::
    :maxdepth: 1
