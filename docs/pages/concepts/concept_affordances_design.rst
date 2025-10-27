@@ -1,7 +1,8 @@
 Affordances Design
 ===================
 
-Affordances define what interactions objects can perform - opening doors, pressing buttons, manipulating objects. They provide standardized interfaces that integrate with tasks and embodiments.
+Affordances define what interactions objects can perform - opening doors, pressing buttons, manipulating objects.
+They provide standardized interfaces that integrate with assets and tasks.
 
 Core Architecture
 -----------------
@@ -79,7 +80,7 @@ Environment Integration
    )
 
    # Environment composition
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        name="microwave_opening",
        embodiment=embodiment,
        scene=scene,

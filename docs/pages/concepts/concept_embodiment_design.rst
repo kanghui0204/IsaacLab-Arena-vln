@@ -28,8 +28,6 @@ Embodiments use the ``EmbodimentBase`` abstract class that extends the asset sys
        def get_action_cfg(self) -> Any:
            """Control interface definition."""
 
-Embodiments provide complete robot definitions that integrate with Isaac Arena's environment composition system while maintaining robot-specific behaviors.
-
 Embodiments in Detail
 ---------------------
 
@@ -71,7 +69,7 @@ Environment Integration
    )
 
    # Environment composition
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        name="manipulation_task",
        embodiment=embodiment,  # Robot configuration
        scene=scene,
@@ -106,7 +104,7 @@ Usage Examples
    embodiment = asset_registry.get_asset_by_name("gr1_pink")()
    teleop_device = device_registry.get_device_by_name("avp_handtracking")()
 
-   environment = IsaacArenaEnvironment(
+   environment = IsaacLabArenaEnvironment(
        embodiment=embodiment,
        teleop_device=teleop_device,
        scene=scene,

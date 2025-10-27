@@ -15,7 +15,7 @@ objects, and environments.
 
    IsaacLab Arena Workflow Overview
 
-
+For a detailed overview of the workflow, please refer to the :doc:`pages/concepts/concept_overview` page.
 The key components of the workflow are:
 
 - **Scene Setup**: Define the scene layout, add asset configurations to interact with objects in interest in the scene. See :doc:`pages/concepts/concept_scene_design` for more details.
@@ -47,7 +47,7 @@ The following code snippet shows a simple example(pick up a tomato soup can and 
    # Compose the scene
    scene = Scene([background, tomato_soup_can])
 
-   isaac_arena_environment = IsaacArenaEnvironment(
+   isaaclab_arena_environment = IsaacLabArenaEnvironment(
       name="franka_kitchen_pickup",
       embodiment=embodiment,
       scene=scene,
@@ -55,7 +55,7 @@ The following code snippet shows a simple example(pick up a tomato soup can and 
       teleop_device=teleop_device,
    )
 
-   env_builder = ArenaEnvBuilder(isaac_arena_environment, args_cli)
+   env_builder = ArenaEnvBuilder(isaaclab_arena_environment, args_cli)
    env = env_builder.make_registered() # This will register the environment with the gym registry.
 
 .. figure:: images/franka_kitchen_pickup.gif
@@ -99,7 +99,7 @@ Below are some example environments built using ``isaaclab_arena``.
 
         GR1 — Open Microwave Task
 
-Check out more of our examples environments here: `Isaac Arena Examples <https://github.com/isaac-sim/IsaacLab-Arena/tree/main/isaac_arena/examples/example_environments>`_.
+Check out more of our examples environments here: `IsaacLab Arena Examples <https://github.com/isaac-sim/IsaacLab-Arena/tree/main/isaaclab_arena/examples/example_environments>`_.
 
 License
 ========
@@ -117,33 +117,23 @@ TABLE OF CONTENTS
 
 .. toctree::
    :maxdepth: 1
+   :caption: Example Workflows
+
+   pages/example_workflows/locomanipulation/index
+   pages/example_workflows/static_manipulation/index
+
+.. toctree::
+   :maxdepth: 1
    :caption: Concepts
 
-   pages/concepts/concept_affordances_design
-   pages/concepts/concept_assets_design
-   pages/concepts/concept_embodiment_design
+   pages/concepts/concept_overview
    pages/concepts/concept_environment_design
-   pages/concepts/concept_environment_compilation
-   pages/concepts/concept_metrics_design
-   pages/concepts/concept_policy_design
-   pages/concepts/concept_scene_design
+   pages/concepts/concept_embodiment_design
    pages/concepts/concept_tasks_design
+   pages/concepts/concept_scene_design
+   pages/concepts/concept_metrics_design
    pages/concepts/concept_teleop_devices_design
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Sample Tasks
-
-   pages/sample_tasks/g1_locomanipulation_box_pick_and_place_task
-   pages/sample_tasks/gr1_open_microwave_task
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Examples
-
-   pages/examples/create_a_new_affordance.rst
-   pages/examples/create_a_new_asset.rst
-   pages/examples/create_a_new_embodiment.rst
-   pages/examples/create_a_new_environment.rst
-   pages/examples/create_a_new_metric.rst
-   pages/examples/create_a_new_task.rst
+   pages/concepts/concept_environment_compilation
+   pages/concepts/concept_assets_design
+   pages/concepts/concept_affordances_design
+   pages/concepts/concept_policy_design

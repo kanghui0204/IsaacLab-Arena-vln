@@ -1,7 +1,8 @@
 Policy Design
 =============
 
-Policies define how agents generate actions from observations. The system provides a unified framework for different control strategies, learning algorithms, and demonstration replay systems.
+Policies define how agents generate actions from observations.
+The policy system provides a registry system for managing different policies.
 
 Core Architecture
 -----------------
@@ -23,7 +24,7 @@ Policies use the ``PolicyBase`` abstract class:
                torch.Tensor: The action to take
            """
 
-This enables seamless swapping between different policy implementations while maintaining consistent integration with Isaac Arena environments.
+This enables seamless swapping between different policy implementations while maintaining consistent integration with IsaacLab Arena environments.
 
 Policies in Detail
 ------------------
@@ -41,7 +42,6 @@ Policies in Detail
    - **Stateless Policies**: Pure functions from observations to actions (ZeroActionPolicy)
    - **Dataset-Driven**: Load and replay recorded trajectories (ReplayActionPolicy)
    - **Neural Networks**: Process visual and proprioceptive inputs for learned behaviors (GR00T policies)
-   - **Action Chunking**: Generate multiple future actions per observation for temporal consistency
 
 Environment Integration
 -----------------------
