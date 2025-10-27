@@ -12,25 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import numpy as np
+
+from isaaclab_arena_g1.g1_whole_body_controller.wbc_policy.policy.base import WBCPolicy
 
 
-class _TestConstants:
-    """Class for storing test data paths"""
+class IdentityPolicy(WBCPolicy):
+    """Identity policy that passes through the target pose."""
 
     def __init__(self):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        """Initialize the identity policy."""
+        self.reset()
 
-        # The root directory of the repo
-        self.repo_root = os.path.realpath(os.path.join(script_dir, *([".."] * 3)))
+    def get_action(self, target_pose: np.ndarray) -> dict[str, np.ndarray]:
+        """Get the action for the identity policy."""
+        return {"q": target_pose}
 
-        self.examples_dir = f"{self.repo_root}/isaaclab_arena/examples"
-
-        self.test_dir = f"{self.repo_root}/isaaclab_arena/tests"
-
-        self.python_path = f"{self.repo_root}/submodules/IsaacLab/_isaac_sim/python.sh"
-
-        self.test_data_dir = f"{self.test_dir}/test_data"
-
-
-TestConstants = _TestConstants()
+    def reset(self):
+        pass

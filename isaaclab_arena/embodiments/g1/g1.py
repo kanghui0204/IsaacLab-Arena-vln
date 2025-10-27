@@ -34,14 +34,14 @@ from isaaclab.utils import configclass
 from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 
 import isaaclab_arena.terms.transforms as transforms_terms
-from isaaclab_arena.arena_g1.g1_env.mdp import g1_events as g1_events_mdp
-from isaaclab_arena.arena_g1.g1_env.mdp import g1_observations as g1_observations_mdp
-from isaaclab_arena.arena_g1.g1_env.mdp.actions.g1_decoupled_wbc_joint_action_cfg import G1DecoupledWBCJointActionCfg
-from isaaclab_arena.arena_g1.g1_env.mdp.actions.g1_decoupled_wbc_pink_action_cfg import G1DecoupledWBCPinkActionCfg
 from isaaclab_arena.assets.register import register_asset
 from isaaclab_arena.embodiments.embodiment_base import EmbodimentBase
 from isaaclab_arena.utils.isaaclab_utils.resets import reset_all_articulation_joints
 from isaaclab_arena.utils.pose import Pose
+from isaaclab_arena_g1.g1_env.mdp import g1_events as g1_events_mdp
+from isaaclab_arena_g1.g1_env.mdp import g1_observations as g1_observations_mdp
+from isaaclab_arena_g1.g1_env.mdp.actions.g1_decoupled_wbc_joint_action_cfg import G1DecoupledWBCJointActionCfg
+from isaaclab_arena_g1.g1_env.mdp.actions.g1_decoupled_wbc_pink_action_cfg import G1DecoupledWBCPinkActionCfg
 
 
 class G1EmbodimentBase(EmbodimentBase):

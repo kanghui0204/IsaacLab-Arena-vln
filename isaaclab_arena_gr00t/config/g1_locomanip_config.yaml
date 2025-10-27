@@ -3,14 +3,14 @@
 # Example for G1 locomanipulation task
 
 # Root directory for all data storage
-data_root: "isaaclab_arena/tests/test_data/"
+data_root: "/datasets/datasets"
 
 # Instruction given to the policy in natural language
 language_instruction: "Pick up the brown box from the shelf, and place it into the blue bin on the table located at the right of the shelf."
 task_index: 2
 
 # Name of the HDF5 file to use for the dataset
-hdf5_name: "test_g1_hdf5_to_lerobot.hdf5"
+hdf5_name: "g1_galileo_box_npnp_mimic_generated_1_demo.hdf5"
 
 # Mimic-generated HDF5 datafield names
 state_name_sim: "robot_joint_pos"
@@ -49,7 +49,7 @@ tasks_fname: "tasks.jsonl"
 info_template_path: "isaaclab_arena_gr00t/config/g1/info.json"
 info_fname: "info.json"
 
-# GR00T policy specific parameters
+# policy specific parameters (gr00t demonstration data stored in lerobot format)
 policy_joints_config_path: "isaaclab_arena_gr00t/config/g1/gr00t_43dof_joint_space.yaml"
 robot_type: "unitree_g1"
 

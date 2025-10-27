@@ -12,25 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+from dataclasses import MISSING
+
+from isaaclab.managers.action_manager import ActionTerm, ActionTermCfg
+from isaaclab.utils import configclass
+
+from isaaclab_arena_g1.g1_env.mdp.actions.g1_decoupled_wbc_joint_action import G1DecoupledWBCJointAction
 
 
-class _TestConstants:
-    """Class for storing test data paths"""
+@configclass
+class G1DecoupledWBCJointActionCfg(ActionTermCfg):
+    class_type: type[ActionTerm] = G1DecoupledWBCJointAction
+    """Specifies the action term class type for G1 WBC with upper body direct joint position control."""
 
-    def __init__(self):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+    preserve_order: bool = False
+    joint_names: list[str] = MISSING
 
-        # The root directory of the repo
-        self.repo_root = os.path.realpath(os.path.join(script_dir, *([".."] * 3)))
-
-        self.examples_dir = f"{self.repo_root}/isaaclab_arena/examples"
-
-        self.test_dir = f"{self.repo_root}/isaaclab_arena/tests"
-
-        self.python_path = f"{self.repo_root}/submodules/IsaacLab/_isaac_sim/python.sh"
-
-        self.test_data_dir = f"{self.test_dir}/test_data"
-
-
-TestConstants = _TestConstants()
+    wbc_version: str = "homie_v2"

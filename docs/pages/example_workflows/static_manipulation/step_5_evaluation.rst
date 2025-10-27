@@ -31,7 +31,7 @@ Step 1: Configure Closed-Loop Inference
 
 Create or verify the inference configuration file:
 
-**Configuration** (``isaaclab_arena/arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml``):
+**Configuration** (``isaaclab_arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml``):
 
 .. code-block:: yaml
 
@@ -69,7 +69,7 @@ Test the policy in a single environment with visualization via the GUI run:
 
    python isaaclab_arena/examples/policy_runner.py \
      --policy_type gr00t_closedloop \
-     --policy_config_yaml_path isaaclab_arena/arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml \
+     --policy_config_yaml_path isaaclab_arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml \
      --num_steps 400 \
      --enable_cameras \
      gr1_open_microwave \
@@ -104,7 +104,7 @@ by running the following command.
 
    python isaaclab_arena/examples/policy_runner.py \
      --policy_type gr00t_closedloop \
-     --policy_config_yaml_path isaaclab_arena/arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml \
+     --policy_config_yaml_path isaaclab_arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml \
      --num_steps 400 \
      --num_envs 16 \
      --enable_cameras \
