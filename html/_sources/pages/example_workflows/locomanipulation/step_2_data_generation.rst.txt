@@ -70,6 +70,7 @@ To visualize the data produced, you can replay the dataset using the following c
 .. code-block:: bash
 
    python isaaclab_arena/scripts/replay_demos.py \
+     --device cpu \
      --enable_cameras \
      --dataset_file <OUTPUT_DATASET_PATH> \
      galileo_g1_locomanip_pick_and_place \
@@ -77,5 +78,10 @@ To visualize the data produced, you can replay the dataset using the following c
      --embodiment g1_wbc_pink
 
 You should see the robot successfully perform the task.
+
+.. note::
+
+   The dataset was generated using CPU device physics, therefore the replay uses ``--device cpu`` to ensure reproducibility.
+
 
 .. todo:: (amillane, 2025-10-22): add screenshot

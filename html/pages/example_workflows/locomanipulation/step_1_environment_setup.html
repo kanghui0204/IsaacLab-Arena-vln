@@ -434,7 +434,7 @@ can be fed to the robot to control its actions.
 We download a pre-recorded dataset from Hugging Face (replace <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>nvidia/Arena-GR1-Manipulation-Task<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>arena_gr1_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>arena_gr1_manipulation_dataset_generated_small.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--local-dir<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;
 </pre></div>
@@ -445,6 +445,7 @@ We download a pre-recorded dataset from Hugging Face (replace <code class="docut
 <p>Replay the downloaded dataset to verify the environment setup
 (replace <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/replay_demos.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>cpu<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--dataset_file<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
@@ -453,6 +454,10 @@ We download a pre-recorded dataset from Hugging Face (replace <code class="docut
 </pre></div>
 </div>
 <p>You should see the G1 robot replaying the generated demonstrations, performing box pick and place task in the Galileo lab environment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The downloaded dataset was generated using CPU device physics, therefore the replay uses <code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">cpu</span></code> to ensure reproducibility.</p>
+</div>
 <div class="admonition-todo admonition" id="id3">
 <p class="admonition-title">Todo</p>
 <p>(amillane, 2025-10-22): screenshot</p>

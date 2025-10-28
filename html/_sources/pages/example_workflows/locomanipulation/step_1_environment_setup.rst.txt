@@ -71,7 +71,7 @@ We download a pre-recorded dataset from Hugging Face (replace ``<INPUT_DATASET_P
 
    huggingface-cli download \
        nvidia/Arena-GR1-Manipulation-Task \
-       arena_gr1_manipulation_dataset_generated.hdf5 \
+       arena_gr1_manipulation_dataset_generated_small.hdf5 \
        --repo-type dataset \
        --local-dir <INPUT_DATASET_PATH>
 
@@ -85,6 +85,7 @@ Replay the downloaded dataset to verify the environment setup
 .. code-block:: bash
 
    python isaaclab_arena/scripts/replay_demos.py \
+     --device cpu \
      --enable_cameras \
      --dataset_file <INPUT_DATASET_PATH> \
      galileo_g1_locomanip_pick_and_place \
@@ -92,5 +93,9 @@ Replay the downloaded dataset to verify the environment setup
      --embodiment g1_wbc_pink
 
 You should see the G1 robot replaying the generated demonstrations, performing box pick and place task in the Galileo lab environment.
+
+.. note::
+
+   The downloaded dataset was generated using CPU device physics, therefore the replay uses ``--device cpu`` to ensure reproducibility.
 
 .. todo:: (amillane, 2025-10-22): screenshot
