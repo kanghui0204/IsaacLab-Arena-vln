@@ -86,4 +86,8 @@ Replay the generated dataset to verify the environment setup:
 
 You should see the G1 robot replaying the generated demonstrations, performing box pick and place task in the Galileo lab environment.
 
+.. note::
+
+   The downloaded dataset was generated using CPU device physics, therefore the replay uses ``--device cpu`` to ensure reproducibility.
+
 .. todo:: (amillane, 2025-10-22): screenshot
