@@ -52,30 +52,29 @@ Note that this conversion step can be skipped by downloading the pre-converted L
    If you download this dataset, you can skip the conversion step below and continue to the next step.
 
 
-We first need to modify the configuration file to point to the correct input/output paths.
-In the config file at ``isaaclab_arena/policy/config/gr1_manip_config.yaml``,
+The converter is controlled by a config file at ``isaaclab_arena/policy/config/gr1_manip_config.yaml``.
 
+.. dropdown:: Configuration file (``gr1_manip_config.yaml``):
+   :animate: fade-in
 
-**Configuration file** (``gr1_manip_config.yaml``):
+   .. code-block:: yaml
 
-.. code-block:: yaml
+      # Input/Output paths
+      data_root: /datasets/isaaclab_arena/static_manipulation_tutorial
+      hdf5_name: "arena_g1_loco_manipulation_dataset_generated.hdf5"
 
-   # Input/Output paths
-   data_root: /datasets/isaaclab_arena/static_manipulation_tutorial
-   hdf5_name: "arena_g1_loco_manipulation_dataset_generated.hdf5"
+      # Task description
+      language_instruction: "Pick up the brown box and place it in the blue bin"
+      task_index: 0
 
-   # Task description
-   language_instruction: "Pick up the brown box and place it in the blue bin"
-   task_index: 0
+      # Data field mappings
+      state_name_sim: "robot_joint_pos"
+      action_name_sim: "processed_actions"
+      pov_cam_name_sim: "robot_head_cam"
 
-   # Data field mappings
-   state_name_sim: "robot_joint_pos"
-   action_name_sim: "processed_actions"
-   pov_cam_name_sim: "robot_head_cam"
-
-   # Output configuration
-   fps: 50
-   chunks_size: 1000
+      # Output configuration
+      fps: 50
+      chunks_size: 1000
 
 Convert the HDF5 dataset to LeRobot format for policy post-training:
 

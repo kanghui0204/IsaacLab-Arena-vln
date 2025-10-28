@@ -24,42 +24,37 @@ pre-trained model checkpoint below:
 
 
 
-Step 1: Configure Closed-Loop Inference
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Create or verify the inference configuration file:
-
-**Configuration** (``isaaclab_arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml``):
-
-.. code-block:: yaml
-
-   # Model configuration
-   model_path: /models/isaaclab_arena/static_manipulation_tutorial
-   embodiment_tag: gr1
-   data_config: gr1_arms_only
-
-   # Task configuration
-   language_instruction: "Reach out to the microwave and open it."
-   task_mode_name: gr1_manipulation
-
-   # Inference parameters
-   denoising_steps: 10
-   policy_device: cuda
-   target_image_size: [256, 256, 3]
-
-   # Joint mappings
-   gr00t_joints_config_path: isaaclab_arena/policy/config/gr1/gr00t_26dof_joint_space.yaml
-   action_joints_config_path: isaaclab_arena/policy/config/gr1/36dof_joint_space.yaml
-   state_joints_config_path: isaaclab_arena/policy/config/gr1/54dof_joint_space.yaml
-
-
-.. todo:: (alexmillane, 2025-10-23): See if we can move the model path out of the config file
-   and onto the command line. Then change the statement above.
-
-
-
-Step 2: Run Single Environment Evaluation
+Step 1: Run Single Environment Evaluation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We first run the policy in a single environment with visualization via the GUI.
+
+The GR00T model is configured by a config file at ``isaaclab_arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml``.
+
+.. dropdown:: Configuration file (``gr1_manip_gr00t_closedloop_config.yaml``):
+   :animate: fade-in
+
+   .. code-block:: yaml
+
+      # Model configuration
+      model_path: /models/isaaclab_arena/static_manipulation_tutorial
+      embodiment_tag: gr1
+      data_config: gr1_arms_only
+
+      # Task configuration
+      language_instruction: "Reach out to the microwave and open it."
+      task_mode_name: gr1_manipulation
+
+      # Inference parameters
+      denoising_steps: 10
+      policy_device: cuda
+      target_image_size: [256, 256, 3]
+
+      # Joint mappings
+      gr00t_joints_config_path: isaaclab_arena/policy/config/gr1/gr00t_26dof_joint_space.yaml
+      action_joints_config_path: isaaclab_arena/policy/config/gr1/36dof_joint_space.yaml
+      state_joints_config_path: isaaclab_arena/policy/config/gr1/54dof_joint_space.yaml
+
 
 Test the policy in a single environment with visualization via the GUI run:
 
@@ -91,7 +86,7 @@ You should see similar metrics.
 
 
 
-Step 3: Run Parallel Evaluation (Recommended)
+Step 2: Run Parallel Evaluation (Recommended)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 IsaacLab Arena supports evaluating the policy in parallel across multiple environments.

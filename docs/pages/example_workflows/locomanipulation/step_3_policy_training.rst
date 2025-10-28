@@ -19,9 +19,6 @@ Note that this tutorial assumes that you've completed the
 
    .. code-block:: bash
 
-      export DATASET_DIR=/datasets/isaaclab_arena/locomanipulation_tutorial
-      mkdir -p $DATASET_DIR
-
       hf download \
          nvidia/Arena-G1-Loco-Manipulation-Task \
          arena_g1_loco_manipulation_dataset_generated.hdf5 \
@@ -46,9 +43,6 @@ Note that this conversion step can be skipped by downloading the pre-converted L
 
    .. code-block:: bash
 
-      export DATASET_DIR=/datasets/isaaclab_arena/locomanipulation_tutorial
-      mkdir -p $DATASET_DIR
-
       hf download \
          nvidia/Arena-G1-Loco-Manipulation-Task \
          --include lerobot/* \
@@ -57,34 +51,29 @@ Note that this conversion step can be skipped by downloading the pre-converted L
 
    If you download this dataset, you can skip the conversion step below and continue to the next step.
 
+The converter is controlled by a config file at ``isaaclab_arena/policy/config/g1_locomanip_config.yaml``.
 
-We first need to modify the configuration file to point to the correct input/output paths.
-In the config file at ``isaaclab_arena/policy/config/g1_locomanip_config.yaml``,
+.. dropdown:: Configuration file (``g1_locomanip_config.yaml``):
+   :animate: fade-in
 
-.. todo:: (alexmillane, 2025-10-23): We should move the input/output paths out of the config file
-   and onto the command line. Then change the statement above.
+   .. code-block:: yaml
 
+      # Input/Output paths
+      data_root: /datasets/isaaclab_arena/locomanipulation_tutorial
+      hdf5_name: "arena_g1_loco_manipulation_dataset_generated.hdf5"
 
-**Configuration file** (``g1_locomanip_config.yaml``):
+      # Task description
+      language_instruction: "Pick up the brown box and place it in the blue bin"
+      task_index: 2
 
-.. code-block:: yaml
+      # Data field mappings
+      state_name_sim: "robot_joint_pos"
+      action_name_sim: "processed_actions"
+      pov_cam_name_sim: "robot_head_cam"
 
-   # Input/Output paths
-   data_root: /datasets/isaaclab_arena/locomanipulation_tutorial
-   hdf5_name: "arena_g1_loco_manipulation_dataset_generated.hdf5"
-
-   # Task description
-   language_instruction: "Pick up the brown box and place it in the blue bin"
-   task_index: 2
-
-   # Data field mappings
-   state_name_sim: "robot_joint_pos"
-   action_name_sim: "processed_actions"
-   pov_cam_name_sim: "robot_head_cam"
-
-   # Output configuration
-   fps: 50
-   chunks_size: 1000
+      # Output configuration
+      fps: 50
+      chunks_size: 1000
 
 Convert the HDF5 dataset to LeRobot format for policy post-training:
 
