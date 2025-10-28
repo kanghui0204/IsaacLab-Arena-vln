@@ -387,13 +387,13 @@ pre-generated dataset from Hugging Face as described below.</p>
 <p class="sd-card-text">These commands can be used to download the LeRobot-formatted dataset ready for policy post-training,
 such that the preceding steps can be skipped.</p>
 <p class="sd-card-text">To download run (replacing <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>nvidia/Arena-GR1-Manipulation-Task<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>arena_gr1_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--local-dir<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;
 </pre></div>
 </div>
-<dl class="simple">
-<dt>huggingface-cli download </dt><dd><p class="sd-card-text">nvidia/Arena-GR1-Manipulation-Task arena_gr1_manipulation_dataset_generated.hdf5 –repo-type dataset –local-dir &lt;INPUT_DATASET_PATH&gt;</p>
-</dd>
-</dl>
 </div>
 </details><section id="step-2-convert-to-lerobot-format">
 <h2>Step 2: Convert to LeRobot Format<a class="headerlink" href="#step-2-convert-to-lerobot-format" title="Link to this heading">#</a></h2>
