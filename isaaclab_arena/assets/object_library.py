@@ -158,62 +158,62 @@ class PowerDrill(LibraryObject):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
 
 
-@register_asset
-class Microwave(LibraryObject, Openable):
-    """A microwave oven."""
+# @register_asset
+# class Microwave(LibraryObject, Openable):
+#     """A microwave oven."""
 
-    # Only required when using Lightwheel SDK
-    from lightwheel_sdk.loader import object_loader
+#     # Only required when using Lightwheel SDK
+#     from lightwheel_sdk.loader import object_loader
 
-    name = "microwave"
-    tags = ["object", "openable"]
-    file_path, object_name, metadata = object_loader.acquire_by_registry(
-        registry_type="fixtures", registry_name=["microwave"], file_type="USD"
-    )
-    usd_path = file_path
-    object_type = ObjectType.ARTICULATION
+#     name = "microwave"
+#     tags = ["object", "openable"]
+#     file_path, object_name, metadata = object_loader.acquire_by_registry(
+#         registry_type="fixtures", registry_name=["microwave"], file_type="USD"
+#     )
+#     usd_path = file_path
+#     object_type = ObjectType.ARTICULATION
 
-    # Openable affordance parameters
-    openable_joint_name = "microjoint"
-    openable_open_threshold = 0.5
+#     # Openable affordance parameters
+#     openable_joint_name = "microjoint"
+#     openable_open_threshold = 0.5
 
-    def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
-        super().__init__(
-            prim_path=prim_path,
-            initial_pose=initial_pose,
-            openable_joint_name=self.openable_joint_name,
-            openable_open_threshold=self.openable_open_threshold,
-        )
+#     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
+#         super().__init__(
+#             prim_path=prim_path,
+#             initial_pose=initial_pose,
+#             openable_joint_name=self.openable_joint_name,
+#             openable_open_threshold=self.openable_open_threshold,
+#         )
 
 
-@register_asset
-class CoffeeMachine(LibraryObject, Pressable):
-    """
-    Encapsulates the pick-up object config for a pick-and-place environment.
-    """
+# @register_asset
+# class CoffeeMachine(LibraryObject, Pressable):
+#     """
+#     Encapsulates the pick-up object config for a pick-and-place environment.
+#     """
 
-    # Only required when using Lightwheel SDK
-    from lightwheel_sdk.loader import object_loader
+#     # Only required when using Lightwheel SDK
+#     from lightwheel_sdk.loader import object_loader
 
-    name = "coffee_machine"
-    tags = ["object", "pressable"]
-    file_path, object_name, metadata = object_loader.acquire_by_registry(
-        registry_type="fixtures", registry_name=["coffee_machine"], file_type="USD"
-    )
-    usd_path = file_path
-    object_type = ObjectType.ARTICULATION
+#     name = "coffee_machine"
+#     tags = ["object", "pressable"]
+#     file_path, object_name, metadata = object_loader.acquire_by_registry(
+#         registry_type="fixtures", registry_name=["coffee_machine"], file_type="USD"
+#     )
+#     usd_path = file_path
+#     object_type = ObjectType.ARTICULATION
 
-    # Openable affordance parameters
-    pressable_joint_name = "CoffeeMachine108_Button002_joint"
-    pressedness_threshold = 0.5
+#     # Openable affordance parameters
+#     pressable_joint_name = "CoffeeMachine108_Button002_joint"
+#     pressedness_threshold = 0.5
 
-    def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
-        super().__init__(
-            prim_path=prim_path,
-            initial_pose=initial_pose,
-            pressable_joint_name=self.pressable_joint_name,
-            pressedness_threshold=self.pressedness_threshold,
-        )
+#     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
+#         super().__init__(
+#             prim_path=prim_path,
+#             initial_pose=initial_pose,
+#             pressable_joint_name=self.pressable_joint_name,
+#             pressedness_threshold=self.pressedness_threshold,
+#         )
 
 
 @register_asset
