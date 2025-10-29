@@ -378,49 +378,101 @@
 and validate that we can load it in Isaac Lab.</p>
 <section id="environment-description">
 <h2>Environment Description<a class="headerlink" href="#environment-description" title="Link to this heading">#</a></h2>
-<p>The environment used in this example workflow has the following components:</p>
-<p><strong>Embodiment Configuration:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_arena.embodiments.gr1t2</span><span class="w"> </span><span class="kn">import</span> <span class="n">GR1T2PinkEmbodiment</span>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">The GR1 Open Microwave Environment</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Gr1OpenMicrowaveEnvironment</span><span class="p">(</span><span class="n">ExampleEnvironmentBase</span><span class="p">):</span>
 
-<span class="n">embodiment</span> <span class="o">=</span> <span class="n">GR1T2PinkEmbodiment</span><span class="p">(</span><span class="n">enable_cameras</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gr1_open_microwave&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_cli</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">):</span>  <span class="c1"># -&gt; IsaacLabArenaEnvironment:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_arena.environments.isaaclab_arena_environment</span><span class="w"> </span><span class="kn">import</span> <span class="n">IsaacLabArenaEnvironment</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_arena.scene.scene</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scene</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_arena.tasks.open_door_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenDoorTask</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_arena.utils.pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pose</span>
+
+        <span class="n">background</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="s2">&quot;kitchen&quot;</span><span class="p">)()</span>
+        <span class="n">microwave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="s2">&quot;microwave&quot;</span><span class="p">)()</span>
+        <span class="n">assets</span> <span class="o">=</span> <span class="p">[</span><span class="n">background</span><span class="p">,</span> <span class="n">microwave</span><span class="p">]</span>
+
+        <span class="n">embodiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="n">args_cli</span><span class="o">.</span><span class="n">embodiment</span><span class="p">)(</span><span class="n">enable_cameras</span><span class="o">=</span><span class="n">args_cli</span><span class="o">.</span><span class="n">enable_cameras</span><span class="p">)</span>
+        <span class="n">embodiment</span><span class="o">.</span><span class="n">set_initial_pose</span><span class="p">(</span><span class="n">Pose</span><span class="p">(</span><span class="n">position_xyz</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">rotation_wxyz</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
+
+        <span class="n">teleop_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_registry</span><span class="o">.</span><span class="n">get_device_by_name</span><span class="p">(</span><span class="n">args_cli</span><span class="o">.</span><span class="n">teleop_device</span><span class="p">)()</span>
+
+        <span class="c1"># Put the microwave on the packing table.</span>
+        <span class="n">microwave_pose</span> <span class="o">=</span> <span class="n">Pose</span><span class="p">(</span>
+            <span class="n">position_xyz</span><span class="o">=</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.00586</span><span class="p">,</span> <span class="mf">0.22773</span><span class="p">),</span>
+            <span class="n">rotation_wxyz</span><span class="o">=</span><span class="p">(</span><span class="mf">0.7071068</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7071068</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">microwave</span><span class="o">.</span><span class="n">set_initial_pose</span><span class="p">(</span><span class="n">microwave_pose</span><span class="p">)</span>
+
+        <span class="n">scene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">(</span><span class="n">assets</span><span class="o">=</span><span class="n">assets</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">OpenDoorTask</span><span class="p">(</span><span class="n">microwave</span><span class="p">,</span> <span class="n">openness_threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">reset_openness</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+        <span class="n">isaaclab_arena_environment</span> <span class="o">=</span> <span class="n">IsaacLabArenaEnvironment</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">embodiment</span><span class="o">=</span><span class="n">embodiment</span><span class="p">,</span>
+            <span class="n">scene</span><span class="o">=</span><span class="n">scene</span><span class="p">,</span>
+            <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span>
+            <span class="n">teleop_device</span><span class="o">=</span><span class="n">teleop_device</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">isaaclab_arena_environment</span>
 </pre></div>
 </div>
-<p><strong>Key Features:</strong></p>
-<ul class="simple">
-<li><p>36 DOF control (upper body: torso, arms, hands)</p></li>
-<li><p>Head-mounted RGB camera (512x512)</p></li>
-<li><p>PINK IK controller for upper body manipulation</p></li>
-<li><p>Lower body fixed in standing pose, gravity disabled</p></li>
-</ul>
-<p><strong>Scene Configuration:</strong></p>
-<ul class="simple">
-<li><p>Kitchen environment</p></li>
-<li><p>Microwave with articulated door (revolute joint)</p></li>
-<li><p>Task: Open door to 80% (success threshold)</p></li>
-</ul>
-<p><strong>Task Configuration:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_arena.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenDoorTask</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_arena.affordances</span><span class="w"> </span><span class="kn">import</span> <span class="n">Openable</span>
-<span class="c1"># define microwave object reference, and background scene</span>
+</div>
+</details></section>
+<section id="step-by-step-breakdown">
+<h2>Step-by-Step Breakdown<a class="headerlink" href="#step-by-step-breakdown" title="Link to this heading">#</a></h2>
+<p><strong>1. Interact with the Asset and Device Registry</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">background</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="s2">&quot;kitchen&quot;</span><span class="p">)()</span>
+<span class="n">microwave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="s2">&quot;microwave&quot;</span><span class="p">)()</span>
+<span class="n">assets</span> <span class="o">=</span> <span class="p">[</span><span class="n">background</span><span class="p">,</span> <span class="n">microwave</span><span class="p">]</span>
 
-<span class="n">microwave</span> <span class="o">=</span> <span class="n">Openable</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;microwave&quot;</span><span class="p">,</span>
-    <span class="n">articulation_cfg</span><span class="o">=</span><span class="n">microwave_cfg</span><span class="p">,</span>
-    <span class="n">joint_name</span><span class="o">=</span><span class="s2">&quot;door_joint&quot;</span>
+<span class="n">embodiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset_registry</span><span class="o">.</span><span class="n">get_asset_by_name</span><span class="p">(</span><span class="n">args_cli</span><span class="o">.</span><span class="n">embodiment</span><span class="p">)(</span><span class="n">enable_cameras</span><span class="o">=</span><span class="n">args_cli</span><span class="o">.</span><span class="n">enable_cameras</span><span class="p">)</span>
+<span class="n">teleop_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_registry</span><span class="o">.</span><span class="n">get_device_by_name</span><span class="p">(</span><span class="n">args_cli</span><span class="o">.</span><span class="n">teleop_device</span><span class="p">)()</span>
+</pre></div>
+</div>
+<p>Here, we’re selecting the components needed for our static manipulation task: the kitchen environment as our background,
+a microwave with an openable door, and the GR1 embodiment (our robot).
+The <code class="docutils literal notranslate"><span class="pre">AssetRegistry</span></code> and <code class="docutils literal notranslate"><span class="pre">DeviceRegistry</span></code> have been initialized in the <code class="docutils literal notranslate"><span class="pre">ExampleEnvironmentBase</span></code> class.
+See <a class="reference internal" href="../../concepts/concept_assets_design.html"><span class="doc">Assets Design</span></a> for details on asset architecture.</p>
+<p><strong>2. Position the Objects</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">microwave_pose</span> <span class="o">=</span> <span class="n">Pose</span><span class="p">(</span>
+    <span class="n">position_xyz</span><span class="o">=</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.00586</span><span class="p">,</span> <span class="mf">0.22773</span><span class="p">),</span>
+    <span class="n">rotation_wxyz</span><span class="o">=</span><span class="p">(</span><span class="mf">0.7071068</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7071068</span><span class="p">),</span>
 <span class="p">)</span>
-
-<span class="n">task</span> <span class="o">=</span> <span class="n">OpenDoorTask</span><span class="p">(</span>
-    <span class="n">openable_object</span><span class="o">=</span><span class="n">microwave</span><span class="p">,</span>
-    <span class="n">openness_threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>  <span class="c1"># &gt;80% open = success</span>
-    <span class="n">background_scene</span><span class="o">=</span><span class="n">background_scene</span>
+<span class="n">microwave</span><span class="o">.</span><span class="n">set_initial_pose</span><span class="p">(</span><span class="n">microwave_pose</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Before we create the scene, we need to place our objects in the right locations. These initial poses are
+currently set manually to create an achievable task. In this case, we place the microwave on the packing table.</p>
+<p><strong>3. Compose the Scene</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">(</span><span class="n">assets</span><span class="o">=</span><span class="n">assets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we bring everything together into an IsaacLab-Arena scene.
+See <a class="reference internal" href="../../concepts/concept_scene_design.html"><span class="doc">Scene Design</span></a> for scene composition details.</p>
+<p><strong>4. Create the Open Door Task</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">task</span> <span class="o">=</span> <span class="n">OpenDoorTask</span><span class="p">(</span><span class="n">microwave</span><span class="p">,</span> <span class="n">openness_threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">reset_openness</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">OpenDoorTask</span></code> encapsulates the goal of this environment: open the microwave door.
+See <a class="reference internal" href="../../concepts/concept_tasks_design.html"><span class="doc">Tasks Design</span></a> for task creation details.</p>
+<p><strong>5. Create the IsaacLab Arena Environment</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">isaaclab_arena_environment</span> <span class="o">=</span> <span class="n">IsaacLabArenaEnvironment</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">embodiment</span><span class="o">=</span><span class="n">embodiment</span><span class="p">,</span>
+    <span class="n">scene</span><span class="o">=</span><span class="n">scene</span><span class="p">,</span>
+    <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span>
+    <span class="n">teleop_device</span><span class="o">=</span><span class="n">teleop_device</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>(amillane, 2025-10-22): Rework this section. Let’s just step through the
-environment description in its entirety.</p>
-</div>
+<p>Finally, we assemble all the pieces into a complete, runnable environment. The <code class="docutils literal notranslate"><span class="pre">IsaacLabArenaEnvironment</span></code> is the
+top-level container that connects the embodiment (the robot), the scene (the world), and the task (the objective).
+See <a class="reference internal" href="../../concepts/concept_environment_design.html"><span class="doc">Environment Design</span></a> for environment composition details.</p>
 </section>
 <section id="step-1-download-a-test-dataset">
 <h2>Step 1: Download a Test Dataset<a class="headerlink" href="#step-1-download-a-test-dataset" title="Link to this heading">#</a></h2>
@@ -447,7 +499,7 @@ We download a pre-recorded dataset from Hugging Face.</p>
 </div>
 <p>You should see the GR1 robot replaying the demonstrations, performing the microwave door
 opening task in the kitchen environment.</p>
-<div class="admonition-todo admonition" id="id2">
+<div class="admonition-todo admonition" id="id1">
 <p class="admonition-title">Todo</p>
 <p>(amillane, 2025-10-22): screenshot</p>
 </div>
@@ -504,6 +556,7 @@ opening task in the kitchen environment.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-description">Environment Description</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-breakdown">Step-by-Step Breakdown</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-download-a-test-dataset">Step 1: Download a Test Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-validate-the-environment-by-replaying-the-dataset">Step 2: Validate the Environment by Replaying the Dataset</a></li>
 </ul>
