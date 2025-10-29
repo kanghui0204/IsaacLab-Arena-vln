@@ -51,7 +51,18 @@ ExampleEnvironments = {
 
 
 def parse_and_return_external_environment_from_string(environment_path) -> dict[str, Any]:
-    # Parse a string and import the environment class
+    """Parse a string and import the environment class
+
+    Args:
+        environment_path: The path to the environment class
+
+    Raises:
+        ValueError: If the environment path is not in the format "module_path:class_name"
+
+    Returns:
+        dict[str, Any]: A dictionary with the environment name as the key and the environment class as the value
+    """
+    # Parse the environment path and import the environment class
     # We assume the environment path is in the format "module_path:class_name"
     # Add a check for the format
     if ":" not in environment_path:
