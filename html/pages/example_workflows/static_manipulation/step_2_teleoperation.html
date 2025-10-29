@@ -410,14 +410,12 @@ docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </s
 </section>
 <section id="step-3-start-recording">
 <h2>Step 3: Start Recording<a class="headerlink" href="#step-3-start-recording" title="Link to this heading">#</a></h2>
-<p>In a separate terminal, start the recording session:</p>
-<p>Start the Arena Docker container:</p>
+<p>To start the recording session, open another terminal, start the Arena Docker container,
+and run the recording script.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
-</pre></div>
-</div>
-<p>Start the recording session (replace <code class="docutils literal notranslate"><span class="pre">&lt;OUTPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/record_demos.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--dataset_file<span class="w"> </span>&lt;OUTPUT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
+
+python<span class="w"> </span>isaaclab_arena/scripts/record_demos.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_gr1_manipulation_dataset_recorded.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_demos<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_success_steps<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>gr1_open_microwave<span class="w"> </span><span class="se">\</span>
@@ -443,7 +441,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </s
 <p>(alexmillane, 2025-10-23): Check that you don’t need to press the “Submit Demo” button in VR.</p>
 </div>
 <p>The script will automatically save successful demonstrations to an HDF5 file
-at <code class="docutils literal notranslate"><span class="pre">&lt;OUTPUT_DATASET_PATH&gt;</span></code>.</p>
+at <code class="docutils literal notranslate"><span class="pre">$DATASET_DIR/arena_gr1_manipulation_dataset_recorded.hdf5</span></code>.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>For best results:</p>

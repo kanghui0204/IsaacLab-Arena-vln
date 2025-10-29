@@ -432,14 +432,35 @@
 </table>
 </div>
 </section>
-<section id="workflows">
-<h2>Workflows<a class="headerlink" href="#workflows" title="Link to this heading">#</a></h2>
+<section id="workflow">
+<h2>Workflow<a class="headerlink" href="#workflow" title="Link to this heading">#</a></h2>
 <p>This tutorial covers the pipeline between creating an environment, generating training data,
 fine-tuning a policy (GR00T N1.5), and evaluating the policy in closed-loop.
 A user can follow the whole pipeline, or can start at any intermediate step
 by downloading the pre-generated output of the preceding step(s), which we provide
 (described in the relevant step below).</p>
-<p>This example workflow involves the following steps:</p>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h3>
+<p>Start the isaaclab docker container</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
+</pre></div>
+</div>
+<p>We store data on Hugging Face, so you’ll need log in to Hugging Face if you haven’t already.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>auth<span class="w"> </span>login
+</pre></div>
+</div>
+<p>You’ll also need to create the folders for the data and models.
+Create the folders for the data and models with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATASET_DIR</span><span class="o">=</span>/datasets/isaaclab_arena/static_manipulation_tutorial
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATASET_DIR</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODELS_DIR</span><span class="o">=</span>/models/isaaclab_arena/static_manipulation_tutorial
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$MODELS_DIR</span>
+</pre></div>
+</div>
+</section>
+<section id="workflow-steps">
+<h3>Workflow Steps<a class="headerlink" href="#workflow-steps" title="Link to this heading">#</a></h3>
+<p>Follow the following steps to complete the workflow:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="step_1_environment_setup.html"><span class="doc">Environment Setup and Validation</span></a></p></li>
 <li><p><a class="reference internal" href="step_2_teleoperation.html"><span class="doc">Teleoperation Data Collection</span></a></p></li>
@@ -447,18 +468,9 @@ by downloading the pre-generated output of the preceding step(s), which we provi
 <li><p><a class="reference internal" href="step_4_policy_training.html"><span class="doc">Policy Post-training</span></a></p></li>
 <li><p><a class="reference internal" href="step_5_evaluation.html"><span class="doc">Closed-Loop Policy Inference and Evaluation</span></a></p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We store data on Hugging Face, so you’ll need to install the Hugging Face CLI to download the data.
-You can install the Hugging Face CLI by following the
-<a class="reference external" href="https://huggingface.co/docs/huggingface_hub/installation">official instructions</a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;huggingface_hub[cli]&quot;</span>
-huggingface-cli<span class="w"> </span>login
-</pre></div>
-</div>
-</div>
 <div class="toctree-wrapper compound">
 </div>
+</section>
 </section>
 </section>
 
@@ -512,7 +524,11 @@ huggingface-cli<span class="w"> </span>login
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#task-overview">Task Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workflows">Workflows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow">Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-steps">Workflow Steps</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

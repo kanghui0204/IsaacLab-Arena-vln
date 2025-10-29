@@ -386,19 +386,22 @@ pre-trained model checkpoint below:</p>
 such that the preceding steps can be skipped.
 This step requires the Hugging Face CLI, which can be installed by following the
 <a class="reference external" href="https://huggingface.co/docs/huggingface_hub/installation">official instructions</a>.</p>
-<p class="sd-card-text">To download run (replacing <code class="docutils literal notranslate"><span class="pre">&lt;CHECKPOINTS_DIR&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<p class="sd-card-text">To download run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>--local-dir<span class="w"> </span>&lt;CHECKPOINTS_DIR&gt;
+<span class="w">   </span>--local-dir<span class="w"> </span><span class="nv">$MODELS_DIR</span>
 </pre></div>
 </div>
 </div>
-</details><section id="step-1-configure-closed-loop-inference">
-<h2>Step 1: Configure Closed-Loop Inference<a class="headerlink" href="#step-1-configure-closed-loop-inference" title="Link to this heading">#</a></h2>
-<p>Create or verify the inference configuration file:</p>
-<p><strong>Configuration</strong> (<code class="docutils literal notranslate"><span class="pre">isaaclab_arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml</span></code>):</p>
+</details><section id="step-1-run-single-environment-evaluation">
+<h2>Step 1: Run Single Environment Evaluation<a class="headerlink" href="#step-1-run-single-environment-evaluation" title="Link to this heading">#</a></h2>
+<p>We first run the policy in a single environment with visualization via the GUI.</p>
+<p>The GR00T model is configured by a config file at <code class="docutils literal notranslate"><span class="pre">isaaclab_arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml</span></code>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Configuration file (<code class="docutils literal notranslate"><span class="pre">g1_locomanip_gr00t_closedloop_config.yaml</span></code>):</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Model configuration</span>
-<span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/checkpoints/GN1x-Tuned-Arena-G1-Loco-Manipulation</span>
+<span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/models/isaaclab_arena/locomanipulation_tutorial</span>
 <span class="nt">embodiment_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_embodiment</span>
 <span class="nt">data_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unitree_g1_sim_wbc</span>
 
@@ -417,15 +420,8 @@ This step requires the Hugging Face CLI, which can be installed by following the
 <span class="nt">state_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaaclab_arena/policy/config/g1/43dof_joint_space.yaml</span>
 </pre></div>
 </div>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>(alexmillane, 2025-10-23): See if we can move the model path out of the config file
-and onto the command line. Then change the statement above.</p>
 </div>
-</section>
-<section id="step-2-run-single-environment-evaluation">
-<h2>Step 2: Run Single Environment Evaluation<a class="headerlink" href="#step-2-run-single-environment-evaluation" title="Link to this heading">#</a></h2>
-<p>Test the policy in a single environment with visualization via the GUI run:</p>
+</details><p>Test the policy in a single environment with visualization via the GUI run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--policy_type<span class="w"> </span>gr00t_closedloop<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--policy_config_yaml_path<span class="w"> </span>isaaclab_arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
@@ -451,8 +447,8 @@ GR00T N1.5 policy is trained on upper body joint positions, so we use
 <code class="docutils literal notranslate"><span class="pre">g1_wbc_joint</span></code> for closed-loop policy inference.</p>
 </div>
 </section>
-<section id="step-3-run-parallel-evaluation-recommended">
-<h2>Step 3: Run Parallel Evaluation (Recommended)<a class="headerlink" href="#step-3-run-parallel-evaluation-recommended" title="Link to this heading">#</a></h2>
+<section id="step-2-run-parallel-evaluation-recommended">
+<h2>Step 2: Run Parallel Evaluation (Recommended)<a class="headerlink" href="#step-2-run-parallel-evaluation-recommended" title="Link to this heading">#</a></h2>
 <p>IsaacLab Arena supports evaluating the policy in parallel across multiple environments.
 To perform a parallel evaluation across 16 environments, we set <code class="docutils literal notranslate"><span class="pre">num_envs</span></code> to 16,
 by running the following command.</p>
@@ -525,9 +521,8 @@ You should see similar metrics.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-configure-closed-loop-inference">Step 1: Configure Closed-Loop Inference</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-run-single-environment-evaluation">Step 2: Run Single Environment Evaluation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-run-parallel-evaluation-recommended">Step 3: Run Parallel Evaluation (Recommended)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-run-single-environment-evaluation">Step 1: Run Single Environment Evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-run-parallel-evaluation-recommended">Step 2: Run Parallel Evaluation (Recommended)</a></li>
 </ul>
   </nav></div>
 

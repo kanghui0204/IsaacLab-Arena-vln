@@ -426,29 +426,21 @@ environment description in its entirety.</p>
 <h2>Step 1: Download a Test Dataset<a class="headerlink" href="#step-1-download-a-test-dataset" title="Link to this heading">#</a></h2>
 <p>To run a robot in the environment we need some recorded demonstration data that
 can be fed to the robot to control its actions.
-We download a pre-recorded dataset from Hugging Face (replace <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+We download a pre-recorded dataset from Hugging Face.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>nvidia/Arena-GR1-Manipulation-Task<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>arena_gr1_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--local-dir<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;
+<span class="w">    </span>--local-dir<span class="w"> </span><span class="nv">$DATASET_DIR</span>
 </pre></div>
 </div>
 </section>
-<section id="step-2-start-isaac-lab-arena">
-<h2>Step 2: Start Isaac Lab - Arena<a class="headerlink" href="#step-2-start-isaac-lab-arena" title="Link to this heading">#</a></h2>
-<p>Start the Arena Docker container:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
-</pre></div>
-</div>
-</section>
-<section id="step-3-validate-the-environment-by-replaying-the-dataset">
-<h2>Step 3: Validate the Environment by Replaying the Dataset<a class="headerlink" href="#step-3-validate-the-environment-by-replaying-the-dataset" title="Link to this heading">#</a></h2>
-<p>Replay the downloaded dataset to verify the environment setup
-(replace <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
+<section id="step-2-validate-the-environment-by-replaying-the-dataset">
+<h2>Step 2: Validate the Environment by Replaying the Dataset<a class="headerlink" href="#step-2-validate-the-environment-by-replaying-the-dataset" title="Link to this heading">#</a></h2>
+<p>Replay the downloaded dataset to verify the environment setup:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/replay_demos.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--dataset_file<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset_file<span class="w"> </span><span class="nv">$DATASET_DIR</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>gr1_open_microwave<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--embodiment<span class="w"> </span>gr1_pink
 </pre></div>
@@ -513,8 +505,7 @@ opening task in the kitchen environment.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-description">Environment Description</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-download-a-test-dataset">Step 1: Download a Test Dataset</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-start-isaac-lab-arena">Step 2: Start Isaac Lab - Arena</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-validate-the-environment-by-replaying-the-dataset">Step 3: Validate the Environment by Replaying the Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-validate-the-environment-by-replaying-the-dataset">Step 2: Validate the Environment by Replaying the Dataset</a></li>
 </ul>
   </nav></div>
 

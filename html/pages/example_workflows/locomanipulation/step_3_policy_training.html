@@ -383,14 +383,14 @@ here we use <a class="reference external" href="https://github.com/NVIDIA/Isaac-
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Download Pre-generated Dataset (skip preceding steps)</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">These commands can be used to download the LeRobot-formatted dataset ready for policy post-training,
+<p class="sd-card-text">These commands can be used to download the mimic-generated HDF5 dataset ready for policy post-training,
 such that the preceding steps can be skipped.</p>
-<p class="sd-card-text">To download run (replacing <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<p class="sd-card-text">To download run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>nvidia/Arena-G1-Loco-Manipulation-Task<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>arena_g1_loco_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>--local-dir<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;
+<span class="w">   </span>--local-dir<span class="w"> </span><span class="nv">$DATASET_DIR</span>
 </pre></div>
 </div>
 </div>
@@ -404,27 +404,29 @@ Note that this conversion step can be skipped by downloading the pre-converted L
 <span class="sd-summary-text">Download Pre-converted LeRobot Dataset (skip conversion step)</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">These commands can be used to download the pre-converted LeRobot format dataset,
 such that the conversion step can be skipped.</p>
-<p class="sd-card-text">To download run (replacing <code class="docutils literal notranslate"><span class="pre">&lt;LEROBOT_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<p class="sd-card-text">To download run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>nvidia/Arena-G1-Loco-Manipulation-Task<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>lerobot<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--include<span class="w"> </span>lerobot/*<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>--local-dir<span class="w"> </span>&lt;LEROBOT_DATASET_PATH&gt;
+<span class="w">   </span>--local-dir<span class="w"> </span><span class="nv">$DATASET_DIR</span>
 </pre></div>
 </div>
 <p class="sd-card-text">If you download this dataset, you can skip the conversion step below and continue to the next step.</p>
 </div>
-</details><p>We first need to modify the configuration file to point to the correct input/output paths.
-In the config file at <code class="docutils literal notranslate"><span class="pre">isaaclab_arena/policy/config/g1_locomanip_config.yaml</span></code>,
-Replace <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path.</p>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>(alexmillane, 2025-10-23): We should move the input/output paths out of the config file
-and onto the command line. Then change the statement above.</p>
+</details><p>Convert the HDF5 dataset to LeRobot format for policy post-training:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/policy/data_utils/convert_hdf5_to_lerobot.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config_yaml_path<span class="w"> </span>isaaclab_arena/policy/config/g1_locomanip_config.yaml
+</pre></div>
 </div>
-<p><strong>Configuration file</strong> (<code class="docutils literal notranslate"><span class="pre">g1_locomanip_config.yaml</span></code>):</p>
+<p>This creates a folder <code class="docutils literal notranslate"><span class="pre">$DATASET_DIR/lerobot</span></code> containing parquet files with states/actions,
+MP4 camera recordings, and dataset metadata.</p>
+<p>The converter is controlled by a config file at <code class="docutils literal notranslate"><span class="pre">isaaclab_arena/policy/config/g1_locomanip_config.yaml</span></code>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Configuration file (<code class="docutils literal notranslate"><span class="pre">g1_locomanip_config.yaml</span></code>)</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Input/Output paths</span>
-<span class="nt">data_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;INPUT_DATASET_PATH&gt;</span>
+<span class="nt">data_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/datasets/isaaclab_arena/locomanipulation_tutorial</span>
 <span class="nt">hdf5_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;arena_g1_loco_manipulation_dataset_generated.hdf5&quot;</span>
 
 <span class="c1"># Task description</span>
@@ -441,25 +443,17 @@ and onto the command line. Then change the statement above.</p>
 <span class="nt">chunks_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
 </pre></div>
 </div>
-<p>Convert the HDF5 dataset to LeRobot format for policy post-training:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/policy/data_utils/convert_hdf5_to_lerobot.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--config_yaml_path<span class="w"> </span>isaaclab_arena/policy/config/g1_locomanip_config.yaml
-</pre></div>
 </div>
-<p>This creates:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;/lerobot/data/</span></code> - Parquet files with states/actions</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;/lerobot/videos/</span></code> - MP4 camera recordings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;/lerobot/meta/</span></code> - Dataset metadata</p></li>
-</ul>
-</section>
+</details></section>
 <section id="step-2-post-train-policy">
 <h2>Step 2: Post-train Policy<a class="headerlink" href="#step-2-post-train-policy" title="Link to this heading">#</a></h2>
 <p>We post-train the GR00T N1.5 policy on the task.</p>
 <p>The GR00T N1.5 policy has 3 billion parameters so post training is an an expensive operation.
-We provide two post-training options:
-* Best Quality: 8 GPUs with 48GB memory
-* Low Hardware Requirements: 1 GPU with 24GB memory</p>
+We provide two post-training options:</p>
+<ul class="simple">
+<li><p><strong>Best Quality:</strong> 8 GPUs with 48GB memory</p></li>
+<li><p><strong>Low Hardware Requirements:</strong> 1 GPU with 24GB memory</p></li>
+</ul>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Best Quality</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Low Hardware Requirements</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><p>Training takes approximately 4-8 hours on 8x L40s GPUs.</p>
 <p>Training Configuration:</p>
@@ -471,13 +465,12 @@ We provide two post-training options:
 <li><p><strong>Training Steps:</strong> 20,000</p></li>
 <li><p><strong>GPUs:</strong> 8 (multi-GPU training)</p></li>
 </ul>
-<p>To post-train the policy, run the following command
-(replacing <code class="docutils literal notranslate"><span class="pre">&lt;LEROBOT_DATASET_PATH&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;OUTPUT_DIR&gt;</span></code> with the actual paths):</p>
+<p>To post-train the policy, run the following command</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>submodules/Isaac-GR00T
 
 python<span class="w"> </span>scripts/gr00t_finetune.py<span class="w"> </span><span class="se">\</span>
---dataset_path<span class="o">=</span>&lt;LEROBOT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
---output_dir<span class="o">=</span>&lt;OUTPUT_DIR&gt;<span class="w"> </span><span class="se">\</span>
+--dataset_path<span class="o">=</span><span class="nv">$DATASET_DIR</span>/lerobot<span class="w"> </span><span class="se">\</span>
+--output_dir<span class="o">=</span><span class="nv">$MODELS_DIR</span><span class="w"> </span><span class="se">\</span>
 --data_config<span class="o">=</span>unitree_g1_sim_wbc<span class="w"> </span><span class="se">\</span>
 --batch_size<span class="o">=</span><span class="m">24</span><span class="w"> </span><span class="se">\</span>
 --max_steps<span class="o">=</span><span class="m">20000</span><span class="w"> </span><span class="se">\</span>
@@ -496,6 +489,11 @@ python<span class="w"> </span>scripts/gr00t_finetune.py<span class="w"> </span><
 </div>
 </div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><p>TBD</p>
 </div></div>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>(alexmillane, 2025-10-23): Check that the resulting model matches
+the folder structure that we download from Hugging Face.</p>
+</div>
 <p>see the <a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T#3-fine-tuning">GR00T fine-tuning guidelines</a>
 for information on how to adjust the training configuration to your hardware, to achieve
 the best results.</p>

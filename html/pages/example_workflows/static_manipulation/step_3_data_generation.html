@@ -393,20 +393,19 @@ The process of annotation involves segmenting demonstrations into subtasks (reac
 <span class="sd-summary-text">Download Pre-annotated Dataset (skip annotation step)</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">These commands can be used to download the pre-annotated dataset,
 such that the annotation step can be skipped.</p>
-<p class="sd-card-text">To download run (replacing <code class="docutils literal notranslate"><span class="pre">&lt;ANNOTATED_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<p class="sd-card-text">To download run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>nvidia/Arena-GR1-Manipulation-Task<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>arena_gr1_manipulation_dataset_annotated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>--local-dir<span class="w"> </span>&lt;ANNOTATED_DATASET_PATH&gt;
+<span class="w">   </span>--local-dir<span class="w"> </span><span class="nv">$DATASET_DIR</span>
 </pre></div>
 </div>
 </div>
-</details><p>To start the annotation process run the following command (replace
-<code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;ANNOTATED_DATASET_PATH&gt;</span></code> with the actual paths):</p>
+</details><p>To start the annotation process run the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/annotate_demos.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--input_file<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output_file<span class="w"> </span>&lt;ANNOTATED_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_gr1_manipulation_dataset_recorded.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_gr1_manipulation_dataset_annotated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_pinocchio<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--mimic<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>gr1_open_microwave
@@ -428,21 +427,20 @@ annotated demonstrations by using rigid body transformations to introduce variat
 <span class="sd-summary-text">Download Pre-generated Dataset (skip data generation step)</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">These commands can be used to download the pre-generated dataset,
 such that the data generation step can be skipped.</p>
-<p class="sd-card-text">To download run (replacing <code class="docutils literal notranslate"><span class="pre">&lt;GENERATED_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>nvidia/Arena-GR1-Manipulation-Task<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>arena_gr1_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>--local-dir<span class="w"> </span>&lt;GENERATED_DATASET_PATH&gt;
+<span class="w">   </span>--local-dir<span class="w"> </span><span class="nv">$DATASET_DIR</span>
 </pre></div>
 </div>
 </div>
-</details><p>Generate the dataset (replace <code class="docutils literal notranslate"><span class="pre">&lt;ANNOTATED_DATASET_PATH&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;GENERATED_DATASET_PATH&gt;</span></code> with the actual paths):</p>
+</details><p>Generate the dataset:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/generate_dataset.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--generation_num_trials<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_envs<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--input_file<span class="w"> </span>&lt;ANNOTATED_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output_file<span class="w"> </span>&lt;GENERATED_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_gr1_manipulation_dataset_annotated.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_gr1_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_pinocchio<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--headless<span class="w"> </span><span class="se">\</span>
@@ -458,10 +456,10 @@ to visualize data generation.</p>
 <h2>Step 3: Validate Generated Data (Optional)<a class="headerlink" href="#step-3-validate-generated-data-optional" title="Link to this heading">#</a></h2>
 <p>In order to validation the generated dataset, you can replay the generated data
 through the robot, in order to check (visually) if the robot is able to perform the task successfully.
-To do so, run the following command (replace <code class="docutils literal notranslate"><span class="pre">&lt;GENERATED_DATASET_PATH&gt;</span></code> with the actual path):</p>
+To do so, run the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/replay_demos.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--dataset_file<span class="w"> </span>&lt;GENERATED_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_gr1_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>gr1_open_microwave<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--embodiment<span class="w"> </span>gr1_joint
 </pre></div>

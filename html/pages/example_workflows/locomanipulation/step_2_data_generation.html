@@ -385,12 +385,12 @@ we support recording your own demonstrations.</p>
 <p class="admonition-title">Note</p>
 <p>Recording your own demonstrations for loco-manipulation workflows will be supported in a future release.</p>
 </div>
-<p>Download the pre-recorded human demonstrations (replace <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>huggingface-cli<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
+<p>Download the pre-recorded human demonstrations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>nvidia/Arena-G1-Loco-Manipulation-Task<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>arena_g1_loco_manipulation_dataset_annotated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--local-dir<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;
+<span class="w">    </span>--local-dir<span class="w"> </span><span class="nv">$DATASET_DIR</span>
 </pre></div>
 </div>
 </section>
@@ -403,14 +403,14 @@ data variations.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
 </pre></div>
 </div>
-<p>Generate the dataset (replace <code class="docutils literal notranslate"><span class="pre">&lt;INPUT_DATASET_PATH&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;OUTPUT_DATASET_PATH&gt;</span></code> with the actual paths):</p>
+<p>Generate the dataset:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate 100 demonstrations</span>
 python<span class="w"> </span>isaaclab_arena/scripts/generate_dataset.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--headless<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--mimic<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--input_file<span class="w"> </span>&lt;INPUT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output_file<span class="w"> </span>&lt;OUTPUT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_g1_loco_manipulation_dataset_annotated.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_g1_loco_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--generation_num_trials<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>cpu<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
@@ -423,12 +423,11 @@ You can remove <code class="docutils literal notranslate"><span class="pre">--he
 </section>
 <section id="step-3-validate-generated-dataset-optional">
 <h2>Step 3: Validate Generated Dataset (Optional)<a class="headerlink" href="#step-3-validate-generated-dataset-optional" title="Link to this heading">#</a></h2>
-<p>To visualize the data produced, you can replay the dataset using the following command:
-(replace <code class="docutils literal notranslate"><span class="pre">&lt;OUTPUT_DATASET_PATH&gt;</span></code> with the actual path):</p>
+<p>To visualize the data produced, you can replay the dataset using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/replay_demos.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>cpu<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--dataset_file<span class="w"> </span>&lt;OUTPUT_DATASET_PATH&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_g1_loco_manipulation_dataset_generated.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--object<span class="w"> </span>brown_box<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--embodiment<span class="w"> </span>g1_wbc_pink
