@@ -373,7 +373,6 @@
                   
   <section id="data-generation">
 <h1>Data Generation<a class="headerlink" href="#data-generation" title="Link to this heading">#</a></h1>
-<p><strong>Docker Container</strong>: Base (see <a class="reference internal" href="../../quickstart/docker_containers.html"><span class="doc">Docker Containers</span></a> for more details)</p>
 <p>This workflow covers generating a new dataset using
 <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/main/source/overview/imitation-learning/teleop_imitation.html">Isaac Lab Mimic</a>.</p>
 <p>Note that this tutorial assumes that you’ve completed the
@@ -382,6 +381,10 @@ If you do not want to do the preceding step of recording demonstrations, you can
 you can download the pre-generated dataset either in
 <a class="reference internal" href="#step-1-annotate-demonstrations"><span class="std std-ref">Step 1: Annotate Demonstrations</span></a> or <a class="reference internal" href="#step-2-generate-augmented-dataset"><span class="std std-ref">Step 2: Generate Augmented Dataset</span></a>
 below.</p>
+<p><strong>Docker Container</strong>: Base (see <a class="reference internal" href="../../quickstart/docker_containers.html"><span class="doc">Docker Containers</span></a> for more details)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
+</pre></div>
+</div>
 <section id="step-1-annotate-demonstrations">
 <span id="id1"></span><h2>Step 1: Annotate Demonstrations<a class="headerlink" href="#step-1-annotate-demonstrations" title="Link to this heading">#</a></h2>
 <p>This step describes how to annotate the demonstrations recorded in the preceding step

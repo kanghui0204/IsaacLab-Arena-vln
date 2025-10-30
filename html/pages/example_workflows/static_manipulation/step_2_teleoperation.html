@@ -373,9 +373,13 @@
                   
   <section id="teleoperation-data-collection">
 <h1>Teleoperation Data Collection<a class="headerlink" href="#teleoperation-data-collection" title="Link to this heading">#</a></h1>
-<p><strong>Docker Container</strong>: Base (see <a class="reference internal" href="../../quickstart/docker_containers.html"><span class="doc">Docker Containers</span></a> for more details)
-+ CloudXR Runtime: Nvidia CloudXR Runtime (see below for details)</p>
 <p>This workflow covers collecting demonstrations using Isaac Lab Teleop with an Apple Vision Pro.</p>
+<p>This workflow requires two containers to run:</p>
+<ul class="simple">
+<li><p><strong>Nvidia CloudXR Runtime</strong>: For connection with the Apple Vision Pro.</p></li>
+<li><p><strong>Arena Docker container</strong>: For running the Isaac Lab simulation.</p></li>
+</ul>
+<p>This will be described below.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For this workflow you will need an Apple Vision Pro.
@@ -410,11 +414,13 @@ docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </s
 </section>
 <section id="step-3-start-recording">
 <h2>Step 3: Start Recording<a class="headerlink" href="#step-3-start-recording" title="Link to this heading">#</a></h2>
-<p>To start the recording session, open another terminal, start the Arena Docker container,
-and run the recording script.</p>
+<p>To start the recording session, open another terminal, start the Arena Docker container
+if not already running:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
-
-python<span class="w"> </span>isaaclab_arena/scripts/record_demos.py<span class="w"> </span><span class="se">\</span>
+</pre></div>
+</div>
+<p>Run the recording script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/scripts/record_demos.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--dataset_file<span class="w"> </span><span class="nv">$DATASET_DIR</span>/arena_gr1_manipulation_dataset_recorded.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_demos<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_success_steps<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>

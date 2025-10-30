@@ -375,7 +375,6 @@
                   
   <section id="policy-post-training">
 <h1>Policy Post-training<a class="headerlink" href="#policy-post-training" title="Link to this heading">#</a></h1>
-<p><strong>Docker Container</strong>: Base + GR00T (see <a class="reference internal" href="../../quickstart/docker_containers.html"><span class="doc">Docker Containers</span></a> for more details)</p>
 <p>This workflow covers post-training an example policy using the generated dataset,
 here we use <a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T">GR00T N1.5</a> as the base model.</p>
 <p>Note that this tutorial assumes that you’ve completed the
@@ -395,8 +394,12 @@ such that the preceding steps can be skipped.</p>
 </pre></div>
 </div>
 </div>
-</details><section id="step-2-convert-to-lerobot-format">
-<h2>Step 2: Convert to LeRobot Format<a class="headerlink" href="#step-2-convert-to-lerobot-format" title="Link to this heading">#</a></h2>
+</details><p><strong>Docker Container</strong>: Base + GR00T (see <a class="reference internal" href="../../quickstart/docker_containers.html"><span class="doc">Docker Containers</span></a> for more details)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh<span class="w"> </span>-g
+</pre></div>
+</div>
+<section id="step-1-convert-to-lerobot-format">
+<h2>Step 1: Convert to LeRobot Format<a class="headerlink" href="#step-1-convert-to-lerobot-format" title="Link to this heading">#</a></h2>
 <p>GR00T N1.5 requires the dataset to be in LeRobot format.
 We provide a script to convert from the IsaacLab Mimic generated HDF5 dataset to LeRobot format.
 Note that this conversion step can be skipped by downloading the pre-converted LeRobot format dataset.</p>
@@ -445,8 +448,8 @@ MP4 camera recordings, and dataset metadata. The converter is controlled by a co
 </div>
 </div>
 </details></section>
-<section id="step-3-post-train-policy">
-<h2>Step 3: Post-train Policy<a class="headerlink" href="#step-3-post-train-policy" title="Link to this heading">#</a></h2>
+<section id="step-2-post-train-policy">
+<h2>Step 2: Post-train Policy<a class="headerlink" href="#step-2-post-train-policy" title="Link to this heading">#</a></h2>
 <p>We post-train the GR00T N1.5 policy on the task.</p>
 <p>The GR00T N1.5 policy has 3 billion parameters so post training is an an expensive operation.
 We provide two post-training options:
@@ -547,8 +550,8 @@ the best results.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-convert-to-lerobot-format">Step 2: Convert to LeRobot Format</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-post-train-policy">Step 3: Post-train Policy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-convert-to-lerobot-format">Step 1: Convert to LeRobot Format</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-post-train-policy">Step 2: Post-train Policy</a></li>
 </ul>
   </nav></div>
 
