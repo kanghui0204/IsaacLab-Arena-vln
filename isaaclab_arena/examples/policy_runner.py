@@ -58,7 +58,7 @@ def main():
         # NOTE(xinjieyao, 2025-10-07): lazy import to prevent app stalling caused by omni.kit
         from isaaclab_arena.metrics.metrics import compute_metrics
 
-        for idx in tqdm.tqdm(range(num_steps)):
+        for _ in tqdm.tqdm(range(num_steps)):
             with torch.inference_mode():
                 actions = policy.get_action(env, obs)
                 obs, _, terminated, truncated, _ = env.step(actions)
