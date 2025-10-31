@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING
 import torch
+
 from isaaclab.assets import Articulation
+from isaaclab.envs import ManagerBasedRLEnv
 from isaaclab.managers import SceneEntityCfg
 
-
-from isaaclab.envs import ManagerBasedRLEnv
 
 def gripper_pos(env: ManagerBasedRLEnv, robot_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
     robot: Articulation = env.scene[robot_cfg.name]
