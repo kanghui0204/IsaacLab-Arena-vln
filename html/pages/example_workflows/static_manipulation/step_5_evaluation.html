@@ -385,7 +385,7 @@ pre-trained model checkpoint below:</p>
 such that the preceding steps can be skipped.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>nvidia/GN1x-Tuned-Arena-GR1-Manipulation<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>--local-dir<span class="w"> </span><span class="nv">$MODELS_DIR</span>
+<span class="w">   </span>--local-dir<span class="w"> </span><span class="nv">$MODELS_DIR</span>/checkpoint-20000
 </pre></div>
 </div>
 </div>
@@ -400,24 +400,24 @@ such that the preceding steps can be skipped.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Configuration file (<code class="docutils literal notranslate"><span class="pre">gr1_manip_gr00t_closedloop_config.yaml</span></code>):</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Model configuration</span>
-<span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/models/isaaclab_arena/static_manipulation_tutorial</span>
-<span class="nt">embodiment_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1</span>
-<span class="nt">data_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1_arms_only</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/models/isaaclab_arena/static_manipulation_tutorial/checkpoint-20000</span>
 
-<span class="c1"># Task configuration</span>
 <span class="nt">language_instruction</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Reach</span><span class="nv"> </span><span class="s">out</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">microwave</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">open</span><span class="nv"> </span><span class="s">it.&quot;</span>
-<span class="nt">task_mode_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1_manipulation</span>
+<span class="nt">action_horizon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
+<span class="nt">embodiment_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1</span>
+<span class="nt">video_backend</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">decord</span>
+<span class="nt">data_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fourier_gr1_arms_only</span>
 
-<span class="c1"># Inference parameters</span>
-<span class="nt">denoising_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">policy_device</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cuda</span>
-<span class="nt">target_image_size</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">256</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">256</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
+<span class="nt">policy_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaaclab_arena_gr00t/config/gr1/gr00t_26dof_joint_space.yaml</span>
+<span class="nt">action_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaaclab_arena_gr00t/config/gr1/36dof_joint_space.yaml</span>
+<span class="nt">state_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaaclab_arena_gr00t/config/gr1/54dof_joint_space.yaml</span>
+<span class="nt">num_feedback_actions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
+<span class="nt">task_mode_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gr1_tabletop_manipulation</span>
 
-<span class="c1"># Joint mappings</span>
-<span class="nt">gr00t_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaaclab_arena/policy/config/gr1/gr00t_26dof_joint_space.yaml</span>
-<span class="nt">action_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaaclab_arena/policy/config/gr1/36dof_joint_space.yaml</span>
-<span class="nt">state_joints_config_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isaaclab_arena/policy/config/gr1/54dof_joint_space.yaml</span>
+<span class="nt">pov_cam_name_sim</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;robot_pov_cam_rgb&quot;</span>
+
+<span class="nt">original_image_size</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">512</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">512</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
+<span class="nt">target_image_size</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">512</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">512</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
 </div>
