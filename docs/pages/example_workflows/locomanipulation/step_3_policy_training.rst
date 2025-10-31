@@ -127,7 +127,7 @@ We provide two post-training options:
          python scripts/gr00t_finetune.py \
          --dataset_path=$DATASET_DIR/lerobot \
          --output_dir=$MODELS_DIR \
-         --data_config=unitree_g1_sim_wbc \
+         --data_config=isaaclab_arena_gr00t.data_config:UnitreeG1SimWBCDataConfig \
          --batch_size=24 \
          --max_steps=20000 \
          --num_gpus=8 \
@@ -166,7 +166,7 @@ We provide two post-training options:
          python scripts/gr00t_finetune.py \
          --dataset_path=$DATASET_DIR/lerobot \
          --output_dir=$MODELS_DIR \
-         --data_config=unitree_g1_sim_wbc \
+         --data_config=isaaclab_arena_gr00t.data_config:UnitreeG1SimWBCDataConfig \
          --batch_size=24 \
          --max_steps=20000 \
          --num_gpus=1 \
