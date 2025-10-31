@@ -22,7 +22,7 @@ pre-trained model checkpoint below:
 
       hf download \
          nvidia/GN1x-Tuned-Arena-G1-Loco-Manipulation \
-         --local-dir $MODELS_DIR
+         --local-dir $MODELS_DIR/checkpoint-20000
 
 
 **Docker Container**: Base + GR00T (see :doc:`../../quickstart/docker_containers` for more details)
