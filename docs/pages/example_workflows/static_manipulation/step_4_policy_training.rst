@@ -1,8 +1,6 @@
 Policy Post-training
 --------------------
 
-**Docker Container**: Base + GR00T (see :doc:`../../quickstart/docker_containers` for more details)
-
 This workflow covers post-training an example policy using the generated dataset,
 here we use `GR00T N1.5 <https://github.com/NVIDIA/Isaac-GR00T>`_ as the base model.
 
@@ -27,8 +25,14 @@ pre-generated dataset from Hugging Face as described below.
          --local-dir $DATASET_DIR
 
 
+**Docker Container**: Base + GR00T (see :doc:`../../quickstart/docker_containers` for more details)
 
-Step 2: Convert to LeRobot Format
+.. code-block:: bash
+
+   ./docker/run_docker.sh -g
+
+
+Step 1: Convert to LeRobot Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 GR00T N1.5 requires the dataset to be in LeRobot format.
@@ -86,7 +90,7 @@ MP4 camera recordings, and dataset metadata. The converter is controlled by a co
       chunks_size: 1000
 
 
-Step 3: Post-train Policy
+Step 2: Post-train Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We post-train the GR00T N1.5 policy on the task.
@@ -121,7 +125,7 @@ We provide two post-training options:
          python scripts/gr00t_finetune.py \
          --dataset_path=$DATASET_DIR/lerobot \
          --output_dir=$MODELS_DIR \
-         --data_config=gr1_arms_only \
+         --data_config=fourier_gr1_arms_only \
          --batch_size=24 \
          --max_steps=20000 \
          --num_gpus=8 \
@@ -138,12 +142,43 @@ We provide two post-training options:
 
    .. tab:: Low Hardware Requirements
 
-      TBD
+      Training takes approximately 2-3 hours on 1x Ada6000 GPU.
 
-.. todo::
+      Training Configuration:
 
-   (alexmillane, 2025-10-23): Check that the resulting model matches
-   the folder structure that we download from Hugging Face.
+      - **Base Model:** GR00T-N1.5-3B (foundation model)
+      - **Tuned Modules:** Visual backbone, projector, diffusion model
+      - **Frozen Modules:** LLM (language model)
+      - **Batch Size:** 24 (adjust based on GPU memory)
+      - **Training Steps:** 20,000
+      - **GPUs:** 1 (single-GPU training)
+      - **LoRA Fine-tuning:** Enabled
+      - **LoRA Rank:** 128
+
+      To post-train the policy, run the following command
+
+      .. code-block:: bash
+
+         cd submodules/Isaac-GR00T
+
+         python scripts/gr00t_finetune.py \
+         --dataset_path=$DATASET_DIR/lerobot \
+         --output_dir=$MODELS_DIR \
+         --data_config=fourier_gr1_arms_only \
+         --batch_size=24 \
+         --max_steps=20000 \
+         --num_gpus=1 \
+         --save_steps=5000 \
+         --base_model_path=nvidia/GR00T-N1.5-3B \
+         --no_tune_llm \
+         --tune_visual \
+         --tune_projector \
+         --tune_diffusion_model \
+         --no-resume \
+         --dataloader_num_workers=16 \
+         --report_to=wandb \
+         --embodiment_tag=new_embodiment \
+         --lora_rank=128
 
 
 see the `GR00T fine-tuning guidelines <https://github.com/NVIDIA/Isaac-GR00T#3-fine-tuning>`_
