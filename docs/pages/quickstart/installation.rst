@@ -41,6 +41,7 @@ you must authenticate using an Omniverse API token.
 .. note::
 
     This is only needed for assets that are not yet hosted on the public Nucleus server. Once we go public, this will not be needed.
+    TODO(cvolk, 2025-11-03): Remove this once we have public assets.
 
 Isaac Sim and other Nvidia Omniverse applications use two environment variables ``OMNI_USER`` and ``OMNI_PASS`` to authenticate automatically.
 
