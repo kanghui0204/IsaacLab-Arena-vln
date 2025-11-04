@@ -376,10 +376,9 @@
 <p>This workflow covers annotating and generating the demonstration dataset using
 <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/main/source/overview/imitation-learning/teleop_imitation.html">Isaac Lab Mimic</a>.</p>
 <p><strong>Docker Container</strong>: Base (see <a class="reference internal" href="../../quickstart/docker_containers.html"><span class="doc">Docker Containers</span></a> for more details)</p>
-<dl class="field-list simple">
-<dt class="field-odd">docker_run_default_code_block<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
+</pre></div>
+</div>
 <section id="step-1-download-human-demonstration-dataset">
 <h2>Step 1: Download Human Demonstration Dataset<a class="headerlink" href="#step-1-download-human-demonstration-dataset" title="Link to this heading">#</a></h2>
 <p>For this tutorial we will use the pre-recorded human demonstrations.
@@ -404,9 +403,11 @@ we support recording your own demonstrations.</p>
 demonstrations by applying object and trajectory transformations to introduce
 data variations.</p>
 <p>Start the Arena Docker container, if you haven’t already:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
 </pre></div>
 </div>
+</div></blockquote>
 <p>Generate the dataset:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate 100 demonstrations</span>
 python<span class="w"> </span>isaaclab_arena/scripts/generate_dataset.py<span class="w"> </span><span class="se">\</span>

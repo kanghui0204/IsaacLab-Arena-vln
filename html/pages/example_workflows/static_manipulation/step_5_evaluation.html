@@ -374,7 +374,7 @@
   <section id="closed-loop-policy-inference-and-evaluation">
 <h1>Closed-Loop Policy Inference and Evaluation<a class="headerlink" href="#closed-loop-policy-inference-and-evaluation" title="Link to this heading">#</a></h1>
 <p>This workflow demonstrates running the trained GR00T N1.5 policy in closed-loop
-and evaluating it across multiple parallel environments.</p>
+and evaluating it in Arena GR1 Open Microwave Door Task environment.</p>
 <p>Note that this tutorial assumes that you’ve completed the
 <a class="reference internal" href="step_4_policy_training.html"><span class="doc">preceding step (Policy Training)</span></a> or downloaded the
 pre-trained model checkpoint below:</p>
@@ -390,10 +390,17 @@ such that the preceding steps can be skipped.</p>
 </div>
 </div>
 </details><p><strong>Docker Container</strong>: Base + GR00T (see <a class="reference internal" href="../../quickstart/docker_containers.html"><span class="doc">Docker Containers</span></a> for more details)</p>
-<dl class="field-list simple">
-<dt class="field-odd">docker_run_gr00t_code_block<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh<span class="w"> </span>-g
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The GR00T N1.5 codebase does not support running on Blackwell architecture by default. There are
+instructions <a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T?tab=readme-ov-file#faq">here</a> to building certain packages from source to support running on these architectures.
+We have not tested these instructions, and therefore we do not recommend using
+the <strong>Base + GR00T</strong> container for policy post-training and evaluation on
+Blackwell architecture, like RTX 50 series, RTX Pro 6000 or DGX Spark.</p>
+</div>
 <section id="step-1-run-single-environment-evaluation">
 <h2>Step 1: Run Single Environment Evaluation<a class="headerlink" href="#step-1-run-single-environment-evaluation" title="Link to this heading">#</a></h2>
 <p>We first run the policy in a single environment with visualization via the GUI.</p>
