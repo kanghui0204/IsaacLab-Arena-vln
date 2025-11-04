@@ -2,15 +2,13 @@
 
 ## Motivation
 
-Upon looking at the current CI setup and challenges, it seems that adding a cloud-based CI, could help with: Os
+Upon looking at the current CI setup and challenges, it seems that adding a cloud-based CI, could help with:
 
 - Faster turnaround times on MRs due to ability to scale up and down as needed
 - Testing on a variety of GPUs, including ones, users are likely to run on (Isaac Lab is often used in the cloud) - A10G, L4, L40, T4, etc.
 - Cost effectiveness (more on that below)
 
 Initially, it can be implemented on AWS (A10G, L4, L40S, T4, H100, B100, GB200), and later expanded to GCP (T4, L4, RTX PRO 6000, B200, GB200) and Azure (A10,, H100) as needed.
-
-https://docs.cloud.google.com/compute/docs/gpus
 
 ## Cost effectiveness analysis
 
