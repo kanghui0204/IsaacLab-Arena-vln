@@ -1,30 +1,78 @@
 ``Isaac Lab Arena`` Documentation
 =================================
 
-``Isaac Lab Arena`` is an extension to `Isaac Lab <https://isaac-sim.github.io/IsaacLab/main/index.html>`_.
+``Isaac Lab Arena`` is an extends `Isaac Lab <https://isaac-sim.github.io/IsaacLab/main/index.html>`_
+to simplify the creation of task/environment libraries.
 
-Isaac Lab Arena is a comprehensive robotics simulation framework that enhances NVIDIA Isaac Lab by providing a composable,
-scalable system for creating diverse simulation environments and evaluating robot learning policies.
-The framework enables researchers and developers to rapidly prototype and test robotic tasks with various robot embodiments,
-objects, and environments.
+.. .. figure:: images/isaaclab_arena_core_framework.png
+..    :width: 100%
+..    :alt: Isaac Lab Arena Workflow
+..    :align: center
 
-.. figure:: images/isaaclab_arena_core_framework.png
+..    IsaacLab Arena Workflow Overview
+
+.. figure:: images/g1_galileo_arena_box_pnp_locomanip.gif
+   :width: 100%
+   :alt: G1 Locomanipulation Box Pick and Place Task
+   :align: center
+
+   A G1 humanoid robot performing a locomanipulation task of transporting a box to a tray.
+   This environment was designed using Isaac Lab Arena.
+
+
+Why use Isaac Lab Arena?
+========================
+
+With the advent of *generalist* robot policies, such as `GR00T <https://github.com/NVIDIA/Isaac-GR00T>`_
+and `Pi_0 <https://github.com/Physical-Intelligence/openpi>`_,
+there is a growing need to evaluate these policies in a variety of tasks/environments.
+Building and maintain a task library is becoming increasingly important for the community.
+Isaac Lab Arena in a framework that simplifies the creation and maintenance of such task/environment libraries.
+
+
+
+Can we simplify environment creation?
+=====================================
+
+.. todo:: (alexmillane, 2025-11-05): Add a figure illustrating the problem.
+
+Tasks in a task library are typically highly redundant.
+For example, you may want to test how well a policy performs on a pick and place task,
+on many different objects.
+In this example, each environment differs in the object-to-be-manipulated,
+but all other aspects remain the same.
+For example, the scene layout, the robot, the observations, actions, rewards, etc are all
+conserved across the environments.
+Isaac Lab's manager-based environment API, is convenient for expressing one such task,
+but does not naturally support expressing this type of variation.
+
+Isaac Lab Arena extends the manager-based interface to provide
+a convenient way of expressing this type of variation, while benefitting from
+the modularity, performance, and accuracy of Isaac Lab.
+
+
+Isaac Lab Arena
+===============
+
+To simplify the expression of task/environment variation in Isaac Lab Arena
+we *compose* the environment on-the-fly from independent sub-pieces.
+Because the sub-pieces are independent, they can be reused and independently varied,
+and because the environment is built on the fly, we never need to write and maintain
+duplicate code.
+
+.. figure:: images/isaaclab_arena_core_framework_no_teleop.png
    :width: 100%
    :alt: Isaac Lab Arena Workflow
    :align: center
 
-   IsaacLab Arena Workflow Overview
+Isaac Lab Arena decomposes the environment into three independent sub-pieces:
 
-For a detailed overview of the workflow, please refer to the :doc:`pages/concepts/concept_overview` page.
-The key components of the workflow are:
+* **Scene**: The physical environment layout. The scene is a collection of objects.
+* **Embodiment**: The robot embodiment, its observations, actions, sensors etc.
+* **Task**: A definition of what is to be accomplished in the environment.
 
-- **Scene Setup**: Define the scene layout, add asset configurations to interact with objects in interest in the scene. See :doc:`pages/concepts/concept_scene_design` for more details.
-- **Embodiment Setup**: Define the robot embodiment, its observations, actions, sensors etc. See :doc:`pages/concepts/concept_embodiment_design` for more details.
-- **Task Setup**: Define the task and its metrics. See :doc:`pages/concepts/concept_tasks_design` for more details.
-- **Affordance Setup**: Define the affordances(interactable objects) and their interactions. See :doc:`pages/concepts/concept_affordances_design` for more details.
-- **Evaluation**: Evaluate the policy and its performance in a simple and straightforward manner. See :doc:`pages/concepts/concept_metrics_design` for more details.
-
-A key feature of ``Isaac Lab Arena`` is an easier, more composable interface for creating environments.
+The ``ArenaEnvBuilder`` composes the environment from these sub-pieces,
+into a ``ManagerBasedRLEnvCfg`` which can be run in Isaac Lab.
 
 Usage Example
 =============
