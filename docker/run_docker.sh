@@ -176,7 +176,7 @@ else
     fi
 
     if [[ -n "$DISPLAY" ]]; then
-        # Allo w X11 connections
+        # Allow X11 connections
         xhost +local:docker > /dev/null
     else
         echo "No DISPLAY detected"
