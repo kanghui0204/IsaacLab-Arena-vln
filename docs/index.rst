@@ -26,15 +26,23 @@ Why use Isaac Lab Arena?
 With the advent of *generalist* robot policies, such as `GR00T <https://github.com/NVIDIA/Isaac-GR00T>`_
 and `Pi_0 <https://github.com/Physical-Intelligence/openpi>`_,
 there is a growing need to evaluate these policies in a variety of tasks/environments.
-Building and maintain a task library is becoming increasingly important for the community.
-Isaac Lab Arena in a framework that simplifies the creation and maintenance of such task/environment libraries.
+Building and maintaining a task library is becoming increasingly important for the community.
+Isaac Lab Arena is a framework that simplifies the creation and maintenance of such task/environment libraries.
 
 
 
 Can we simplify environment creation?
 =====================================
 
-.. todo:: (alexmillane, 2025-11-05): Add a figure illustrating the problem.
+.. figure:: images/variation_axis.png
+   :width: 100%
+   :alt: Axis of variation for the pick and place task
+   :align: center
+
+   Axis of variation of a pick and place task.
+   Each environment differs along two axis, the robot embodiment and the object to be manipulated.
+   All other aspects of the environment and the task remain the same.
+
 
 Tasks in a task library are typically highly redundant.
 For example, you may want to test how well a policy performs on a pick and place task,
@@ -47,7 +55,7 @@ Isaac Lab's manager-based environment API, is convenient for expressing one such
 but does not naturally support expressing this type of variation.
 
 Isaac Lab Arena extends the manager-based interface to provide
-a convenient way of expressing this type of variation, while benefitting from
+a convenient way of expressing task variation, while benefitting from
 the modularity, performance, and accuracy of Isaac Lab.
 
 
@@ -56,8 +64,8 @@ Isaac Lab Arena
 
 To simplify the expression of task/environment variation in Isaac Lab Arena
 we *compose* the environment on-the-fly from independent sub-pieces.
-Because the sub-pieces are independent, they can be reused and independently varied,
-and because the environment is built on the fly, we never need to write and maintain
+Because the sub-pieces are independent, they can be reused and independently varied.
+Furthermore, because the environment is built on the fly, we never need to write and maintain
 duplicate code.
 
 .. figure:: images/isaaclab_arena_core_framework_no_teleop.png
@@ -118,7 +126,8 @@ To get started with ``isaaclab_arena``, please finish the installation process b
 Installation
 ============
 
-``isaaclab_arena`` version ``v0.1`` only supports installation from source in a docker container.
+See our :doc:`pages/quickstart/installation` page for instructions.
+Note that ``isaaclab_arena`` version ``v0.1`` only supports installation from source in a docker container.
 
 Examples
 ========
