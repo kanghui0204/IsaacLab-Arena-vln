@@ -175,7 +175,7 @@ class FrankaEventCfg:
         func=franka_stack_events.set_default_joint_pose,
         mode="reset",
         params={
-            "default_pose": [0.0, -0.785, -0.1107, -1.1775, 0.0, 0.785, 0.785, 0.0400, 0.0400],
+            "default_pose": [0.0, -0.985, -0.1107, -2.5775, 0.0, 1.685, 0.785, 0.0400, 0.0400],
         },
     )
     randomize_franka_joint_state = EventTerm(

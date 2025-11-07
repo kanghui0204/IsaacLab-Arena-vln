@@ -40,4 +40,4 @@ class DummyTask(TaskBase):
         pass
 
     def get_viewer_cfg(self) -> ViewerCfg:
-        return ViewerCfg(eye=(-1.5, -1.5, 1.5), lookat=(0.0, 0.0, 0.5))
+        return ViewerCfg(eye=(-0.5, -1.0, 1.0), lookat=(0.2, 0.0, 0.3))
