@@ -20,14 +20,26 @@ to simplify the creation of task/environment libraries.
    This environment was designed using Isaac Lab Arena.
 
 
-Why use Isaac Lab Arena?
-========================
+The Problem
+===========
 
 With the advent of *generalist* robot policies, such as `GR00T <https://github.com/NVIDIA/Isaac-GR00T>`_
 and `Pi_0 <https://github.com/Physical-Intelligence/openpi>`_,
 there is a growing need to evaluate these policies in a variety of tasks/environments.
-Building and maintaining a task library is becoming increasingly important for the community.
-Isaac Lab Arena is a framework that simplifies the creation and maintenance of such task/environment libraries.
+
+Traditional approaches to building task libraries suffer from significant limitations.
+Each new environment variation—whether testing a different robot embodiment or swapping objects—requires tedious manual creation of a new task configuration.
+This leads to redundant, unscalable tasks where most of the environment setup, scene configuration, and task logic is duplicated across variations.
+As the number of robot types and objects grows, maintaining and extending such task libraries becomes increasingly impractical.
+
+
+.. figure:: images/task_duplications.png
+   :width: 100%
+   :alt: Task duplications in a task library
+   :align: center
+
+   Task duplications in a task library.
+   When evaluating policies across different robot embodiments and objects, most of the environment setup and task logic remains the same, leading to significant code duplication.
 
 
 
@@ -62,6 +74,7 @@ the modularity, performance, and accuracy of Isaac Lab.
 Isaac Lab Arena
 ===============
 
+Isaac Lab Arena is a framework that simplifies the creation and maintenance of such task/environment libraries.
 To simplify the expression of task/environment variation in Isaac Lab Arena
 we *compose* the environment on-the-fly from independent sub-pieces.
 Because the sub-pieces are independent, they can be reused and independently varied.
