@@ -56,7 +56,7 @@ class G1EmbodimentBase(EmbodimentBase):
         self.camera_config = G1CameraCfg()
         self.action_config = MISSING
         self.observation_config = MISSING
-        self.event_config = MISSING
+        self.event_config = G1EventCfg()
         self.mimic_env = G1MimicEnv
 
         # XR settings
@@ -586,6 +586,16 @@ class G1WBCPinkObservationsCfg:
     policy: PolicyCfg = PolicyCfg()
     wbc: WBCObsCfg = WBCObsCfg()
     action: ActionLowerBodyCfg = ActionLowerBodyCfg()
+
+
+@configclass
+class G1EventCfg:
+    """Configuration for events."""
+
+    # NOTE(alexmillane, 2025-07-28): I removed this event term because it was resetting
+    # elements of the scene not related to the robot. However, this causes the humanoid
+    # to not go to it's initial pose... Need to figure out what's going on here.
+    reset_all = EventTerm(func=reset_all_articulation_joints, mode="reset")
 
 
 @configclass

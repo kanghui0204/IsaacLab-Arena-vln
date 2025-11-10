@@ -407,10 +407,6 @@ class GR1T2ObservationsCfg:
     policy: PolicyCfg = PolicyCfg()
 
 
-# NOTE(alexmillane, 2025.07.25): This is partially copied from pickplace_gr1t2_env_cfg.py
-# The EventCfg definition in that file contains events from the robot and
-# the scene e.g. object randomization. So here we copy out just the robot events
-# to allow composition with other scenes.
 @configclass
 class GR1T2EventCfg:
     """Configuration for events."""
