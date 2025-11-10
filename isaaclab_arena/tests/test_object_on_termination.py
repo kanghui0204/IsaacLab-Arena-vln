@@ -43,11 +43,11 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
     args_cli = args_parser.parse_args([])
 
     asset_registry = AssetRegistry()
-    background = asset_registry.get_asset_by_name("kitchen")()
+    background = asset_registry.get_asset_by_name("kitchen_with_open_drawer")()
     cracker_box = asset_registry.get_asset_by_name("cracker_box")()
     destination_location = ObjectReference(
         name="destination_location",
-        prim_path="{ENV_REGEX_NS}/kitchen/Cabinet_B_02",
+        prim_path="{ENV_REGEX_NS}/kitchen_with_open_drawer/Cabinet_B_02",
         parent_asset=background,
     )
     cracker_box.set_initial_pose(
