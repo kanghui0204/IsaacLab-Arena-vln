@@ -345,28 +345,79 @@
                   
   <section id="isaac-lab-arena-documentation">
 <h1><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> Documentation<a class="headerlink" href="#isaac-lab-arena-documentation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> is an extension to <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/main/index.html">Isaac Lab</a>.</p>
-<p>Isaac Lab Arena is a comprehensive robotics simulation framework that enhances NVIDIA Isaac Lab by providing a composable,
-scalable system for creating diverse simulation environments and evaluating robot learning policies.
-The framework enables researchers and developers to rapidly prototype and test robotic tasks with various robot embodiments,
-objects, and environments.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> is an extends <a class="reference external" href="https://isaac-sim.github.io/IsaacLab/main/index.html">Isaac Lab</a>
+to simplify the creation of task/environment libraries.</p>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="_images/isaaclab_arena_core_framework.png"><img alt="Isaac Lab Arena Workflow" src="_images/isaaclab_arena_core_framework.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="_images/g1_galileo_arena_box_pnp_locomanip.gif"><img alt="G1 Locomanipulation Box Pick and Place Task" src="_images/g1_galileo_arena_box_pnp_locomanip.gif" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">IsaacLab Arena Workflow Overview</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-text">A G1 humanoid robot performing a locomanipulation task of transporting a box to a tray.
+This environment was designed using Isaac Lab Arena.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
-<p>For a detailed overview of the workflow, please refer to the <a class="reference internal" href="pages/concepts/concept_overview.html"><span class="doc">Concept Overview</span></a> page.
-The key components of the workflow are:</p>
+</section>
+<section id="the-problem">
+<h1>The Problem<a class="headerlink" href="#the-problem" title="Link to this heading">#</a></h1>
+<p>With the advent of <em>generalist</em> robot policies, such as <a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T">GR00T</a>
+and <a class="reference external" href="https://github.com/Physical-Intelligence/openpi">Pi_0</a>,
+there is a growing need to evaluate these policies in a variety of tasks/environments.</p>
+<p>Traditional approaches to building task libraries suffer from significant limitations.
+Each new environment variation—whether testing a different robot embodiment or swapping objects—requires tedious manual creation of a new task configuration.
+This leads to redundant, unscalable tasks where most of the environment setup, scene configuration, and task logic is duplicated across variations.
+As the number of robot types and objects grows, maintaining and extending such task libraries becomes increasingly impractical.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/task_duplications.png"><img alt="Task duplications in a task library" src="_images/task_duplications.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Task duplications in a task library.
+When evaluating policies across different robot embodiments and objects, most of the environment setup and task logic remains the same, leading to significant code duplication.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="can-we-simplify-environment-creation">
+<h1>Can we simplify environment creation?<a class="headerlink" href="#can-we-simplify-environment-creation" title="Link to this heading">#</a></h1>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="_images/variation_axis.png"><img alt="Axis of variation for the pick and place task" src="_images/variation_axis.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Axis of variation of a pick and place task.
+Each environment differs along two axis, the robot embodiment and the object to be manipulated.
+All other aspects of the environment and the task remain the same.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Tasks in a task library are typically highly redundant.
+For example, you may want to test how well a policy performs on a pick and place task,
+on many different objects.
+In this example, each environment differs in the object-to-be-manipulated,
+but all other aspects remain the same.
+For example, the scene layout, the robot, the observations, actions, rewards, etc are all
+conserved across the environments.
+Isaac Lab’s manager-based environment API is convenient for expressing one such task,
+but does not naturally support expressing this type of variation.</p>
+<p>Isaac Lab Arena extends the manager-based interface to provide
+a convenient way of expressing task variation, while benefiting from
+the modularity, performance, and accuracy of Isaac Lab.</p>
+</section>
+<section id="isaac-lab-arena">
+<h1>Isaac Lab Arena<a class="headerlink" href="#isaac-lab-arena" title="Link to this heading">#</a></h1>
+<p>Isaac Lab Arena is a framework that simplifies the creation and maintenance of such task/environment libraries.
+To simplify the expression of task/environment variation in Isaac Lab Arena,
+we <em>compose</em> the environment on-the-fly from independent sub-pieces.
+Because the sub-pieces are independent, they can be reused and independently varied.
+Furthermore, because the environment is built on the fly, we never need to write and maintain
+duplicate code.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/isaac_lab_arena_arch_overview.png"><img alt="Isaac Lab Arena Architecture Overview" src="_images/isaac_lab_arena_arch_overview.png" style="width: 100%;" />
+</a>
+</figure>
+<p>Isaac Lab Arena decomposes the environment into three independent sub-pieces:</p>
 <ul class="simple">
-<li><p><strong>Scene Setup</strong>: Define the scene layout, add asset configurations to interact with objects in interest in the scene. See <a class="reference internal" href="pages/concepts/concept_scene_design.html"><span class="doc">Scene Design</span></a> for more details.</p></li>
-<li><p><strong>Embodiment Setup</strong>: Define the robot embodiment, its observations, actions, sensors etc. See <a class="reference internal" href="pages/concepts/concept_embodiment_design.html"><span class="doc">Embodiment Design</span></a> for more details.</p></li>
-<li><p><strong>Task Setup</strong>: Define the task and its metrics. See <a class="reference internal" href="pages/concepts/concept_tasks_design.html"><span class="doc">Tasks Design</span></a> for more details.</p></li>
-<li><p><strong>Affordance Setup</strong>: Define the affordances(interactable objects) and their interactions. See <a class="reference internal" href="pages/concepts/concept_affordances_design.html"><span class="doc">Affordances Design</span></a> for more details.</p></li>
-<li><p><strong>Evaluation</strong>: Evaluate the policy and its performance in a simple and straightforward manner. See <a class="reference internal" href="pages/concepts/concept_metrics_design.html"><span class="doc">Metrics Design</span></a> for more details.</p></li>
+<li><p><strong>Scene</strong>: The physical environment layout. The scene is a collection of objects.</p></li>
+<li><p><strong>Embodiment</strong>: The robot embodiment, its observations, actions, sensors etc.</p></li>
+<li><p><strong>Task</strong>: A definition of what is to be accomplished in the environment.</p></li>
 </ul>
-<p>A key feature of <code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> is an easier, more composable interface for creating environments.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ArenaEnvBuilder</span></code> composes the environment from these sub-pieces,
+into a <code class="docutils literal notranslate"><span class="pre">ManagerBasedRLEnvCfg</span></code> which can be run in Isaac Lab.</p>
 </section>
 <section id="usage-example">
 <h1>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading">#</a></h1>
@@ -397,38 +448,39 @@ The key components of the workflow are:</p>
 <span class="n">env</span> <span class="o">=</span> <span class="n">env_builder</span><span class="o">.</span><span class="n">make_registered</span><span class="p">()</span> <span class="c1"># This will register the environment with the gym registry.</span>
 </pre></div>
 </div>
-<figure class="align-center" id="id2">
+<figure class="align-center" id="id4">
 <a class="reference internal image-reference" href="_images/franka_kitchen_pickup.gif"><img alt="Franka Kitchen Pickup Task" src="_images/franka_kitchen_pickup.gif" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Franka — Kitchen Pickup Task</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+<p><span class="caption-text">Franka — Kitchen Pickup Task</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>To get started with <code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code>, please finish the installation process by following the instructions in <a class="reference internal" href="pages/quickstart/installation.html"><span class="doc">Installation</span></a> and refer to the <a class="reference internal" href="pages/quickstart/first_arena_env.html"><span class="doc">First Arena Environment</span></a> example.</p>
 </section>
 <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code> version <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> only supports installation from source in a docker container.</p>
+<p>See our <a class="reference internal" href="pages/quickstart/installation.html"><span class="doc">Installation</span></a> page for instructions.
+Note that <code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code> version <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> only supports installation from source in a docker container.</p>
 </section>
 <section id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h1>
 <p>Below are some example environments built using <code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code>.</p>
 <div class="pst-scrollable-table-container"><table class="gallery table">
 <tbody>
-<tr class="row-odd"><td><figure class="gallery-fig align-center" id="id3">
+<tr class="row-odd"><td><figure class="gallery-fig align-center" id="id5">
 <a class="reference external image-reference" href="pages/sample_tasks/g1_locomanipulation_box_pick_and_place_task.html"><img alt="G1 Locomanipulation Box Pick and Place Task" src="_images/g1_galileo_arena_box_pnp_locomanip.gif" style="height: 400px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">G1 — Locomanipulation: Box Pick &amp; Place</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+<p><span class="caption-text">G1 — Locomanipulation: Box Pick &amp; Place</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </td>
 </tr>
-<tr class="row-even"><td><figure class="gallery-fig align-center" id="id4">
+<tr class="row-even"><td><figure class="gallery-fig align-center" id="id6">
 <a class="reference external image-reference" href="pages/sample_tasks/gr1_open_microwave_task.html"><img alt="GR1 Open Microwave Task" src="_images/kitchen_gr1_arena.gif" style="height: 400px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">GR1 — Open Microwave Task</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+<p><span class="caption-text">GR1 — Open Microwave Task</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </td>
@@ -518,6 +570,9 @@ The key components of the workflow are:</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> Documentation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem">The Problem</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#can-we-simplify-environment-creation">Can we simplify environment creation?</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#isaac-lab-arena">Isaac Lab Arena</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-example">Usage Example</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
