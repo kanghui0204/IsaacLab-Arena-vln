@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; isaaclab_arena 0.1</title>
+    <title>Release Notes &#8212; isaaclab_arena 0.1</title>
   
   
   
@@ -49,12 +49,11 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/quickstart/installation';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pages/references/release_notes';</script>
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="First Arena Environment" href="first_arena_env.html" />
-    <link rel="prev" title="Isaac Lab Arena Documentation" href="../../index.html" />
+    <link rel="prev" title="Policy Design" href="../concepts/concept_policy_design.html" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -281,10 +280,10 @@
      aria-label="Table of Contents">
   <p class="bd-links__title" role="heading" aria-level="1">Table of Contents</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">User's Guide</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="first_arena_env.html">First Arena Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docker_containers.html">Docker Containers</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/first_arena_env.html">First Arena Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/docker_containers.html">Docker Containers</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Workflows</span></p>
 <ul class="nav bd-sidenav">
@@ -319,8 +318,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/concept_policy_design.html">Policy Design</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../references/release_notes.html">Release Notes</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Release Notes</a></li>
 </ul>
 </div>
 </nav></div>
@@ -355,7 +354,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Installation</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Release Notes</span></li>
   </ul>
 </nav>
 </div>
@@ -372,70 +371,34 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p>This page describes how to install Isaac Lab Arena from source inside a Docker container.</p>
-<section id="supported-systems">
-<h2>Supported Systems<a class="headerlink" href="#supported-systems" title="Link to this heading">#</a></h2>
-<p>Isaac Lab Arena runs on Isaac Sim <code class="docutils literal notranslate"><span class="pre">5.1.0</span></code> and Isaac Lab <code class="docutils literal notranslate"><span class="pre">2.3.0</span></code>.
-The dependencies are installed automatically during the Docker build process.
-Hardware requirements for Isaac Lab Arena are shared with Isaac Sim, and are detailed in
-<a class="reference external" href="https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html">Isaac Sim Requirements</a>.</p>
-<p><strong>GR00T fine-tuning:</strong> Our example workflows include (optional) fine-tuning
-of the <a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T/">GR00T model</a>.
-These workflows have additional requirements, notably that they do not support Blackwell GPUs, and
-require large amounts of GPU memory.
-Specific additional requirements for GR00T fine-tuning are detailed in the respective workflow pages.</p>
-</section>
-<section id="installation-via-docker">
-<h2>Installation via Docker<a class="headerlink" href="#installation-via-docker" title="Link to this heading">#</a></h2>
-<p>Isaac Lab Arena supports installation from source inside a Docker container.
-Future versions of Isaac Lab Arena, we will support a larger range of
-installation options.</p>
-<ol class="arabic simple">
-<li><p><strong>Clone the repository and initialize submodules:</strong></p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:isaac-sim/IsaacLab-Arena.git
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p><strong>Launch the docker container:</strong></p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./docker/run_docker.sh
-</pre></div>
-</div>
-<p>for more details see <a class="reference internal" href="docker_containers.html"><span class="doc">Docker Containers</span></a>.</p>
-<ol class="arabic simple" start="3">
-<li><p><strong>Optionally verify installation by running tests:</strong></p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-sv<span class="w"> </span>-m<span class="w"> </span>with_cameras<span class="w"> </span>isaaclab_arena/tests/<span class="w"> </span>--ignore<span class="o">=</span>isaaclab_arena/tests/policy/
-pytest<span class="w"> </span>-sv<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;not with_cameras&quot;</span><span class="w"> </span>isaaclab_arena/tests/<span class="w"> </span>--ignore<span class="o">=</span>isaaclab_arena/tests/policy/
-</pre></div>
-</div>
-<p>With <code class="docutils literal notranslate"><span class="pre">isaaclab_arena</span></code> installed and the docker running, you’re ready to build your first IsaacLab-Arena Environment. See <a class="reference internal" href="first_arena_env.html"><span class="doc">First Arena Environment</span></a> to get started.</p>
-</section>
-<section id="omniverse-authentication-use-of-internal-assets">
-<h2>Omniverse Authentication (Use of Internal Assets)<a class="headerlink" href="#omniverse-authentication-use-of-internal-assets" title="Link to this heading">#</a></h2>
-<p>To allow the project to access Nvidia Omniverse assets or services (e.g., stored scenes, USD files, or extensions on a Nucleus server),
-you must authenticate using an Omniverse API token.</p>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>This is only needed for assets that are not yet hosted on the public Nucleus server. Once we go public, this will not be needed.
-TODO(cvolk, 2025-11-03): Remove this once we have public assets.</p>
-</div>
-<p>Isaac Sim and other Nvidia Omniverse applications use two environment variables <code class="docutils literal notranslate"><span class="pre">OMNI_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">OMNI_PASS</span></code> to authenticate automatically.</p>
-<p>To generate those, follow the instructions on the <a class="reference external" href="https://docs.omniverse.nvidia.com/nucleus/latest/config-and-info/api_tokens.html">Omniverse Authentication documentation</a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OMNI_USER</span><span class="o">=</span><span class="s1">&#39;$omni-api-token&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">OMNI_PASS</span><span class="o">=</span>&lt;your_generated_api_token&gt;
-</pre></div>
-</div>
-<p>Where:</p>
+  <section id="release-notes">
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">#</a></h1>
+<section id="v0-1-0">
+<h2>v0.1.0<a class="headerlink" href="#v0-1-0" title="Link to this heading">#</a></h2>
+<p>This initial release of Isaac Lab Arena delivers the first version of the
+composable task definition API.
+Also included are example workflows for static manipulation tasks and loco-manipulation
+tasks including GR00T GN1.5 finetuning and evaluation.</p>
+<p>Key features of this release include:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">OMNI_USER</span></code> should be set to the literal string <code class="docutils literal notranslate"><span class="pre">$omni-api-token</span></code> (including the leading dollar sign)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">OMNI_PASS</span></code> should be the actual token value you generated.</p></li>
+<li><p><strong>Composable Task Definition:</strong> Base-class definition for <code class="docutils literal notranslate"><span class="pre">Task</span></code>, <code class="docutils literal notranslate"><span class="pre">Embodiment</span></code>, and <code class="docutils literal notranslate"><span class="pre">Scene</span></code>
+that can be subclassed to create new tasks, embodiments, and scenes.
+<code class="docutils literal notranslate"><span class="pre">ArenaEnvBuilder</span></code> for converting <code class="docutils literal notranslate"><span class="pre">Scene</span></code>, <code class="docutils literal notranslate"><span class="pre">Embodiment</span></code>, and <code class="docutils literal notranslate"><span class="pre">Task</span></code> into an
+Isaac Lab runnable environment.</p></li>
+<li><p><strong>Metrics:</strong> Mechanism for adding task-specific metrics which are reported during evaluation.</p></li>
+<li><p><strong>Isaac Lab Mimic Integration:</strong> Integration with Isaac Lab Mimic to automatically generate Mimic definitions for
+available tasks.</p></li>
+<li><p><strong>Example Workflows:</strong> Two example workflows for static manipulation tasks and loco-manipulation tasks.</p></li>
+<li><p><strong>GR00T GN1.5 Integration:</strong> Integration with GR00T GN1.5 including a example workflows for finetuning and evaluating
+the model on the static and loco-manipulation workflows.</p></li>
+</ul>
+<p>Known limitations:</p>
+<ul class="simple">
+<li><p><strong>Number of Environments/Tasks:</strong> This initial is intended to validation the composable task
+definition API, and comes with a limited set of tasks and workflows.</p></li>
+<li><p><strong>Loco-manipulation GR00T GN1.5 finetuning:</strong> GR00T GN1.5 finetuning for loco-manipulation
+requires a large amount of GPU resources. (Note that static manipulation finetuning can be
+performed on a single GPU.)</p></li>
 </ul>
 </section>
 </section>
@@ -451,22 +414,13 @@ TODO(cvolk, 2025-11-03): Remove this once we have public assets.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../../index.html"
+       href="../concepts/concept_policy_design.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Lab</span> <span class="pre">Arena</span></code> Documentation</p>
+        <p class="prev-next-title">Policy Design</p>
       </div>
-    </a>
-    <a class="right-next"
-       href="first_arena_env.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">First Arena Environment</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -489,9 +443,7 @@ TODO(cvolk, 2025-11-03): Remove this once we have public assets.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-systems">Supported Systems</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-via-docker">Installation via Docker</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omniverse-authentication-use-of-internal-assets">Omniverse Authentication (Use of Internal Assets)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-1-0">v0.1.0</a></li>
 </ul>
   </nav></div>
 
