@@ -8,9 +8,9 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 WORKDIR="/workspaces/isaaclab_arena"
 
 # Default mount directory on the host machine for the datasets
-DATASETS_HOST_MOUNT_DIRECTORY="$HOME/datasets_1"
+DATASETS_HOST_MOUNT_DIRECTORY="$HOME/datasets"
 # Default mount directory on the host machine for the models
-MODELS_HOST_MOUNT_DIRECTORY="$HOME/models_1"
+MODELS_HOST_MOUNT_DIRECTORY="$HOME/models"
 # Default mount directory on the host machine for the evaluation directory
 EVAL_HOST_MOUNT_DIRECTORY="$HOME/eval"
 # Default GR00T installation settings (false means no GR00T installation)
