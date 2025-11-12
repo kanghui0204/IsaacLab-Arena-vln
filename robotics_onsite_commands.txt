@@ -5,8 +5,6 @@ export DATASET_DIR=/datasets/isaaclab_arena/static_manipulation_tutorial
 
 
 
-
-
 Env setup and validation:
 
 python isaaclab_arena/scripts/replay_demos.py \
@@ -15,7 +13,6 @@ python isaaclab_arena/scripts/replay_demos.py \
   --dataset_file "${DATASET_DIR}/arena_gr1_manipulation_dataset_generated.hdf5" \
   gr1_open_microwave \
   --embodiment gr1_pink
-
 
 
 
@@ -38,7 +35,7 @@ python isaaclab_arena/scripts/record_demos.py \
   --num_success_steps 2 \
   kitchen_pick_and_place \
   --teleop_device keyboard \
-  --object mustard_bottle \
+  --object cracker_box \
   --embodiment franka
 
 
@@ -54,6 +51,7 @@ python isaaclab_arena/scripts/record_demos.py \
   --teleop_device avp_handtracking
 
 
+
 Replay teleop data:
 
 python isaaclab_arena/scripts/replay_demos.py \
@@ -62,7 +60,6 @@ python isaaclab_arena/scripts/replay_demos.py \
   --dataset_file "${DATASET_DIR}/arena_gr1_manipulation_dataset_recorded.hdf5" \
   gr1_open_microwave \
   --embodiment gr1_pink
-
 
 
 
@@ -75,7 +72,6 @@ python isaaclab_arena/scripts/annotate_demos.py \
   --enable_pinocchio \
   --mimic \
   gr1_open_microwave
-
 
 python isaaclab_arena/scripts/generate_dataset.py \
   --device cpu \
