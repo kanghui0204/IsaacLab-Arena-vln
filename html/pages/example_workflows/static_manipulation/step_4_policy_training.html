@@ -539,6 +539,17 @@ python<span class="w"> </span>scripts/gr00t_finetune.py<span class="w"> </span><
 <p>see the <a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T#3-fine-tuning">GR00T fine-tuning guidelines</a>
 for information on how to adjust the training configuration to your hardware, to achieve
 the best results.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you encounter the following error when running the post-training command:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FileNotFoundError: [Errno 2] No such file or directory: &#39;torchrun&#39;
+</pre></div>
+</div>
+<p>Please add the following in your terminal before running the post-training command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/isaac-sim/kit/python/bin:<span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 
