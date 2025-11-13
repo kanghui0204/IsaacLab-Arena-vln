@@ -158,7 +158,7 @@ class G1LocomanipPickPlaceMimicEnvCfg(MimicEnvCfg):
         self.datagen_config.generation_interpolate_from_last_target_pose = True
         self.datagen_config.max_num_failures = 25
         self.datagen_config.seed = 1
-        self.datagen_config.use_navigation_p_controller = True
+        self.datagen_config.use_navigation_controller = True
 
         self.mimic_recorder_config = G1LocomanipRecorderManagerCfg()
 
