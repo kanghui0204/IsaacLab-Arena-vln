@@ -332,7 +332,7 @@ class G1CameraCfg:
     def __post_init__(self):
         # Get configuration from private attributes set by embodiment constructor
         # These use getattr with defaults to avoid scene parser treating them as assets
-        is_tiled_camera = getattr(self, "_is_tiled_camera", True)
+        is_tiled_camera = getattr(self, "_is_tiled_camera", False)
         camera_offset = getattr(self, "_camera_offset", _DEFAULT_G1_CAMERA_OFFSET)
 
         CameraClass = TiledCameraCfg if is_tiled_camera else CameraCfg
@@ -341,15 +341,18 @@ class G1CameraCfg:
         common_kwargs = dict(
             prim_path="{ENV_REGEX_NS}/Robot/head_link/RobotHeadCam",
             update_period=0.0,
-            height=480,
-            width=640,
-            data_types=["rgb"],
+            # height=480,
+            # width=640,
+            height=1024,
+            width=1024,
+            data_types=["rgb", "distance_to_image_plane", "semantic_segmentation"],
             spawn=sim_utils.PinholeCameraCfg(
                 focal_length=0.169,  # 1.69 mm; FOV preserved via apertures
                 horizontal_aperture=0.693,  # preserves ~128° horiz FOV
                 vertical_aperture=0.284,  # preserves ~80° vert FOV
-                clipping_range=(0.1, 5),
+                clipping_range=(0.1, 10),
             ),
+            update_latest_camera_pose=True,
         )
         offset = OffsetClass(
             pos=camera_offset.position_xyz,

@@ -150,6 +150,12 @@ def main():
     # create environment from loaded config
     env = gym.make(env_name, cfg=env_cfg).unwrapped
 
+    # DEMO HACKS
+    from isaaclab_arena.examples.azure_kinect import set_azure_camera_properties
+
+    camera_prim_path = "/World/envs/env_0/Robot/head_link/RobotHeadCam"
+    set_azure_camera_properties(camera_prim_path)
+
     teleop_interface = Se3Keyboard(Se3KeyboardCfg(pos_sensitivity=0.1, rot_sensitivity=0.1))
     teleop_interface.add_callback("N", play_cb)
     teleop_interface.add_callback("B", pause_cb)
@@ -171,6 +177,8 @@ def main():
     # reset before starting
     env.reset()
     teleop_interface.reset()
+
+    idx = 0
 
     # simulate environment -- run everything in inference mode
     episode_names = list(dataset_file_handler.get_episode_names())
@@ -219,6 +227,34 @@ def main():
                         env.sim.render()
                         continue
                 env.step(actions)
+
+                # DEMO HACKS
+                import numpy as np
+                import pathlib
+
+                import imageio.v3 as iio
+
+                idx += 1
+                dataset_root = pathlib.Path("/datasets/2025_11_12_azure/")
+                camera = env.scene["robot_head_cam"]
+                print(f"pos_w: {camera.data.pos_w}")
+                # print(f"quat_w_world: {camera.data.quat_w_world}")
+                print(f"quat_w_ros: {camera.data.quat_w_ros}")
+                pose_w_world = torch.cat([camera.data.pos_w, camera.data.quat_w_ros], dim=1)
+                pose_w_world_path = dataset_root / "pose" / f"{idx:05d}.txt"
+                np.savetxt(pose_w_world_path, pose_w_world.cpu().numpy())
+                image_tensor = camera.data.output["rgb"]
+                rgb_image_path = dataset_root / "rgb" / f"{idx:05d}.png"
+                iio.imwrite(rgb_image_path, image_tensor.cpu().numpy())
+                depth_image_path = dataset_root / "depth" / f"{idx:05d}.png"
+                depth_tensor = camera.data.output["distance_to_image_plane"]
+                depth_tensor = depth_tensor.cpu().squeeze().numpy()
+                depth_tensor = (depth_tensor * 1000).astype(np.uint16)
+                iio.imwrite(depth_image_path, depth_tensor)
+                semantic_image_path = dataset_root / "semantic" / f"{idx:05d}.png"
+                semantic_tensor = camera.data.output["semantic_segmentation"]
+                semantic_tensor = semantic_tensor.cpu().squeeze().numpy()
+                iio.imwrite(semantic_image_path, semantic_tensor)
 
                 if state_validation_enabled:
                     state_from_dataset = env_episode_data_map[0].get_next_state()
