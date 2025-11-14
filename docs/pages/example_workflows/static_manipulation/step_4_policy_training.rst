@@ -56,7 +56,7 @@ Note that this conversion step can be skipped by downloading the pre-converted L
          nvidia/Arena-GR1-Manipulation-Task \
          --include lerobot/* \
          --repo-type dataset \
-         --local-dir $DATASET_DIR
+         --local-dir $DATASET_DIR/arena_gr1_manipulation_dataset_generated
 
    If you download this dataset, you can skip the conversion step below and continue to the next step.
 
@@ -102,6 +102,7 @@ We post-train the GR00T N1.5 policy on the task.
 
 The GR00T N1.5 policy has 3 billion parameters so post training is an an expensive operation.
 We provide two post-training options:
+
 * Best Quality: 8 GPUs with 48GB memory
 * Low Hardware Requirements: 1 GPU with 24GB memory
 
@@ -167,7 +168,7 @@ We provide two post-training options:
          cd submodules/Isaac-GR00T
 
          python scripts/gr00t_finetune.py \
-         --dataset_path=$DATASET_DIR/arena_g1_loco_manipulation_dataset_generated/lerobot \
+         --dataset_path=$DATASET_DIR/arena_gr1_manipulation_dataset_generated/lerobot \
          --output_dir=$MODELS_DIR \
          --data_config=fourier_gr1_arms_only \
          --batch_size=24 \
@@ -189,3 +190,17 @@ We provide two post-training options:
 see the `GR00T fine-tuning guidelines <https://github.com/NVIDIA/Isaac-GR00T#3-fine-tuning>`_
 for information on how to adjust the training configuration to your hardware, to achieve
 the best results.
+
+.. note::
+
+   If you encounter the following error when running the post-training command:
+
+   .. code-block:: none
+
+      FileNotFoundError: [Errno 2] No such file or directory: 'torchrun'
+
+   Please add the following in your terminal before running the post-training command:
+
+   .. code-block:: bash
+
+      export PATH=/isaac-sim/kit/python/bin:${PATH}
