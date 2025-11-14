@@ -28,6 +28,8 @@ Note that this tutorial assumes that you've completed the
 
 :docker_run_gr00t:
 
+Once inside the container, set the dataset and models directories.
+
 .. code:: bash
 
     export DATASET_DIR=/datasets/isaaclab_arena/locomanipulation_tutorial
