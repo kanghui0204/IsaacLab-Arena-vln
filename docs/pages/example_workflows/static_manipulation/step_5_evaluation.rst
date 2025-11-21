@@ -4,6 +4,25 @@ Closed-Loop Policy Inference and Evaluation
 This workflow demonstrates running the trained GR00T N1.5 policy in closed-loop
 and evaluating it in Arena GR1 Open Microwave Door Task environment.
 
+**Docker Container**: Base + GR00T (see :doc:`../../quickstart/docker_containers` for more details)
+
+:docker_run_gr00t:
+
+Once inside the container, set the dataset and models directories.
+
+.. code:: bash
+
+    export DATASET_DIR=/datasets/isaaclab_arena/static_manipulation_tutorial
+    export MODELS_DIR=/models/isaaclab_arena/static_manipulation_tutorial
+
+.. note::
+    The GR00T N1.5 codebase does not support running on Blackwell architecture by default. There are
+    instructions `here <https://github.com/NVIDIA/Isaac-GR00T?tab=readme-ov-file#faq>`_ to building certain packages from source to support running on these architectures.
+    We have not tested these instructions, and therefore we do not recommend using
+    the **Base + GR00T** container for policy post-training and evaluation on
+    Blackwell architecture, like RTX 50 series, RTX Pro 6000 or DGX Spark.
+
+
 Note that this tutorial assumes that you've completed the
 :doc:`preceding step (Policy Training) <step_4_policy_training>` or downloaded the
 pre-trained model checkpoint below:
@@ -19,18 +38,6 @@ pre-trained model checkpoint below:
       hf download \
          nvidia/GN1x-Tuned-Arena-GR1-Manipulation \
          --local-dir $MODELS_DIR/checkpoint-20000
-
-
-**Docker Container**: Base + GR00T (see :doc:`../../quickstart/docker_containers` for more details)
-
-:docker_run_gr00t:
-
-.. note::
-    The GR00T N1.5 codebase does not support running on Blackwell architecture by default. There are
-    instructions `here <https://github.com/NVIDIA/Isaac-GR00T?tab=readme-ov-file#faq>`_ to building certain packages from source to support running on these architectures.
-    We have not tested these instructions, and therefore we do not recommend using
-    the **Base + GR00T** container for policy post-training and evaluation on
-    Blackwell architecture, like RTX 50 series, RTX Pro 6000 or DGX Spark.
 
 
 Step 1: Run Single Environment Evaluation
@@ -78,11 +85,25 @@ Test the policy in a single environment with visualization via the GUI run:
      --embodiment gr1_joint
 
 The evaluation should produce the following output on the console at the end of the evaluation.
-You should see similar metrics.
+You should see similar metrics. The success rate shall be more than 0.8, and the door moved rate
+should be greater than 0.9, and the number of episodes should be in the range of 10-20.
 
-.. code-block:: text
+Note that all these metrics are computed over the entire evaluation process, and are affected by the quality of
+post-trained policy, the quality of the dataset, and number of steps in the evaluation.
 
-   Metrics: {success_rate: 1.0, door_moved_rate: 1.0, num_episodes: 2}
+.. tabs::
+
+   .. tab:: Best Quality
+
+      .. code-block:: text
+
+         Metrics: {'success_rate': 0.8823529411764706, 'door_moved_rate': 1.0, 'num_episodes': 17}
+
+   .. tab:: Low Hardware Requirements
+
+      .. code-block:: text
+
+         Metrics: {'success_rate': 1.0, 'door_moved_rate': 1.0, 'num_episodes': 19}
 
 .. note::
 
