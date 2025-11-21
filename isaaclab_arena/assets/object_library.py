@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
+
 from isaaclab_arena.affordances.openable import Openable
 from isaaclab_arena.affordances.pressable import Pressable
 from isaaclab_arena.assets.object import Object
@@ -111,7 +113,7 @@ class PowerDrill(LibraryObject):
 
     name = "power_drill"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Arena/assets/object_library/power_drill_physics/power_drill_physics.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/object_library/power_drill_physics/power_drill_physics.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -183,7 +185,7 @@ class OfficeTable(LibraryObject):
 
     name = "office_table"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Mimic/nut_pour_task/nut_pour_assets/table.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Mimic/nut_pour_task/nut_pour_assets/table.usd"
     default_prim_path = "{ENV_REGEX_NS}/office_table"
     scale = (1.0, 1.0, 0.7)
 
@@ -199,7 +201,7 @@ class BlueSortingBin(LibraryObject):
 
     name = "blue_sorting_bin"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_sorting_bin.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_sorting_bin.usd"
     default_prim_path = "{ENV_REGEX_NS}/blue_sorting_bin"
     scale = (4.0, 2.0, 1.0)
 
@@ -215,7 +217,7 @@ class BlueExhaustPipe(LibraryObject):
 
     name = "blue_exhaust_pipe"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_exhaust_pipe.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_exhaust_pipe.usd"
     default_prim_path = "{ENV_REGEX_NS}/blue_exhaust_pipe"
     scale = (0.55, 0.55, 1.4)
 
@@ -231,7 +233,7 @@ class BrownBox(LibraryObject):
 
     name = "brown_box"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Arena/assets/object_library/brown_box/brown_box.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/object_library/brown_box/brown_box.usd"
     default_prim_path = "{ENV_REGEX_NS}/brown_box"
     scale = (1.0, 1.0, 1.0)
 

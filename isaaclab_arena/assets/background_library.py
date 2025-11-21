@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
+
 from isaaclab_arena.assets.background import Background
 from isaaclab_arena.assets.register import register_asset
 from isaaclab_arena.utils.pose import Pose
@@ -50,7 +52,7 @@ class KitchenBackground(LibraryBackground):
 
     name = "kitchen"
     tags = ["background"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Arena/assets/background_library/kitchen_background/kitchen_background.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/background_library/kitchen_background/kitchen_background.usd"
     initial_pose = Pose(position_xyz=(0.772, 3.39, -0.895), rotation_wxyz=(0.70711, 0, 0, -0.70711))
     object_min_z = -0.2
 
@@ -66,7 +68,7 @@ class KitchenWithOpenDrawerBackground(LibraryBackground):
 
     name = "kitchen_with_open_drawer"
     tags = ["background"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Arena/assets/background_library/kitchen_scene_teleop_v3/kitchen_scene_teleop_v3.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/background_library/kitchen_scene_teleop_v3/kitchen_scene_teleop_v3.usd"
     initial_pose = Pose(position_xyz=(0.772, 3.39, -0.895), rotation_wxyz=(0.70711, 0, 0, -0.70711))
     object_min_z = -0.2
 
@@ -82,7 +84,7 @@ class PackingTableBackground(LibraryBackground):
 
     name = "packing_table"
     tags = ["background"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Arena/assets/background_library/packing_table/packing_table.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/background_library/packing_table/packing_table.usd"
     initial_pose = Pose(position_xyz=(0.72193, -0.04727, -0.92512), rotation_wxyz=(0.70711, 0.0, 0.0, -0.70711))
     object_min_z = -0.2
 
@@ -98,7 +100,7 @@ class GalileoBackground(LibraryBackground):
 
     name = "galileo"
     tags = ["background"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Arena/assets/background_library/galileo_simplified/galileo_simplified.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/background_library/galileo_simplified/galileo_simplified.usd"
     initial_pose = Pose(position_xyz=(4.420, 1.408, -0.795), rotation_wxyz=(1.0, 0.0, 0.0, 0.0))
     object_min_z = -0.2
 
@@ -115,7 +117,7 @@ class GalileoLocomanipBackground(LibraryBackground):
     name = "galileo_locomanip"
     tags = ["background"]
     default_robot_initial_pose = Pose.identity()
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Arena/assets/background_library/galileo_locomanip/galileo_locomanip.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/background_library/galileo_locomanip/galileo_locomanip.usd"
     initial_pose = Pose(position_xyz=(4.420, 1.408, -0.795), rotation_wxyz=(1.0, 0.0, 0.0, 0.0))
     object_min_z = -0.2
 
