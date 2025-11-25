@@ -11,7 +11,7 @@ from isaaclab_arena.tests.utils.subprocess import run_simulation_app_function
 from isaaclab_arena.utils.pose import Pose
 
 NUM_STEPS = 50
-HEADLESS = False
+HEADLESS = True
 OPEN_STEP = NUM_STEPS // 2
 
 
