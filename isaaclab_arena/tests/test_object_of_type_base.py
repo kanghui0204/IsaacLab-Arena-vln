@@ -34,7 +34,7 @@ def _test_object_of_type_base(simulation_app):
 
         name = "cone_no_physics"
         tags = ["object"]
-        usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/Props/Shapes/cone.usd"
+        usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/Shapes/cone.usd"
         default_prim_path = "{ENV_REGEX_NS}/target_cone_no_physics"
         object_type = ObjectType.BASE
         scale = (0.2, 0.2, 0.2)
