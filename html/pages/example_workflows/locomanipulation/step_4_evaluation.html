@@ -456,6 +456,34 @@ by the quality of post-trained policy, the quality of the dataset, and number of
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Metrics: {success_rate: 1.0, num_episodes: 1}
 </pre></div>
 </div>
+</section>
+<section id="step-2-run-parallel-environments-evaluation">
+<h2>Step 2: Run Parallel Environments Evaluation<a class="headerlink" href="#step-2-run-parallel-environments-evaluation" title="Link to this heading">#</a></h2>
+<p>Parallel evaluation of the policy in multiple parallel environments is also supported by the policy runner.</p>
+<p>Test the policy in 5 parallel environments with visualization via the GUI run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>isaaclab_arena/examples/policy_runner.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--policy_type<span class="w"> </span>gr00t_closedloop<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--policy_config_yaml_path<span class="w"> </span>isaaclab_arena_gr00t/g1_locomanip_gr00t_closedloop_config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num_steps<span class="w"> </span><span class="m">1200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num_envs<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="se">\ </span><span class="w"> </span><span class="c1"># run the policy in 5 parallel environments</span>
+<span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--object<span class="w"> </span>brown_box<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--embodiment<span class="w"> </span>g1_wbc_joint
+</pre></div>
+</div>
+<p>And during the evaluation, you should see the following output on the console at the end of the evaluation
+indicating which environments are terminated (task-specific conditions like the brown box is placed into the blue bin),
+or truncated (if timeouts are enabled, like the maximum episode length is exceeded).</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Resetting policy for terminated env_ids: tensor([4], device=&#39;cuda:0&#39;) and truncated env_ids: tensor([], device=&#39;cuda:0&#39;, dtype=torch.int64)
+</pre></div>
+</div>
+<p>At the end of the evaluation, you should see the following output on the console indicating the metrics.
+You can see that the success rate is no longer 1.0 as more trials are being evaluated and randomizations are being introduced,
+and the number of episodes is more than the single environment evaluation because of the parallelization.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Metrics: {&#39;success_rate&#39;: 0.2, &#39;num_episodes&#39;: 5}
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Note that the embodiment used in closed-loop policy inference is <code class="docutils literal notranslate"><span class="pre">g1_wbc_joint</span></code>, which is different
@@ -518,6 +546,7 @@ GR00T N1.5 policy is trained on upper body joint positions and lower body WBC po
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-run-single-environment-evaluation">Step 1: Run Single Environment Evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-run-parallel-environments-evaluation">Step 2: Run Parallel Environments Evaluation</a></li>
 </ul>
   </nav></div>
 
