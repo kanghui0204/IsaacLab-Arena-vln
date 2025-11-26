@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import numpy as np
+import pathlib
 import torch
 import tqdm
 
@@ -11,7 +12,7 @@ from isaaclab_arena.tests.utils.subprocess import run_simulation_app_function
 from isaaclab_arena.utils.pose import Pose
 
 NUM_STEPS = 50
-HEADLESS = True
+HEADLESS = False
 OPEN_STEP = NUM_STEPS // 2
 
 
@@ -28,12 +29,40 @@ def get_test_background(initial_pose: Pose):
             super().__init__(
                 name="kitchen",
                 tags=["background", "pick_and_place"],
-                usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/assets_for_tests/reference_object_test_kitchen.usd",
+                # usd_path="omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/assets_for_tests/reference_object_test_kitchen.usd",
+                usd_path="/workspaces/isaaclab_arena/test_scene.usd",
                 initial_pose=initial_pose,
                 object_min_z=-0.2,
             )
 
     return ObjectReferenceTestKitchenBackground()
+
+
+def get_test_scene():
+    from isaaclab_arena.assets.asset_registry import AssetRegistry  # noqa: F401
+    from isaaclab_arena.scene.scene import Scene
+
+    asset_registry = AssetRegistry()
+
+    kitchen = asset_registry.get_asset_by_name("kitchen_with_open_drawer")()
+    embodiment = asset_registry.get_asset_by_name("franka")()
+    cracker_box = asset_registry.get_asset_by_name("cracker_box")()
+    microwave = asset_registry.get_asset_by_name("microwave")()
+
+    kitchen.set_initial_pose(Pose(position_xyz=(0.0, 0.0, 0.0), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
+    cracker_box.set_initial_pose(
+        Pose(
+            position_xyz=(3.69020713150969, -0.804121657812894, 1.2531903565606817), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)
+        )
+    )
+    microwave.set_initial_pose(
+        Pose(
+            position_xyz=(2.862758610786719, -0.39786255771393336, 1.087924015237011),
+            rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
+        )
+    )
+
+    return Scene(assets=[kitchen, cracker_box, microwave])
 
 
 def _test_reference_objects_with_background_pose(background_pose: Pose) -> bool:
@@ -52,6 +81,11 @@ def _test_reference_objects_with_background_pose(background_pose: Pose) -> bool:
 
     args_parser = get_isaaclab_arena_cli_parser()
     args_cli = args_parser.parse_args([])
+
+    # # Get the test scene
+    # scene = get_test_scene()
+    # scene_usd_path = pathlib.Path("/workspaces/isaaclab_arena/test_scene.usd")
+    # scene.export_to_usd(scene_usd_path)
 
     # Scene
     # Contains 3 reference objects:
@@ -179,4 +213,4 @@ def test_reference_objects_with_transform():
 
 if __name__ == "__main__":
     test_reference_objects()
-    test_reference_objects_with_transform()
+    # test_reference_objects_with_transform()
