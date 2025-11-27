@@ -67,7 +67,8 @@ ENV LW_API_ENDPOINT="https://api-dev.lightwheel.net"
 # HuggingFace for downloading datasets and models.
 # NOTE(alexmillane, 2025-10-28): For some reason the CLI has issues when installed in the IsaacSim version of python.
 RUN pip install huggingface-hub[cli]
-RUN export PATH=$PATH:/root/.local/bin
+# Create alias for hf command to use the system-installed version
+RUN echo "alias hf='/usr/local/bin/hf'" >> /etc/bash.bashrc
 
 ###############################
 # Install GR00T and CUDA 12.8 #

@@ -1,16 +1,7 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import argparse
 import importlib
@@ -27,9 +18,6 @@ from isaaclab_arena.examples.example_environments.gr1_open_microwave_environment
 from isaaclab_arena.examples.example_environments.kitchen_pick_and_place_environment import (
     KitchenPickAndPlaceEnvironment,
 )
-from isaaclab_arena.examples.example_environments.lightwheel_kitchen_pot_pick_and_place import (
-    LightwheelKitchenPotPickAndPlaceEnvironment,
-)
 from isaaclab_arena.examples.example_environments.press_button_environment import PressButtonEnvironment
 
 # NOTE(alexmillane, 2025.09.04): There is an issue with type annotation in this file.
@@ -44,7 +32,6 @@ ExampleEnvironments = {
     Gr1OpenMicrowaveEnvironment.name: Gr1OpenMicrowaveEnvironment,
     KitchenPickAndPlaceEnvironment.name: KitchenPickAndPlaceEnvironment,
     GalileoPickAndPlaceEnvironment.name: GalileoPickAndPlaceEnvironment,
-    LightwheelKitchenPotPickAndPlaceEnvironment.name: LightwheelKitchenPotPickAndPlaceEnvironment,
     GalileoG1LocomanipPickAndPlaceEnvironment.name: GalileoG1LocomanipPickAndPlaceEnvironment,
     PressButtonEnvironment.name: PressButtonEnvironment,
 }

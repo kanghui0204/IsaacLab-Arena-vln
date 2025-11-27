@@ -1,16 +1,7 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np
 from dataclasses import MISSING
@@ -35,8 +26,9 @@ class PressButtonTask(TaskBase):
         pressable_object: Pressable,
         pressedness_threshold: float | None = None,
         reset_pressedness: float | None = None,
+        episode_length_s: float | None = None,
     ):
-        super().__init__()
+        super().__init__(episode_length_s=episode_length_s)
         assert isinstance(pressable_object, Pressable), "Pressable object must be an instance of Pressable"
         self.pressable_object = pressable_object
         self.pressedness_threshold = pressedness_threshold
@@ -83,7 +75,7 @@ class PressButtonTask(TaskBase):
 class TerminationsCfg:
     """Termination terms for the MDP."""
 
-    time_out: TerminationTermCfg = TerminationTermCfg(func=mdp_isaac_lab.time_out, time_out=False)
+    time_out: TerminationTermCfg = TerminationTermCfg(func=mdp_isaac_lab.time_out)
 
     # Dependent on the openable object, so this is passed in from the task at
     # construction time.

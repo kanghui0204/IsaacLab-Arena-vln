@@ -4,6 +4,26 @@ Policy Post-training
 This workflow covers post-training an example policy using the generated dataset,
 here we use `GR00T N1.5 <https://github.com/NVIDIA/Isaac-GR00T>`_ as the base model.
 
+
+**Docker Container**: Base + GR00T (see :doc:`../../quickstart/docker_containers` for more details)
+
+:docker_run_gr00t:
+
+Once inside the container, set the dataset and models directories.
+
+.. code:: bash
+
+    export DATASET_DIR=/datasets/isaaclab_arena/static_manipulation_tutorial
+    export MODELS_DIR=/models/isaaclab_arena/static_manipulation_tutorial
+
+.. note::
+    The GR00T N1.5 codebase does not support running on Blackwell architecture by default. There are
+    instructions `here <https://github.com/NVIDIA/Isaac-GR00T?tab=readme-ov-file#faq>`_ to building certain packages from source to support running on these architectures.
+    We have not tested these instructions, and therefore we do not recommend using
+    the **Base + GR00T** container for policy post-training and evaluation on
+    Blackwell architecture, like RTX 50 series, RTX Pro 6000 or DGX Spark.
+
+
 Note that this tutorial assumes that you've completed the
 :doc:`preceding step (Data Generation) <step_3_data_generation>` or downloaded the
 pre-generated dataset from Hugging Face as described below.
@@ -25,18 +45,6 @@ pre-generated dataset from Hugging Face as described below.
          --local-dir $DATASET_DIR
 
 
-**Docker Container**: Base + GR00T (see :doc:`../../quickstart/docker_containers` for more details)
-
-:docker_run_gr00t:
-
-.. note::
-    The GR00T N1.5 codebase does not support running on Blackwell architecture by default. There are
-    instructions `here <https://github.com/NVIDIA/Isaac-GR00T?tab=readme-ov-file#faq>`_ to building certain packages from source to support running on these architectures.
-    We have not tested these instructions, and therefore we do not recommend using
-    the **Base + GR00T** container for policy post-training and evaluation on
-    Blackwell architecture, like RTX 50 series, RTX Pro 6000 or DGX Spark.
-
-
 Step 1: Convert to LeRobot Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -56,7 +64,7 @@ Note that this conversion step can be skipped by downloading the pre-converted L
          nvidia/Arena-GR1-Manipulation-Task \
          --include lerobot/* \
          --repo-type dataset \
-         --local-dir $DATASET_DIR
+         --local-dir $DATASET_DIR/arena_gr1_manipulation_dataset_generated
 
    If you download this dataset, you can skip the conversion step below and continue to the next step.
 
@@ -65,11 +73,11 @@ Convert the HDF5 dataset to LeRobot format for policy post-training:
 
 .. code-block:: bash
 
-   python isaaclab_arena/policy/data_utils/convert_hdf5_to_lerobot.py \
-     --config_yaml_path isaaclab_arena/policy/config/gr1_manip_config.yaml
+   python isaaclab_arena_gr00t/data_utils/convert_hdf5_to_lerobot.py \
+     --yaml_file isaaclab_arena_gr00t/config/gr1_manip_config.yaml
 
 This creates a folder ``$DATASET_DIR/arena_gr1_manipulation_dataset_generated/lerobot`` containing parquet files with states/actions, MP4 camera recordings, and dataset metadata. The converter is controlled by a config file at
-``isaaclab_arena/policy/config/gr1_manip_config.yaml``.
+``isaaclab_arena_gr00t/config/gr1_manip_config.yaml``.
 
 .. dropdown:: Configuration file (``gr1_manip_config.yaml``)
    :animate: fade-in
@@ -78,16 +86,17 @@ This creates a folder ``$DATASET_DIR/arena_gr1_manipulation_dataset_generated/le
 
       # Input/Output paths
       data_root: /datasets/isaaclab_arena/static_manipulation_tutorial
-      hdf5_name: "arena_g1_loco_manipulation_dataset_generated.hdf5"
+      hdf5_name: "arena_gr1_manipulation_dataset_generated.hdf5"
 
       # Task description
-      language_instruction: "Pick up the brown box and place it in the blue bin"
+      language_instruction: "Reach out to the microwave and open it."
       task_index: 0
 
       # Data field mappings
       state_name_sim: "robot_joint_pos"
       action_name_sim: "processed_actions"
-      pov_cam_name_sim: "robot_head_cam"
+      pov_cam_name_sim: "robot_pov_cam_rgb"
+
 
       # Output configuration
       fps: 50
@@ -101,6 +110,7 @@ We post-train the GR00T N1.5 policy on the task.
 
 The GR00T N1.5 policy has 3 billion parameters so post training is an an expensive operation.
 We provide two post-training options:
+
 * Best Quality: 8 GPUs with 48GB memory
 * Low Hardware Requirements: 1 GPU with 24GB memory
 
@@ -127,7 +137,7 @@ We provide two post-training options:
          cd submodules/Isaac-GR00T
 
          python scripts/gr00t_finetune.py \
-         --dataset_path=$DATASET_DIR/arena_g1_loco_manipulation_dataset_generated/lerobot \
+         --dataset_path=$DATASET_DIR/arena_gr1_manipulation_dataset_generated/lerobot \
          --output_dir=$MODELS_DIR \
          --data_config=fourier_gr1_arms_only \
          --batch_size=24 \
@@ -142,7 +152,7 @@ We provide two post-training options:
          --no-resume \
          --dataloader_num_workers=16 \
          --report_to=wandb \
-         --embodiment_tag=new_embodiment
+         --embodiment_tag=gr1
 
    .. tab:: Low Hardware Requirements
 
@@ -166,7 +176,7 @@ We provide two post-training options:
          cd submodules/Isaac-GR00T
 
          python scripts/gr00t_finetune.py \
-         --dataset_path=$DATASET_DIR/arena_g1_loco_manipulation_dataset_generated/lerobot \
+         --dataset_path=$DATASET_DIR/arena_gr1_manipulation_dataset_generated/lerobot \
          --output_dir=$MODELS_DIR \
          --data_config=fourier_gr1_arms_only \
          --batch_size=24 \
@@ -181,7 +191,7 @@ We provide two post-training options:
          --no-resume \
          --dataloader_num_workers=16 \
          --report_to=wandb \
-         --embodiment_tag=new_embodiment \
+         --embodiment_tag=gr1 \
          --lora_rank=128
 
 

@@ -1,16 +1,7 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import os
 import torch
@@ -18,8 +9,7 @@ import tqdm
 
 from isaaclab_arena.tests.utils.subprocess import run_simulation_app_function
 
-# NOTE(xinjieyao, 2025-09-23): Double the num of steps as sim.dt is changed from 0.01 to 0.005
-NUM_STEPS = 40
+NUM_STEPS = 50
 HEADLESS = True
 PLOT = False
 
@@ -43,11 +33,11 @@ def _test_object_on_destination_termination(simulation_app) -> bool:
     args_cli = args_parser.parse_args([])
 
     asset_registry = AssetRegistry()
-    background = asset_registry.get_asset_by_name("kitchen")()
+    background = asset_registry.get_asset_by_name("kitchen_with_open_drawer")()
     cracker_box = asset_registry.get_asset_by_name("cracker_box")()
     destination_location = ObjectReference(
         name="destination_location",
-        prim_path="{ENV_REGEX_NS}/kitchen/Cabinet_B_02",
+        prim_path="{ENV_REGEX_NS}/kitchen_with_open_drawer/Cabinet_B_02",
         parent_asset=background,
     )
     cracker_box.set_initial_pose(

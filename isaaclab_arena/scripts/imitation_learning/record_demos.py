@@ -1,3 +1,8 @@
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
 # All rights reserved.
 #
@@ -305,7 +310,7 @@ def setup_ui(label_text: str, env: gym.Env) -> InstructionDisplay:
     Returns:
         InstructionDisplay: The configured instruction display object
     """
-    instruction_display = InstructionDisplay(args_cli.teleop_device)
+    instruction_display = InstructionDisplay(args_cli.xr)
     if not args_cli.xr:
         window = EmptyWindow(env, "Instruction")
         with window.ui_window_elements["main_vstack"]:

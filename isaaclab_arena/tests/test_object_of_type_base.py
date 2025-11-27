@@ -1,24 +1,15 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import torch
 import tqdm
 
 from isaaclab_arena.tests.utils.subprocess import run_simulation_app_function
 
-NUM_STEPS = 10
-HEADLESS = True
+NUM_STEPS = 100
+HEADLESS = False
 MOVEMENT_EPS = 0.001
 
 
@@ -36,17 +27,15 @@ def _test_object_of_type_base(simulation_app):
 
     asset_registry = AssetRegistry()
 
-    class CrackerBoxNoPhysics(LibraryObject):
+    class ConeNoPhysics(LibraryObject):
         """
-        Cracker box without physics.
+        Cone without physics.
         """
 
-        name = "cracker_box_no_physics"
+        name = "cone_no_physics"
         tags = ["object"]
-        usd_path = (
-            "omniverse://isaac-dev.ov.nvidia.com/Projects/isaac_arena/assets_for_tests/cracker_box_base_asset.usd"
-        )
-        default_prim_path = "{ENV_REGEX_NS}/target_cracker_box_no_physics"
+        usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/Shapes/cone.usd"
+        default_prim_path = "{ENV_REGEX_NS}/target_cone_no_physics"
         object_type = ObjectType.BASE
 
         def __init__(self, prim_path: str = default_prim_path, initial_pose: Pose | None = None):
@@ -55,13 +44,14 @@ def _test_object_of_type_base(simulation_app):
     # Scene
     background = asset_registry.get_asset_by_name("kitchen")()
     embodiment = asset_registry.get_asset_by_name("franka")()
-    cracker_box = CrackerBoxNoPhysics()
+    cone = ConeNoPhysics()
 
-    cracker_box.set_initial_pose(Pose(position_xyz=(0.4, 0.0, 0.1), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
+    # Put the thing in the center of the room floating.
+    cone.set_initial_pose(Pose(position_xyz=(-1.6, 0.0, 1.0), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
-    scene = Scene(assets=[background, cracker_box])
+    scene = Scene(assets=[background, cone])
     isaaclab_arena_environment = IsaacLabArenaEnvironment(
-        name="reference_object_test",
+        name="base_object_test",
         embodiment=embodiment,
         scene=scene,
         task=DummyTask(),
@@ -70,15 +60,12 @@ def _test_object_of_type_base(simulation_app):
 
     try:
 
-        # NOTE(alexmillane, 2025-09-15): The real test is just if the env compiles
-        # here. If you we're to try to spawn a rigid object with the test usd path,
-        # it would fail as the USD doesn't have a rigid body enabled.
         args_cli = get_isaaclab_arena_cli_parser().parse_args([])
         env_builder = ArenaEnvBuilder(isaaclab_arena_environment, args_cli)
         env = env_builder.make_registered()
         env.reset()
 
-        position_before_simulation = torch.tensor(cracker_box.get_initial_pose().position_xyz)
+        position_before_simulation = torch.tensor(cone.get_initial_pose().position_xyz)
 
         # Run some zero actions.
         for _ in tqdm.tqdm(range(NUM_STEPS)):
@@ -87,7 +74,7 @@ def _test_object_of_type_base(simulation_app):
                 env.step(actions)
 
             # Check the the object is floating.
-            position_after_simulation, _ = env.scene["cracker_box_no_physics"].get_world_poses()
+            position_after_simulation, _ = env.scene["cone_no_physics"].get_world_poses()
             movement = position_after_simulation.cpu() - position_before_simulation.cpu()
             assert torch.norm(movement).item() < MOVEMENT_EPS, "Object moved. Should not have physics."
 

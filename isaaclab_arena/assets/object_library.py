@@ -1,16 +1,9 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
+
+from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
 
 from isaaclab_arena.affordances.openable import Openable
 from isaaclab_arena.affordances.pressable import Pressable
@@ -45,6 +38,8 @@ class LibraryObject(Object):
         )
 
 
+# TODO(peterd, 2025.11.05): Update all OV drive paths to use {ISAACLAB_NUCLEUS_DIR}
+# alias prior to public release once assets are synced to S3
 @register_asset
 class CrackerBox(LibraryObject):
     """
@@ -102,49 +97,6 @@ class TomatoSoupCan(LibraryObject):
 
 
 @register_asset
-class LightWheelKettle21(LibraryObject):
-    """
-    Encapsulates the pick-up object config for a pick-and-place environment.
-    """
-
-    name = "lightwheel_kettle_21"
-    tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/g1_locomanip_assets/asset_release/object_library/Kettle021/Kettle021.usd"
-
-    def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
-        super().__init__(prim_path=prim_path, initial_pose=initial_pose)
-
-
-@register_asset
-class LightWheelPot51(LibraryObject):
-    """
-    Encapsulates the pick-up object config for a pick-and-place environment.
-    """
-
-    name = "lightwheel_pot_51"
-    tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/g1_locomanip_assets/asset_release/object_library/Pot051/Pot051.usd"
-
-    def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
-        super().__init__(prim_path=prim_path, initial_pose=initial_pose)
-
-
-@register_asset
-class SketchFabSprayCan3(LibraryObject):
-    """
-    Encapsulates the pick-up object config for a pick-and-place environment.
-    """
-
-    name = "sketchfab_spray_can_3"
-    tags = ["object"]
-    prim_path = ("{ENV_REGEX_NS}/target_sketchfab_spray_can_3",)
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/g1_locomanip_assets/asset_release/object_library/spray_bottle_3/spray_bottle_3.usd"
-
-    def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
-        super().__init__(prim_path=prim_path, initial_pose=initial_pose)
-
-
-@register_asset
 class PowerDrill(LibraryObject):
     """
     Encapsulates the pick-up object config for a pick-and-place environment.
@@ -152,7 +104,7 @@ class PowerDrill(LibraryObject):
 
     name = "power_drill"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/g1_locomanip_assets/asset_release/object_library/power_drill_physics/power_drill_physics.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/object_library/power_drill_physics/power_drill_physics.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -224,7 +176,7 @@ class OfficeTable(LibraryObject):
 
     name = "office_table"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Mimic/nut_pour_task/nut_pour_assets/table.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Mimic/nut_pour_task/nut_pour_assets/table.usd"
     default_prim_path = "{ENV_REGEX_NS}/office_table"
     scale = (1.0, 1.0, 0.7)
 
@@ -240,7 +192,7 @@ class BlueSortingBin(LibraryObject):
 
     name = "blue_sorting_bin"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_sorting_bin.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_sorting_bin.usd"
     default_prim_path = "{ENV_REGEX_NS}/blue_sorting_bin"
     scale = (4.0, 2.0, 1.0)
 
@@ -256,7 +208,7 @@ class BlueExhaustPipe(LibraryObject):
 
     name = "blue_exhaust_pipe"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Isaac/IsaacLab/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_exhaust_pipe.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Mimic/exhaust_pipe_task/exhaust_pipe_assets/blue_exhaust_pipe.usd"
     default_prim_path = "{ENV_REGEX_NS}/blue_exhaust_pipe"
     scale = (0.55, 0.55, 1.4)
 
@@ -272,7 +224,7 @@ class BrownBox(LibraryObject):
 
     name = "brown_box"
     tags = ["object"]
-    usd_path = "omniverse://isaac-dev.ov.nvidia.com/Projects/nvblox/isaac_arena/g1_locomanip_assets/asset_release/object_library/brown_box/brown_box.usd"
+    usd_path = f"{ISAACLAB_NUCLEUS_DIR}/Arena/assets/object_library/brown_box/brown_box.usd"
     default_prim_path = "{ENV_REGEX_NS}/brown_box"
     scale = (1.0, 1.0, 1.0)
 
