@@ -3,7 +3,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from pxr import Usd, PhysxSchema
+from pxr import PhysxSchema, Usd
+
 
 def add_contact_report(prim: Usd.Prim) -> None:
     """Add a contact report API to a prim.
