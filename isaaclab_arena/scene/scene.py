@@ -13,9 +13,9 @@ from pxr import Gf, Usd, UsdGeom
 
 from isaaclab_arena.assets.asset import Asset
 from isaaclab_arena.assets.object import Object
+from isaaclab_arena.assets.object_base import ObjectType
 from isaaclab_arena.environments.isaaclab_arena_manager_based_env import IsaacLabArenaManagerBasedRLEnvCfg
 from isaaclab_arena.utils.configclass import make_configclass
-from isaaclab_arena.assets.object_base import ObjectType
 from isaaclab_arena.utils.phyx_utils import add_contact_report
 
 AssetCfg = Union[AssetBaseCfg, RigidObjectCfg, ArticulationCfg, ContactSensorCfg]
