@@ -1,16 +1,7 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import gymnasium as gym
 import numpy as np
@@ -42,7 +33,7 @@ class ReplayLerobotActionPolicy(PolicyBase):
         self.trajectory_index = trajectory_index
         self.policy_iter = self.create_trajectory_iterator(trajectory_index)
         # determine rollout how many action prediction per observation
-        self.num_feedback_actions = self.policy_config.num_feedback_actions
+        self.action_chunk_length = self.policy_config.action_chunk_length
         self.current_action_index = 0
         self.current_action_chunk = None
         self.num_envs = num_envs
@@ -94,17 +85,17 @@ class ReplayLerobotActionPolicy(PolicyBase):
         # get new predictions and return the first action from the chunk
         if self.current_action_chunk is None and self.current_action_index == 0:
             self.current_action_chunk = self.get_action_chunk()
-            assert self.current_action_chunk.shape[1] >= self.num_feedback_actions
+            assert self.current_action_chunk.shape[1] >= self.action_chunk_length
 
         assert self.current_action_chunk is not None
-        assert self.current_action_index < self.num_feedback_actions
+        assert self.current_action_index < self.action_chunk_length
 
         action = self.current_action_chunk[:, self.current_action_index]
         assert action.shape == env.action_space.shape, f"{action.shape=} != {env.action_space.shape=}"
 
         self.current_action_index += 1
         # reset to empty action chunk
-        if self.current_action_index == self.num_feedback_actions:
+        if self.current_action_index == self.action_chunk_length:
             self.current_action_chunk = None
             self.current_action_index = 0
         return action
@@ -151,7 +142,7 @@ class ReplayLerobotActionPolicy(PolicyBase):
         elif self.task_mode == TaskMode.GR1_TABLETOP_MANIPULATION:
             action_tensor = robot_action_sim.get_joints_pos()
 
-        assert action_tensor.shape[1] >= self.num_feedback_actions
+        assert action_tensor.shape[1] >= self.action_chunk_length
         return action_tensor
 
     def reset(self):

@@ -1,16 +1,7 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 from dataclasses import dataclass, field
 from enum import Enum
@@ -61,17 +52,17 @@ class LerobotReplayActionPolicyConfig:
         },
     )
     # action chunking specific parameters
-    num_feedback_actions: int = field(
+    action_chunk_length: int = field(
         default=1,  # Replay actions from every recorded timestamp in the dataset
         metadata={
-            "description": "Number of feedback actions to execute per rollout (can be less than action_horizon)."
+            "description": "Number of actions to execute per inference rollout (can be less than action_horizon)."
         },
     )
 
     def __post_init__(self):
         assert (
-            self.num_feedback_actions <= self.action_horizon
-        ), "num_feedback_actions must be less than or equal to action_horizon"
+            self.action_chunk_length <= self.action_horizon
+        ), "action_chunk_length must be less than or equal to action_horizon"
         # assert all paths exist
         assert Path(
             self.policy_joints_config_path
@@ -166,18 +157,18 @@ class Gr00tClosedloopPolicyConfig:
         default="robot_head_cam_rgb", metadata={"description": "Name of the POV camera of the robot in simulation."}
     )
     # Closed loop specific parameters
-    num_feedback_actions: int = field(
+    action_chunk_length: int = field(
         default=16,
         metadata={
-            "description": "Number of feedback actions to execute per rollout (can be less than action_horizon)."
+            "description": "Number of actions to execute per inference rollout (can be less than action_horizon)."
         },
     )
     seed: int = field(default=10, metadata={"description": "Random seed for reproducibility."})
 
     def __post_init__(self):
         assert (
-            self.num_feedback_actions <= self.action_horizon
-        ), "num_feedback_actions must be less than or equal to action_horizon"
+            self.action_chunk_length <= self.action_horizon
+        ), "action_chunk_length must be less than or equal to action_horizon"
         # assert all paths exist
         assert Path(
             self.policy_joints_config_path
