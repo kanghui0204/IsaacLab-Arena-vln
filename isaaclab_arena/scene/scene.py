@@ -139,45 +139,17 @@ def _create_prim_from_asset(stage: Usd.Stage, asset: Asset) -> None:
     # Create the prim and reference the asset USD file.
     prim = stage.DefinePrim(asset_path, "Xform")
     prim.GetReferences().AddReference(asset.usd_path)
-
-    prim_xform = UsdGeom.Xform(prim)
-
     # Apply a contact reporter API this is a rigid object
     if asset.object_type == ObjectType.RIGID:
         add_contact_report(prim)
-    #     cr_api = PhysxSchema.PhysxContactReportAPI.Apply(prim)
-    #     cr_api.CreateThresholdAttr().Set(0)
-
-    # #
-    # for op in prim_xform.GetOrderedXformOps():
-    #     print(f"op.GetPrecsion(): {op.GetPrecision()}")
-
-    print(f"HERE")
-
-    # print(f"UsdGeom.XformOp.PrecisionDouble: {UsdGeom.XformOp.PrecisionDouble}")
-
-    # trans_double = prim_xform.GetTranslateOp().GetPrecision() == UsdGeom.XformOp.PrecisionDouble
-    # orient_double = prim_xform.GetOrientOp().GetPrecision() == UsdGeom.XformOp.PrecisionDouble
-    # scale_double = prim_xform.GetScaleOp().GetPrecision() == UsdGeom.XformOp.PrecisionDouble
-    # print(f"prim_xform.GetTranslateOp().GetPrecision(): {prim_xform.GetTranslateOp().GetPrecision()}")
-    # print(f"prim_xform.GetOrientOp().GetPrecision(): {prim_xform.GetOrientOp().GetPrecision()}")
-    # print(f"prim_xform.GetScaleOp().GetPrecision(): {prim_xform.GetScaleOp().GetPrecision()}")
-
-    print(f"detecting trans {prim_xform.GetTranslateOp()}")
+    # Adding the pose
+    prim_xform = UsdGeom.Xform(prim)
+    # We're going to overwrite the pose, but we need to match the floating point precision
+    # of the existing prim pose. So we have to do some detection.
     trans_double = _is_double_precision(prim_xform.GetTranslateOp())
-    print(f"detecting orient {prim_xform.GetOrientOp()}")
     orient_double = _is_double_precision(prim_xform.GetOrientOp())
-    print("HERE2")
-    print(f"detecting scale {prim_xform.GetScaleOp()}")
     scale_double = _is_double_precision(prim_xform.GetScaleOp())
-
-    print(f"asset.name {asset.name}")
-    print(f"trans_double {trans_double}")
-    print(f"orient_double {orient_double}")
-    print(f"scale_double {scale_double}")
-
     # Add the transform
-    print("overwriting xforms")
     prim_xform.ClearXformOpOrder()
     if asset.initial_pose is not None:
         t = Gf.Vec3d(asset.initial_pose.position_xyz) if trans_double else Gf.Vec3f(asset.initial_pose.position_xyz)
@@ -197,19 +169,7 @@ def _create_prim_from_asset(stage: Usd.Stage, asset: Asset) -> None:
 
 def _is_double_precision(op: UsdGeom.XformOp) -> bool | None:
     # Detect if the op is None or doesn't contain precision.
+    # In this case we default to float precision.
     if not op:
         return False
     return op.GetPrecision() == UsdGeom.XformOp.PrecisionDouble
-    # print("HERE3")
-    # if op is None:
-    #     return False
-    # print("HERE4")
-
-    # if not op:
-    #     return False
-
-    # if not hasattr(op, 'GetPrecision'):
-    #     return False
-    # print(f"hasattr(op, 'GetPrecision') {hasattr(op, 'GetPrecision')}")
-    # print("HERE5")
-    # return op.GetPrecision() == UsdGeom.XformOp.PrecisionDouble
