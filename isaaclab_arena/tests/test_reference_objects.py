@@ -44,7 +44,6 @@ def get_test_scene():
     asset_registry = AssetRegistry()
 
     kitchen = asset_registry.get_asset_by_name("kitchen_with_open_drawer")()
-    embodiment = asset_registry.get_asset_by_name("franka")()
     cracker_box = asset_registry.get_asset_by_name("cracker_box")()
     microwave = asset_registry.get_asset_by_name("microwave")()
 
@@ -68,7 +67,6 @@ def _test_reference_objects_with_background_pose(background_pose: Pose) -> bool:
 
     from isaaclab.managers import SceneEntityCfg
 
-    from isaaclab_arena.assets.asset_registry import AssetRegistry  # noqa: F401
     from isaaclab_arena.assets.object_base import ObjectType
     from isaaclab_arena.assets.object_reference import ObjectReference, OpenableObjectReference
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
@@ -114,8 +112,6 @@ def _test_reference_objects_with_background_pose(background_pose: Pose) -> bool:
     )
 
     scene = Scene(assets=[background, cracker_box, microwave])
-
-    from isaaclab_arena.tasks.dummy_task import DummyTask
 
     # Build the environment
     isaaclab_arena_environment = IsaacLabArenaEnvironment(
