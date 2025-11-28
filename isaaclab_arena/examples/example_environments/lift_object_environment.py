@@ -14,30 +14,20 @@ from isaaclab_arena.examples.example_environments.example_environment_base impor
 # TODO(alexmillane, 2025.09.04): Fix this.
 
 
-class FrankaOpenMicrowaveEnvironment(ExampleEnvironmentBase):
+class LiftObjectEnvironment(ExampleEnvironmentBase):
 
-    name: str = "franka_open_microwave"
+    name: str = "lift_object"
 
     def get_env(self, args_cli: argparse.Namespace):  # -> IsaacLabArenaEnvironment:
-        from isaaclab_arena.assets.object_base import ObjectType
-        from isaaclab_arena.assets.object_reference import ObjectReference
         from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
-        from isaaclab_arena.tasks.open_door_task import OpenDoorTaskRL
+        from isaaclab_arena.tasks.lift_object_task import LiftObjectTaskRL
         from isaaclab_arena.utils.pose import Pose
 
         background = self.asset_registry.get_asset_by_name("packing_table")()
-        microwave = self.asset_registry.get_asset_by_name("microwave")()
+        pick_up_object = self.asset_registry.get_asset_by_name("tomato_soup_can")()
 
-        # Reference this and add it to the scene to use it in the reward function
-        microwave_handle = ObjectReference(
-            name="microwave_handle",
-            prim_path="{ENV_REGEX_NS}/" + microwave.name + "/" + microwave.handle_name,
-            parent_asset=microwave,
-            object_type=ObjectType.RIGID,
-        )
-
-        assets = [background, microwave, microwave_handle]
+        assets = [background, pick_up_object]
 
         embodiment = self.asset_registry.get_asset_by_name("franka")()
         embodiment.set_initial_pose(Pose(position_xyz=(-0.4, 0.0, 0.0), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
@@ -48,23 +38,14 @@ class FrankaOpenMicrowaveEnvironment(ExampleEnvironmentBase):
             teleop_device = None
 
         # Put the microwave on the packing table.
-        microwave_pose = Pose(
+        pick_up_object_pose = Pose(
             position_xyz=(0.4, -0.00586, 0.22773),
             rotation_wxyz=(0.7071068, 0, 0, -0.7071068),
         )
-        microwave.set_initial_pose(microwave_pose)
-
-        # Optionally add another object
-        if args_cli.object is not None:
-            object = self.asset_registry.get_asset_by_name(args_cli.object)()
-            object_pose = Pose(
-                position_xyz=(0.466, -0.437, 0.154),
-                rotation_wxyz=(0.5, -0.5, 0.5, -0.5),
-            )
-            object.set_initial_pose(object_pose)
-            assets.append(object)
+        pick_up_object.set_initial_pose(pick_up_object_pose)
 
         embodiment_information = {
+            "body_name": "panda_hand",
             "eef_prim_path": "{ENV_REGEX_NS}/Robot/panda_link0",
             "target_prim_path": "{ENV_REGEX_NS}/Robot/panda_hand",
             "target_frame_name": "end_effector",
@@ -74,12 +55,12 @@ class FrankaOpenMicrowaveEnvironment(ExampleEnvironmentBase):
         # Compose the scene
         scene = Scene(assets=assets)
 
-        task = OpenDoorTaskRL(
-            microwave,
-            microwave_handle,
+        task = LiftObjectTaskRL(
+            pick_up_object,
+            background,
             embodiment_information,
-            openness_threshold=0.8,
-            reset_openness=0.2,
+            minimum_height_to_lift=0.04,
+            maximum_height_to_lift=0.1,
             episode_length_s=5.0,
         )
 
