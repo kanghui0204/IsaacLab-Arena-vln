@@ -48,6 +48,10 @@ jobs:
           git --version
           git lfs version
 
+      # Lets try removing residual stuff due to symlinks in the submodules directory.
+      - name: Remove residual stuff due to symlinks in the submodules directory
+        run: rm -rf submodules/IsaacLab/_isaac_sim || true
+
       # Checkout Code
       - &checkout_step
         name: Checkout Code
