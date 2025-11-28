@@ -110,7 +110,7 @@ jobs:
     timeout-minutes: 45
 
     container:
-      image: nvcr.io/nvstaging/isaac-amr/isaaclab_arena:cuda_gr00t
+      image: nvcr.io/nvstaging/isaac-amr/isaaclab_arena:latest
       credentials:
         username: $oauthtoken
         password: ${{ env.NGC_API_KEY }}
