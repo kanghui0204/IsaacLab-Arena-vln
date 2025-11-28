@@ -48,9 +48,11 @@ jobs:
           git --version
           git lfs version
 
-      # Lets try removing residual stuff due to symlinks in the submodules directory.
-      # - name: Remove residual stuff due to symlinks in the submodules directory
-      #   run: rm -rf submodules/IsaacLab/_isaac_sim || true
+      # Clean up residual stuff due to symlinks in the submodules directory
+      # We do this prior to checkout because the symlink causes issues if it's there from a previous run.
+      - &cleanup_step
+        name: Clean up symlinks in submodules directory
+        run: rm -rf submodules/IsaacLab/_isaac_sim || true
 
       # Checkout Code
       - &checkout_step
@@ -58,7 +60,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # lfs: true
           clean: true
           submodules: true
           # LFS checkout here somehow causes issues when LFS stuff changes over time.
@@ -99,10 +100,6 @@ jobs:
       - name: Run pytest excluding policy-related tests. Now we run all tests with cameras.
         run: /isaac-sim/python.sh -m pytest -sv -m with_cameras isaaclab_arena/tests/ --ignore=isaaclab_arena/tests/policy/
 
-      - &cleanup_step
-        name: Clean up symlinks in submodules directory
-        run: rm -rf submodules/IsaacLab/_isaac_sim || true
-
   test_policy:
     name: Run policy-related tests with GR00T & cuda12_8 deps
     runs-on: [self-hosted, zurich]
@@ -118,6 +115,8 @@ jobs:
         - /home/runner/checkpoints:/checkpoints
     steps:
       - *install_git_step
+
+      - *cleanup_step
 
       - *checkout_step
 
@@ -146,8 +145,6 @@ jobs:
       - name: Run policy-related pytest
         run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
 
-      - *cleanup_step
-
   build_docs_pre_merge:
     name: Build the docs (pre-merge)
     runs-on: [self-hosted, zurich]
@@ -158,6 +155,8 @@ jobs:
 
     steps:
       - *install_git_step
+
+      - *cleanup_step
 
       # Checkout Code
       - *checkout_step
@@ -174,8 +173,6 @@ jobs:
           pip3 install -r requirements.txt
           make SPHINXOPTS=-W html
           touch ./_build/html/.nojekyll
-
-      - *cleanup_step
 
   build_and_push_image_post_merge:
     name: Build & push NGC image (post-merge)
@@ -201,6 +198,8 @@ jobs:
       # checkout to fail. So here we clean it up, before checking out the submodules.
       # - name: cleanup IsaacSim simlink
       #   run: rm -f submodules/IsaacLab/_isaac_sim
+
+      - *cleanup_step
 
       - *checkout_step
       # - name: Checkout
@@ -238,5 +237,3 @@ jobs:
         run: |
           chmod +x ./docker/push_to_ngc* || true
           ./docker/push_to_ngc.sh -p -g -t cuda_gr00t
-
-      - *cleanup_step
