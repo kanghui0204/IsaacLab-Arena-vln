@@ -8,14 +8,12 @@ from dataclasses import MISSING
 
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.common import ViewerCfg
-from isaaclab.managers import EventTermCfg, RewardTermCfg, SceneEntityCfg, TerminationTermCfg
+from isaaclab.managers import EventTermCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.affordances.pressable import Pressable
-from isaaclab_arena.assets.asset import Asset
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
-from isaaclab_arena.tasks.rewards import general_rewards
 from isaaclab_arena.tasks.task_base import TaskBase
 from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
 
@@ -94,44 +92,4 @@ class PressEventCfg:
             func=pressable_object.unpress,
             mode="reset",
             params=params,
-        )
-
-
-class PressButtonTaskRL(PressButtonTask):
-    def __init__(
-        self,
-        pressable_object: Pressable,
-        pressable_object_prim: Asset,
-        embodiment_end_effector_frame: Asset,
-        pressedness_threshold: float | None = None,
-        reset_pressedness: float | None = None,
-        episode_length_s: float | None = None,
-    ):
-        super().__init__(pressable_object, pressedness_threshold, reset_pressedness, episode_length_s)
-        self.embodiment_end_effector_frame = embodiment_end_effector_frame
-        self.pressable_object_prim = pressable_object_prim
-
-    def get_rewards_cfg(self):
-        return PressRewardCfg(
-            pressable_object_prim=self.pressable_object_prim,
-            embodiment_end_effector_frame=self.embodiment_end_effector_frame,
-        )
-
-
-@configclass
-class PressRewardCfg:
-    """Reward terms for the MDP."""
-
-    reaching_button: RewardTermCfg = MISSING
-    # pressing_button = RewardTermCfg(func=mdp.object_is_pressed, params={"threshold": 0.5}, weight=1.0)
-
-    def __init__(self, pressable_object_prim: Asset, embodiment_end_effector_frame: Asset):
-        self.reaching_button = RewardTermCfg(
-            func=general_rewards.object_ee_distance,
-            params={
-                "std": 0.1,
-                "pressable_object_prim_cfg": SceneEntityCfg(pressable_object_prim.name),
-                "ee_frame_cfg": SceneEntityCfg(embodiment_end_effector_frame.name),
-            },
-            weight=1.0,
         )

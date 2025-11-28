@@ -129,6 +129,9 @@ class Microwave(LibraryObject, Openable):
     openable_joint_name = "microjoint"
     openable_open_threshold = 0.5
 
+    # Handle name
+    handle_name = "Microwave039_door"
+
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(
             prim_path=prim_path,

@@ -8,6 +8,9 @@ import importlib
 from typing import Any
 
 from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
+from isaaclab_arena.examples.example_environments.franka_open_microwave_environment import (
+    FrankaOpenMicrowaveEnvironment,
+)
 from isaaclab_arena.examples.example_environments.galileo_g1_locomanip_pick_and_place_environment import (
     GalileoG1LocomanipPickAndPlaceEnvironment,
 )
@@ -34,6 +37,7 @@ ExampleEnvironments = {
     GalileoPickAndPlaceEnvironment.name: GalileoPickAndPlaceEnvironment,
     GalileoG1LocomanipPickAndPlaceEnvironment.name: GalileoG1LocomanipPickAndPlaceEnvironment,
     PressButtonEnvironment.name: PressButtonEnvironment,
+    FrankaOpenMicrowaveEnvironment.name: FrankaOpenMicrowaveEnvironment,
 }
 
 

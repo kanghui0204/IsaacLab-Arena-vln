@@ -47,7 +47,6 @@ class FrankaEmbodiment(EmbodimentBase):
         self.observation_config = FrankaObservationsCfg()
         self.event_config = FrankaEventCfg()
         self.reward_config = FrankaRewardsCfg()
-        self.rl_end_effector_frame = "panda_rightfinger"
         self.mimic_env = FrankaMimicEnv
 
     def _update_scene_cfg_with_robot_initial_pose(self, scene_config: Any, pose: Pose) -> Any:
