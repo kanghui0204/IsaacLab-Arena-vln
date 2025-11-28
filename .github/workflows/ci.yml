@@ -54,7 +54,7 @@ jobs:
         name: Clean up symlinks in submodules directory
         run: |
           rm -f .git/modules/submodules/IsaacLab/index.lock || true
-          rm -rf submodules/IsaacLab || true
+          rm -rf submodules/* || true
 
       # Fix "detected dubious ownership in repository" inside containers
       - &mark_repo_safe_step
@@ -157,9 +157,6 @@ jobs:
       - *git_lfs_step
       - *setup_python_step
       - *install_project_step
-
-      - name: Print checkpoints directory
-        run: ls -la /checkpoints
 
       - name: Run policy-related pytest
         run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
