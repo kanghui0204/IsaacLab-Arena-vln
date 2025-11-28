@@ -85,6 +85,7 @@ class FiibotTerminationsCfg:
     )
 
     success = DoneTerm(func=manip_mdp.task_done_pick_place, params={
+        "object_cfg": SceneEntityCfg("io_board"),  # Override default "object" to "io_board"
         "task_link_name": "right_7_Link",
         "right_wrist_max_x": 0.26,
         "min_x": 0.40,
