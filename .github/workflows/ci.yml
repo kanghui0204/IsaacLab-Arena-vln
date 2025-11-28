@@ -99,8 +99,9 @@ jobs:
       - name: Run pytest excluding policy-related tests. Now we run all tests with cameras.
         run: /isaac-sim/python.sh -m pytest -sv -m with_cameras isaaclab_arena/tests/ --ignore=isaaclab_arena/tests/policy/
 
-      - name: Clean up symlinks in submodules directory
-        run: rm -rf submodules/IsaacLab/_isaac_sim
+      - &cleanup_step
+        name: Clean up symlinks in submodules directory
+        run: rm -rf submodules/IsaacLab/_isaac_sim || true
 
   test_policy:
     name: Run policy-related tests with GR00T & cuda12_8 deps
@@ -116,9 +117,6 @@ jobs:
       volumes:
         - /home/runner/checkpoints:/checkpoints
     steps:
-      - name: Print checkpoints directory
-        run: ls -la /checkpoints
-
       - *install_git_step
 
       - *checkout_step
@@ -142,8 +140,13 @@ jobs:
 
       - *install_project_step
 
+      - name: Print checkpoints directory
+        run: ls -la /checkpoints
+
       - name: Run policy-related pytest
         run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
+
+      - *cleanup_step
 
   build_docs_pre_merge:
     name: Build the docs (pre-merge)
@@ -172,6 +175,8 @@ jobs:
           make SPHINXOPTS=-W html
           touch ./_build/html/.nojekyll
 
+      - *cleanup_step
+
   build_and_push_image_post_merge:
     name: Build & push NGC image (post-merge)
     runs-on: [self-hosted, zurich]
@@ -194,8 +199,8 @@ jobs:
 
       # Somehow this simlink remains from the previous steps, and it causes the submodule
       # checkout to fail. So here we clean it up, before checking out the submodules.
-      - name: cleanup IsaacSim simlink
-        run: rm -f submodules/IsaacLab/_isaac_sim
+      # - name: cleanup IsaacSim simlink
+      #   run: rm -f submodules/IsaacLab/_isaac_sim
 
       - *checkout_step
       # - name: Checkout
@@ -205,8 +210,8 @@ jobs:
       #     lfs: true
       #     submodules: true
 
-      - name: submodules
-        run: git submodule update --init
+      # - name: submodules
+      #   run: git submodule update --init
 
       - name: Install docker
         run: |
@@ -233,3 +238,5 @@ jobs:
         run: |
           chmod +x ./docker/push_to_ngc* || true
           ./docker/push_to_ngc.sh -p -g -t cuda_gr00t
+
+      - *cleanup_step
