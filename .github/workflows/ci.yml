@@ -49,11 +49,14 @@ jobs:
           git lfs version
 
       # Checkout Code
-      - name: Checkout Code
+      - &checkout_step
+        name: Checkout Code
         uses: actions/checkout@v4
         with:
-          clean: true
           fetch-depth: 0
+          lfs: true
+          clean: true
+          submodules: true
           # LFS checkout here somehow causes issues when LFS stuff changes over time.
           # So I do LFS manually in a step after.
           # lfs: true
@@ -112,14 +115,16 @@ jobs:
 
       - *install_git_step
 
-      # Checkout Code
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          # LFS checkout here somehow causes issues when LFS stuff changes over time.
-          # So I do LFS manually in a step after.
-          # lfs: true
+      - *checkout_step
+
+      # # Checkout Code
+      # - name: Checkout Code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     fetch-depth: 0
+      #     # LFS checkout here somehow causes issues when LFS stuff changes over time.
+      #     # So I do LFS manually in a step after.
+      #     # lfs: true
 
       # Fix "detected dubious ownership in repository" inside containers
       - *mark_repo_safe_step
@@ -146,11 +151,12 @@ jobs:
       - *install_git_step
 
       # Checkout Code
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          clean: true
-          fetch-depth: 0
+      - *checkout_step
+      # - name: Checkout Code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     clean: true
+      #     fetch-depth: 0
 
       # Build docs
       - name: Build docs
