@@ -29,7 +29,7 @@ def gr00t_finetuned_model_path(tmp_path_factory):
     args.append("--dataset_path")
     args.append(TestConstants.test_data_dir + "/test_g1_locomanip_lerobot")
     args.append("--output_dir")
-    args.append(model_dir)  # UP TO HERE!!! DO SOMETHING BETTER.
+    args.append(model_dir)
     args.append("--data_config")
     args.append("isaaclab_arena_gr00t.data_config:UnitreeG1SimWBCDataConfig")
     args.append("--batch_size")
