@@ -428,7 +428,7 @@ jobs:
     timeout-minutes: 60
     # DISABLE CONDITIONS. ALWAYS run
     # needs: [test, test_policy, build_docs_pre_merge]       # only push if tests passed
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [pre_commit]
 
     container:
