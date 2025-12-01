@@ -3,6 +3,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import pytest
+
 from isaaclab_arena.tests.utils.constants import TestConstants
 from isaaclab_arena.tests.utils.subprocess import run_subprocess
 
@@ -13,6 +15,7 @@ NUM_STEPS = 10
 TRAJECTORY_INDEX = 0
 
 
+@pytest.mark.skip(reason="Broken due to private G1 asset.")
 def test_g1_locomanip_replay_lerobot_policy_runner_single_env():
     args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
     args.append("--policy_type")
@@ -36,6 +39,7 @@ def test_g1_locomanip_replay_lerobot_policy_runner_single_env():
     run_subprocess(args)
 
 
+@pytest.mark.skip(reason="Broken due to private G1 asset.")
 def test_gr1_manip_replay_lerobot_policy_runner_single_env():
     args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
     args.append("--policy_type")
