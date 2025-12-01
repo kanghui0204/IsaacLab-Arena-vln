@@ -95,6 +95,8 @@ jobs:
           [ -e ./submodules/IsaacLab/_isaac_sim ] || ln -s /isaac-sim ./submodules/IsaacLab/_isaac_sim
 
       - name: Run pre-commit
+        env:
+          PRE_COMMIT_HOME: /tmp/pre-commit
         run: |
           pip install --no-cache-dir --upgrade pip pre-commit
           pre-commit run --all-files --verbose
