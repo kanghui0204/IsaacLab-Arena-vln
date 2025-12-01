@@ -5,7 +5,7 @@
 
 from typing import Literal
 
-from isaaclab.utils.assets import retrieve_file_path, ISAACLAB_NUCLEUS_DIR
+from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR, retrieve_file_path
 
 from isaaclab_arena_g1.g1_env.g1_supplemental_info import (
     G1SupplementalInfo,
@@ -30,7 +30,7 @@ def instantiate_g1_robot_model(
     Returns:
         RobotModel: Configured G1 robot model
     """
-    
+
     robot_model_config = {
         "asset_path": f"{ISAACLAB_NUCLEUS_DIR}/Arena/wbc_policy/robot_model/g1/",
         "urdf_path": f"{ISAACLAB_NUCLEUS_DIR}/Arena/wbc_policy/robot_model/g1/g1_29dof_with_hand.urdf",
