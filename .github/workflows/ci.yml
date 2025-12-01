@@ -140,6 +140,7 @@ jobs:
       - name: Run pytest excluding policy-related tests. Now we run all tests with cameras.
         run: /isaac-sim/python.sh -m pytest -sv -m with_cameras isaaclab_arena/tests/ --ignore=isaaclab_arena/tests/policy/
 
+
   # test_policy_public_runner:
   #   name: Run policy-related tests with GR00T & cuda12_8 deps on a public runner
   #   runs-on: [gpu]
