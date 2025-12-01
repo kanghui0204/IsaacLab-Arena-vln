@@ -63,7 +63,7 @@ The GR00T model is configured by a config file at ``isaaclab_arena_gr00t/gr1_man
       policy_joints_config_path: isaaclab_arena_gr00t/config/gr1/gr00t_26dof_joint_space.yaml
       action_joints_config_path: isaaclab_arena_gr00t/config/gr1/36dof_joint_space.yaml
       state_joints_config_path: isaaclab_arena_gr00t/config/gr1/54dof_joint_space.yaml
-      num_feedback_actions: 16
+      action_chunk_length: 16
       task_mode_name: gr1_tabletop_manipulation
 
       pov_cam_name_sim: "robot_pov_cam_rgb"
@@ -104,6 +104,41 @@ post-trained policy, the quality of the dataset, and number of steps in the eval
       .. code-block:: text
 
          Metrics: {'success_rate': 1.0, 'door_moved_rate': 1.0, 'num_episodes': 19}
+
+
+Step 2: Run Parallel environments Evaluation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Parallel evaluation of the policy in multiple parallel environments is also supported by the policy runner.
+
+Test the policy in 10 parallel environments with visualization via the GUI run:
+
+.. code-block:: bash
+
+   python isaaclab_arena/examples/policy_runner.py \
+     --policy_type gr00t_closedloop \
+     --policy_config_yaml_path isaaclab_arena_gr00t/gr1_manip_gr00t_closedloop_config.yaml \
+     --num_steps 2000 \
+     --num_envs 10 \  # run the policy in 10 parallel environments
+     --enable_cameras \
+     gr1_open_microwave \
+     --embodiment gr1_joint
+
+And during the evaluation, you should see the following output on the console at the end of the evaluation
+indicating which environments are terminated (task-specific conditions like the microwave door is opened),
+or truncated (if timeouts are enabled, like the maximum episode length is exceeded).
+
+.. code-block:: text
+
+   Resetting policy for terminated env_ids: tensor([7], device='cuda:0') and truncated env_ids: tensor([], device='cuda:0', dtype=torch.int64)
+
+At the end of the evaluation, you should see the following output on the console indicating the metrics.
+You can see that the success rate is no longer 1.0 as more trials are being evaluated, and the number of episodes is more
+than the single environment evaluation because of the parallel evaluation.
+
+.. code-block:: text
+
+   Metrics: {'success_rate': 0.5833333333333334, 'door_moved_rate': 1.0, 'num_episodes': 120}
 
 .. note::
 

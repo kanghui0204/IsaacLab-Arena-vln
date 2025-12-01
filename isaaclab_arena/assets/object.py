@@ -1,17 +1,7 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
+# SPDX-License-Identifier: Apache-2.0
 
 from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
@@ -44,9 +34,11 @@ class Object(ObjectBase):
         self.usd_path = usd_path
         self.scale = scale
         self.initial_pose = initial_pose
+        self.object_cfg = self._init_object_cfg()
 
     def set_initial_pose(self, pose: Pose) -> None:
         self.initial_pose = pose
+        self.object_cfg = self._add_initial_pose_to_cfg(self.object_cfg)
 
     def get_initial_pose(self) -> Pose | None:
         return self.initial_pose
@@ -85,7 +77,7 @@ class Object(ObjectBase):
         assert self.object_type == ObjectType.BASE
         object_cfg = AssetBaseCfg(
             prim_path="{ENV_REGEX_NS}/" + self.name,
-            spawn=UsdFileCfg(usd_path=self.usd_path),
+            spawn=UsdFileCfg(usd_path=self.usd_path, scale=self.scale),
         )
         object_cfg = self._add_initial_pose_to_cfg(object_cfg)
         return object_cfg

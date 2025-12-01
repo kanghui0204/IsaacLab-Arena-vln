@@ -1,16 +1,7 @@
-# Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np
 import random
@@ -28,10 +19,6 @@ def main():
     args_parser = get_isaaclab_arena_cli_parser()
     # We do this as the parser is shared between the example environment and policy runner
     args_cli, unknown = args_parser.parse_known_args()
-
-    # NOTE(alexmillane, 2025-10-30): We only support single environment evaluation for now.
-    if args_cli.num_envs > 1:
-        raise ValueError("Only single environment evaluation is supported in Isaac Lab Arena v0.1.")
 
     # Start the simulation app
     with SimulationAppContext(args_cli):
@@ -62,12 +49,15 @@ def main():
             with torch.inference_mode():
                 actions = policy.get_action(env, obs)
                 obs, _, terminated, truncated, _ = env.step(actions)
-                # NOTE(alexmillane, 2025-10-30): We reset the policy on env resets.
-                # This does not support parallel evaluation because each env is running async,
-                # it may be cases where one env completes when others are not done.
-                # TODO(alexmillane, 2025-10-30): Support parallel evaluation.
-                if terminated.any():
-                    policy.reset()
+
+                if terminated.any() or truncated.any():
+                    # only reset policy for those envs that are terminated or truncated
+                    print(
+                        f"Resetting policy for terminated env_ids: {terminated.nonzero().flatten()}"
+                        f" and truncated env_ids: {truncated.nonzero().flatten()}"
+                    )
+                    env_ids = (terminated | truncated).nonzero().flatten()
+                    policy.reset(env_ids=env_ids)
 
         metrics = compute_metrics(env)
         print(f"Metrics: {metrics}")
