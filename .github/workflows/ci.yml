@@ -112,9 +112,9 @@ jobs:
   #       run: /isaac-sim/python.sh -m pytest -sv -m with_cameras isaaclab_arena/tests/ --ignore=isaaclab_arena/tests/policy/
 
 
-  pre_commit_public_runner:
+  pre_commit:
     name: Pre-commit
-    runs-on: [gpu]
+    runs-on: [self-hosted, zurich]
     timeout-minutes: 60
 
     container:
@@ -168,6 +168,26 @@ jobs:
       # - *mark_repo_safe_step
       # - *checkout_step
       # - *git_lfs_step
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+
+
+
+  pre_commit_public_runner:
+    name: Pre-commit on public runner
+    runs-on: [gpu]
+    timeout-minutes: 60
+
+    container:
+      image: python:3.11-slim
+
+    steps:
+      - *install_git_step
+      - *cleanup_step
+      - *mark_repo_safe_step
+      - *checkout_step
+      - *git_lfs_step
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
