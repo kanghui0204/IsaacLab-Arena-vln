@@ -30,8 +30,7 @@ env:
 jobs:
   test:
     name: Run pre commit checks and tests
-    # runs-on: [self-hosted, zurich]
-    runs-on: [gpu]
+    runs-on: [self-hosted, zurich]
     timeout-minutes: 45
 
     container:
@@ -183,9 +182,6 @@ jobs:
       credentials:
         username: $oauthtoken
         password: ${{ env.NGC_API_KEY }}
-      # virtual mounted checkpoints directory from the local machine
-      # volumes:
-      #   - /home/runner/checkpoints:/checkpoints
     steps:
       # Setup.
       - *install_git_step
@@ -200,6 +196,28 @@ jobs:
         run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
 
   build_docs_pre_merge:
+    name: Build the docs (pre-merge)
+    runs-on: [self-hosted, zurich]
+    timeout-minutes: 30
+
+    container:
+      image: python:3.11-slim
+
+    steps:
+      # Setup.
+      - *install_git_step
+      - *cleanup_step
+      - *checkout_step
+
+      # Build docs
+      - name: Build docs
+        run: |
+          cd docs
+          pip3 install -r requirements.txt
+          make SPHINXOPTS=-W html
+          touch ./_build/html/.nojekyll
+
+  build_docs_pre_merge_public_runner:
     name: Build the docs (pre-merge)
     runs-on: [self-hosted, zurich]
     timeout-minutes: 30
