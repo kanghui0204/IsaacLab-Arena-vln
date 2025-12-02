@@ -23,7 +23,7 @@ class LibraryObject(Object):
 
     name: str
     tags: list[str]
-    usd_path: str
+    usd_path: str | None = None
     object_type: ObjectType = ObjectType.RIGID
     scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
@@ -258,7 +258,7 @@ class GroundPlane(LibraryObject):
 
 @register_asset
 class DomeLight(LibraryObject):
-    """
+    """i
     A dome light.
     """
 
