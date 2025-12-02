@@ -60,6 +60,7 @@ class ArenaEnvBuilder:
             self.arena_env.scene.get_scene_cfg(),
             self.arena_env.embodiment.get_scene_cfg(),
             self.arena_env.task.get_scene_cfg(),
+            bases=(InteractiveSceneCfg,),
         )
         observation_cfg = combine_configclass_instances(
             "ObservationCfg",
