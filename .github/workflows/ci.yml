@@ -106,6 +106,11 @@ jobs:
         password: ${{ env.NGC_API_KEY }}
 
     steps:
+      # nvidia-smi
+      - &nvidia_smi
+        name: nvidia-smi
+        run: nvidia-smi
+
       # Setup
       - *install_git_step
       - *cleanup_step
@@ -139,6 +144,9 @@ jobs:
         username: $oauthtoken
         password: ${{ env.NGC_API_KEY }}
     steps:
+      # nvidia-smi
+      - *nvidia_smi
+
       # Setup.
       - *install_git_step
       - *cleanup_step
