@@ -22,9 +22,10 @@ below.
 Step 1: Annotate Demonstrations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This step describes how to annotate the demonstrations recorded in the preceding step
-such that they can be used by Isaac Lab Mimic.
-The process of annotation involves segmenting demonstrations into subtasks (reach, grasp, pull):
+This step describes how to manually annotate the demonstrations recorded in the preceding step
+such that they can be used by Isaac Lab Mimic. For automatic annotation the user needs to define
+subtasks in their task definition, we do not show how to do this in this tutorial.
+The process of annotation involves segmenting demonstrations into two subtasks (reach, open door):
 
 To skip this step, you can download the pre-annotated dataset from Hugging Face as described below.
 
