@@ -45,18 +45,18 @@ def test_gr1_manip_replay_lerobot_policy_runner_single_env():
     # args.append(TestConstants.test_data_dir + "/test_gr1_manip_lerobot/test_gr1_manip_replay_action_config.yaml")
     args.append("--max_steps")
     args.append(str(NUM_STEPS))
-    # args.append("--trajectory_index")
-    # args.append(str(TRAJECTORY_INDEX))
+    args.append("--trajectory_index")
+    args.append(str(TRAJECTORY_INDEX))
     if HEADLESS:
         args.append("--headless")
     if ENABLE_CAMERAS:
         args.append("--enable_cameras")
     # example env
     args.append("gr1_open_microwave")
-    # args.append("--object")
-    # args.append("microwave") # TESTED: REMOVED
+    args.append("--object")
+    args.append("microwave") # TESTED: REMOVED
     args.append("--embodiment")
-    args.append("gr1_pink") # TESTED: SWITCHED FOR GR1_JOINT
+    args.append("gr1_joint") # TESTED: SWITCHED FOR GR1_JOINT
     run_subprocess(args)
 
 
