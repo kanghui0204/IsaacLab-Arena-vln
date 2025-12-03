@@ -38,9 +38,7 @@ def test_g1_locomanip_replay_lerobot_policy_runner_single_env():
     run_subprocess(args)
 
 
-pytest.mark.skip(reason="Fails on CI for reasons under investigation.")
-
-
+@pytest.mark.skip(reason="Fails on CI for reasons under investigation.")
 def test_gr1_manip_replay_lerobot_policy_runner_single_env():
     args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
     args.append("--policy_type")
