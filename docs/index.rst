@@ -183,6 +183,7 @@ TABLE OF CONTENTS
    pages/quickstart/installation
    pages/quickstart/first_arena_env
    pages/quickstart/docker_containers
+   pages/quickstart/private_omniverse
 
 .. toctree::
    :maxdepth: 1
