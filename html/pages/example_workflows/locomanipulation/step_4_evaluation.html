@@ -471,21 +471,24 @@ by the quality of post-trained policy, the quality of the dataset, and number of
 <span class="w">  </span>--num_steps<span class="w"> </span><span class="m">1200</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--num_envs<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--enable_cameras<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>cpu<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--policy_device<span class="w"> </span>cuda<span class="w">  </span><span class="se">\</span>
 <span class="w">  </span>galileo_g1_locomanip_pick_and_place<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--object<span class="w"> </span>brown_box<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--embodiment<span class="w"> </span>g1_wbc_joint
 </pre></div>
 </div>
 <p>And during the evaluation, you should see the following output on the console at the end of the evaluation
-indicating which environments are terminated (task-specific conditions like the brown box is placed into the blue bin),
+indicating which environments are terminated (task-specific conditions like the brown box is placed into the blue bin,
+or the episode length is exceeded by 30 seconds),
 or truncated (if timeouts are enabled, like the maximum episode length is exceeded).</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Resetting policy for terminated env_ids: tensor([4], device=&#39;cuda:0&#39;) and truncated env_ids: tensor([], device=&#39;cuda:0&#39;, dtype=torch.int64)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Resetting policy for terminated env_ids: tensor([3], device=&#39;cuda:0&#39;) and truncated env_ids: tensor([], device=&#39;cuda:0&#39;, dtype=torch.int64)
 </pre></div>
 </div>
 <p>At the end of the evaluation, you should see the following output on the console indicating the metrics.
-You can see that the success rate is no longer 1.0 as more trials are being evaluated and randomizations are being introduced,
+You can see that the success rate might not be 1.0 as more trials are being evaluated and randomizations are being introduced,
 and the number of episodes is more than the single environment evaluation because of the parallelization.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Metrics: {&#39;success_rate&#39;: 0.2, &#39;num_episodes&#39;: 5}
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Metrics: {&#39;success_rate&#39;: 1.0, &#39;num_episodes&#39;: 4}
 </pre></div>
 </div>
 <div class="admonition note">
@@ -496,6 +499,11 @@ This is because during tele-operation, the upper body is controlled via target e
 which are realized by using the PINK IK controller, and the lower body is controlled via a WBC policy.
 GR00T N1.5 policy is trained on upper body joint positions and lower body WBC policy inputs, so we use
 <code class="docutils literal notranslate"><span class="pre">g1_wbc_joint</span></code> for closed-loop policy inference.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The policy was trained on datasets generated using CPU-based physics, therefore the evaluation uses <code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">cpu</span></code> to ensure physics reproducibility.
+If you have GPU-generated datasets, you can switch to using GPU-based physics for evaluation by providing the <code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">cuda</span></code> flag.</p>
 </div>
 </section>
 </section>
