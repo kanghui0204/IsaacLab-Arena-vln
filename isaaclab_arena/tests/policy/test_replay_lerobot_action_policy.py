@@ -41,8 +41,8 @@ def test_gr1_manip_replay_lerobot_policy_runner_single_env():
     args.append("--policy_type")
     # args.append("replay_lerobot")
     args.append("zero_action") # TESTED: SWITCHED FOR ZERO_ACTION
-    # args.append("--config_yaml_path")
-    # args.append(TestConstants.test_data_dir + "/test_gr1_manip_lerobot/test_gr1_manip_replay_action_config.yaml")
+    args.append("--config_yaml_path")
+    args.append(TestConstants.test_data_dir + "/test_gr1_manip_lerobot/test_gr1_manip_replay_action_config.yaml")
     args.append("--max_steps")
     args.append(str(NUM_STEPS))
     args.append("--trajectory_index")
