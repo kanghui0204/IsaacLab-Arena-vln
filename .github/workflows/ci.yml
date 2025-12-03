@@ -83,9 +83,11 @@ jobs:
 
       - &git_status
         name: git status
-        run: |
-          git status
-          git fsck --full
+        run: git status
+
+      - &git_fsck
+        name: git fsck
+        run: git fsck --full
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
@@ -124,6 +126,7 @@ jobs:
           [ -e ./submodules/IsaacLab/_isaac_sim ] || ln -s /isaac-sim ./submodules/IsaacLab/_isaac_sim
 
       - *git_status
+      - *git_fsck
 
       # Run the tests (excluding the gr00t related tests)
       - name: Run pytest excluding policy-related tests. First we run all tests without cameras.
@@ -157,6 +160,7 @@ jobs:
       - *install_project_step
 
       - *git_status
+      - *git_fsck
 
       # Run the policy (GR00T) related tests.
       - name: Run policy-related pytest
@@ -179,6 +183,7 @@ jobs:
       - *checkout_step
 
       - *git_status
+      - *git_fsck
 
       # Build docs
       - name: Build docs
@@ -211,6 +216,7 @@ jobs:
       - *checkout_step
 
       - *git_status
+      - *git_fsck
 
       - name: Install docker
         run: |
