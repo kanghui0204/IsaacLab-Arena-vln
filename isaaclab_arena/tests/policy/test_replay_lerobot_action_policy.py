@@ -7,7 +7,7 @@ from isaaclab_arena.tests.utils.constants import TestConstants
 from isaaclab_arena.tests.utils.subprocess import run_subprocess
 
 HEADLESS = True
-ENABLE_CAMERAS = False # CHANGED!
+ENABLE_CAMERAS = False  # CHANGED!
 NUM_STEPS = 10
 # Only 1 traj in test data
 TRAJECTORY_INDEX = 0
@@ -39,8 +39,8 @@ TRAJECTORY_INDEX = 0
 def test_gr1_manip_replay_lerobot_policy_runner_single_env():
     args = [TestConstants.python_path, f"{TestConstants.examples_dir}/policy_runner.py"]
     args.append("--policy_type")
-    # args.append("replay_lerobot")
-    args.append("zero_action") # TESTED: SWITCHED FOR ZERO_ACTION
+    args.append("replay_lerobot")
+    # args.append("zero_action") # TESTED: SWITCHED FOR ZERO_ACTION
     args.append("--config_yaml_path")
     args.append(TestConstants.test_data_dir + "/test_gr1_manip_lerobot/test_gr1_manip_replay_action_config.yaml")
     args.append("--max_steps")
@@ -54,9 +54,9 @@ def test_gr1_manip_replay_lerobot_policy_runner_single_env():
     # example env
     args.append("gr1_open_microwave")
     args.append("--object")
-    args.append("microwave") # TESTED: REMOVED
+    args.append("microwave")  # TESTED: REMOVED
     args.append("--embodiment")
-    args.append("gr1_joint") # TESTED: SWITCHED FOR GR1_JOINT
+    args.append("gr1_joint")  # TESTED: SWITCHED FOR GR1_JOINT
     run_subprocess(args)
 
 
