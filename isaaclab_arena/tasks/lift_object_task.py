@@ -129,7 +129,7 @@ class LiftObjectTaskRL(LiftObjectTask):
         self.embodiment_information = embodiment_information
 
     def get_observation_cfg(self):
-        return LiftObjectObservationsCfg()
+        return LiftObjectObservationsCfg(lift_object=self.lift_object)
 
     def get_scene_cfg(self):
         return LiftObjectSceneCfg(embodiment_information=self.embodiment_information)
@@ -147,13 +147,17 @@ class LiftObjectObservationsCfg:
 
     task_obs: ObsGroup = MISSING
 
-    def __init__(self):
+    def __init__(self, lift_object: Asset):
         @configclass
         class TaskObsCfg(ObsGroup):
             """Observations for the Lift Object task."""
 
             target_object_position = ObsTerm(
                 func=mdp_isaac_lab.generated_commands, params={"command_name": "object_pose"}
+            )
+            object_position = ObsTerm(
+                func=mdp_isaac_lab.object_position_in_robot_root_frame,
+                params={"object_cfg": SceneEntityCfg(lift_object.name)},
             )
 
             def __post_init__(self):
