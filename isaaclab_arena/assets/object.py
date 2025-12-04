@@ -27,7 +27,6 @@ class Object(ObjectBase):
         initial_pose: Pose | None = None,
         **kwargs,
     ):
-        assert name is not None
         if object_type is not ObjectType.SPAWNER:
             assert usd_path is not None
         # Detect object type if not provided

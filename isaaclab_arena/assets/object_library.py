@@ -242,6 +242,7 @@ class GroundPlane(LibraryObject):
 
     name = "ground_plane"
     tags = ["ground_plane"]
+    # Setting a global prim path for the ground plane. Will not get repeated for each environment.
     default_prim_path = "/World/GroundPlane"
     object_type = ObjectType.SPAWNER
     spawner_cfg = GroundPlaneCfg()
@@ -251,16 +252,23 @@ class GroundPlane(LibraryObject):
 
 
 @register_asset
-class DomeLight(LibraryObject):
+class Light(LibraryObject):
     """
     A dome light.
     """
 
-    name = "dome_light"
+    name = "light"
     tags = ["light"]
-    default_prim_path = "/World/defaultDomeLight"
+    # Setting a global prim path for the dome light. Will not get repeated for each environment.
+    default_prim_path = "/World/Light"
     object_type = ObjectType.SPAWNER
-    spawner_cfg = sim_utils.DomeLightCfg(color=(0.75, 0.75, 0.75), intensity=3000.0)
+    default_spawner_cfg = sim_utils.DomeLightCfg(color=(0.75, 0.75, 0.75), intensity=3000.0)
 
-    def __init__(self, prim_path: str | None = default_prim_path, initial_pose: Pose | None = None):
+    def __init__(
+        self,
+        prim_path: str | None = default_prim_path,
+        initial_pose: Pose | None = None,
+        spawner_cfg: sim_utils.LightCfg = default_spawner_cfg,
+    ):
+        self.spawner_cfg = spawner_cfg
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)

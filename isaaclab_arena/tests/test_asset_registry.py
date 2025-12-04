@@ -132,6 +132,56 @@ def test_all_assets_in_registry():
     assert result, "Test failed"
 
 
+def _test_multiple_lights_and_ground_plane(simulation_app):
+    from isaaclab_arena.assets.asset_registry import AssetRegistry
+    from isaaclab_arena.embodiments.franka.franka import FrankaEmbodiment
+    from isaaclab_arena.environments.arena_env_builder import ArenaEnvBuilder
+    from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
+    from isaaclab_arena.scene.scene import Scene
+    from isaaclab_arena.tasks.dummy_task import DummyTask
+
+    asset_registry = AssetRegistry()
+    light = asset_registry.get_asset_by_name("light")()
+    light_duplicate = asset_registry.get_asset_by_name("light")()
+    ground_plane = asset_registry.get_asset_by_name("ground_plane")()
+    ground_plane_duplicate = asset_registry.get_asset_by_name("ground_plane")()
+    scene = Scene(assets=[light, light_duplicate, ground_plane, ground_plane_duplicate])
+    isaaclab_arena_environment = IsaacLabArenaEnvironment(
+        name="dummy_task",
+        embodiment=FrankaEmbodiment(),
+        scene=scene,
+        task=DummyTask(),
+    )
+    # Compile the environment.
+    args_parser = get_isaaclab_arena_cli_parser()
+    args_cli = args_parser.parse_args([])
+
+    builder = ArenaEnvBuilder(isaaclab_arena_environment, args_cli)
+    env = builder.make_registered()
+    env.reset()
+    for _ in tqdm.tqdm(range(NUM_STEPS)):
+        with torch.inference_mode():
+            actions = torch.zeros(env.action_space.shape, device=env.unwrapped.device)
+            env.step(actions)
+    all_assets = env.scene.keys()
+    # There should only be one light, ground_plane in the scene asset list.
+    light_assets = [asset for asset in all_assets if asset.startswith("light")]
+    ground_plane_assets = [asset for asset in all_assets if asset.startswith("ground_plane")]
+    assert len(light_assets) == 1
+    assert len(ground_plane_assets) == 1
+    env.close()
+    return True
+
+
+def test_multiple_lights_and_ground_plane():
+    result = run_simulation_app_function(
+        _test_multiple_lights_and_ground_plane,
+        headless=HEADLESS,
+    )
+    assert result, "Test failed"
+
+
 if __name__ == "__main__":
     test_default_assets_registered()
     test_all_assets_in_registry()
+    test_multiple_lights_and_ground_plane()
