@@ -172,6 +172,7 @@ jobs:
       # Run the policy (GR00T) related tests.
       - name: Run policy-related pytest
         run: |
+          sudo apt-get update && sudo apt-get install time
           /usr/bin/time -f 'Peak memory: %M KB' /isaac-sim/python.sh -m pytest -s isaaclab_arena/tests/policy/test_replay_lerobot_action_policy.py
         # run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
 
