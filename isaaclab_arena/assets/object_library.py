@@ -287,7 +287,8 @@ class PackingTable(LibraryObject):
     """
 
     name = "packing_table"
-    tags = ["object"]
+    tags = ["table"]
+    object_type = ObjectType.BASE
     usd_path = f"{ISAAC_NUCLEUS_DIR}/Props/PackingTable/packing_table.usd"
     default_prim_path = "{ENV_REGEX_NS}/PackingTable"
     scale = (1.0, 1.0, 1.0)

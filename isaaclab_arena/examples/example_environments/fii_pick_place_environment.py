@@ -9,17 +9,20 @@ class FiiPickPlaceEnvironment(ExampleEnvironmentBase):
         from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
         from isaaclab_arena.tasks.fii_pick_and_place_task import FiiPickAndPlaceTask
-
+        from isaaclab.assets import AssetBaseCfg
+        import isaaclab.sim as sim_utils
         pick_up_object = self.asset_registry.get_asset_by_name("object")()
         packing_table = self.asset_registry.get_asset_by_name("packing_table")()
         embodiment = self.asset_registry.get_asset_by_name("fii")()
+        ground = self.asset_registry.get_asset_by_name("ground_plane")()
+        dome_light = self.asset_registry.get_asset_by_name("dome_light")()
 
         if args_cli.teleop_device is not None:
             teleop_device = self.device_registry.get_device_by_name(args_cli.teleop_device)()
         else:
             teleop_device = None
         
-        scene = Scene(assets=[pick_up_object])
+        scene = Scene(assets=[pick_up_object, packing_table, ground, dome_light])
         isaaclab_arena_environment = IsaacLabArenaEnvironment(
             name=self.name,
             embodiment=embodiment,

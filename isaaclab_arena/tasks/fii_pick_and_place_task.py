@@ -49,14 +49,13 @@ class FiiPickAndPlaceTask(TaskBase):
         episode_length_s: float | None = None,
     ):
         super().__init__(episode_length_s=episode_length_s)
-        self.scene_config = FiibotSceneCfg(num_envs=1, env_spacing=2.5, replicate_physics=True)
         self.termination_cfg = FiibotTerminationsCfg()
         self.viewer_cfg = ViewerCfg(
         eye=(0.0, 3.0, 1.5), lookat=(0.0, 0.0, 0.7), origin_type="asset_body", asset_name="robot", body_name="base_link"
     )
 
     def get_scene_cfg(self):
-        return self.scene_config
+        pass
 
     def get_termination_cfg(self):
         return self.termination_cfg
@@ -95,22 +94,3 @@ class FiibotTerminationsCfg:
         "max_height": 1.10,
         "min_vel": 0.20,                                                        
     })
-
-#=======================================================================
-#   SCENE
-#=======================================================================
-
-class FiibotSceneCfg(InteractiveSceneCfg):
-
-    ground = AssetBaseCfg(
-        prim_path="/World/defaultGroundPlane",
-        spawn=sim_utils.GroundPlaneCfg()
-    )
-
-    dome_light = AssetBaseCfg(
-        prim_path="/World/Light", 
-        spawn=sim_utils.DomeLightCfg(
-            intensity=3000.0, 
-            color=(0.75, 0.75, 0.75)
-        )
-    )
