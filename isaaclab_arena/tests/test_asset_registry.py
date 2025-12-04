@@ -133,12 +133,16 @@ def test_all_assets_in_registry():
 
 
 def _test_multiple_lights_and_ground_plane(simulation_app):
+    import isaaclab.sim as sim_utils
+    from pxr import UsdLux
+
     from isaaclab_arena.assets.asset_registry import AssetRegistry
     from isaaclab_arena.embodiments.franka.franka import FrankaEmbodiment
     from isaaclab_arena.environments.arena_env_builder import ArenaEnvBuilder
     from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.dummy_task import DummyTask
+    from isaaclab_arena.utils.usd_helpers import get_all_prims
 
     asset_registry = AssetRegistry()
     light = asset_registry.get_asset_by_name("light")()
@@ -154,7 +158,7 @@ def _test_multiple_lights_and_ground_plane(simulation_app):
     )
     # Compile the environment.
     args_parser = get_isaaclab_arena_cli_parser()
-    args_cli = args_parser.parse_args([])
+    args_cli = args_parser.parse_args(["--num_envs", "2"])
 
     builder = ArenaEnvBuilder(isaaclab_arena_environment, args_cli)
     env = builder.make_registered()
@@ -163,12 +167,14 @@ def _test_multiple_lights_and_ground_plane(simulation_app):
         with torch.inference_mode():
             actions = torch.zeros(env.action_space.shape, device=env.unwrapped.device)
             env.step(actions)
-    all_assets = env.scene.keys()
-    # There should only be one light, ground_plane in the scene asset list.
-    light_assets = [asset for asset in all_assets if asset.startswith("light")]
-    ground_plane_assets = [asset for asset in all_assets if asset.startswith("ground_plane")]
-    assert len(light_assets) == 1
-    assert len(ground_plane_assets) == 1
+    all_prims_in_stage = get_all_prims(env.scene.stage)
+    # Check that there is only one light in the stage
+    # We dont add lights from anywhere else in this scene.
+    light_prims = [prim for prim in all_prims_in_stage if prim.IsA(UsdLux.DomeLight)]
+    assert len(light_prims) == 1
+    # Check that there is only one ground plane in the stage
+    ground_plane_prims = [prim for prim in all_prims_in_stage if prim.IsA(sim_utils.GroundPlaneCfg)]
+    assert len(ground_plane_prims) == 1
     env.close()
     return True
 
