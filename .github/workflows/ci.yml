@@ -171,7 +171,8 @@ jobs:
 
       # Run the policy (GR00T) related tests.
       - name: Run policy-related pytest
-        run: /usr/bin/time -f 'Peak memory: %M KB' /isaac-sim/python.sh -m pytest -s isaaclab_arena/tests/policy/test_replay_lerobot_action_policy.py
+        run: |
+          /usr/bin/time -f 'Peak memory: %M KB' /isaac-sim/python.sh -m pytest -s isaaclab_arena/tests/policy/test_replay_lerobot_action_policy.py
         # run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
 
 
