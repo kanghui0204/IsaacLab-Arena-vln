@@ -24,25 +24,26 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
         from isaaclab_arena.tasks.lift_object_task import LiftObjectTaskRL
         from isaaclab_arena.utils.pose import Pose
 
-        background = self.asset_registry.get_asset_by_name("packing_table")()
-        pick_up_object = self.asset_registry.get_asset_by_name("tomato_soup_can")()
+        background = self.asset_registry.get_asset_by_name("table")()
+        pick_up_object = self.asset_registry.get_asset_by_name("dex_cube")()
 
-        assets = [background, pick_up_object]
+        # Add ground plane and light to the scene
+        ground_plane = self.asset_registry.get_asset_by_name("ground_plane")()
+        light = self.asset_registry.get_asset_by_name("light")()
+
+        assets = [background, pick_up_object, ground_plane, light]
 
         embodiment = self.asset_registry.get_asset_by_name("franka")()
-        embodiment.set_initial_pose(Pose(position_xyz=(-0.4, 0.0, 0.0), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
         if args_cli.teleop_device is not None:
             teleop_device = self.device_registry.get_device_by_name(args_cli.teleop_device)()
         else:
             teleop_device = None
 
-        # Put the microwave on the packing table.
-        pick_up_object_pose = Pose(
-            position_xyz=(0.4, -0.00586, 0.22773),
-            rotation_wxyz=(0.7071068, 0, 0, -0.7071068),
-        )
-        pick_up_object.set_initial_pose(pick_up_object_pose)
+        # Set all positions
+        background.set_initial_pose(Pose(position_xyz=(0.5, 0, 0), rotation_wxyz=(0.707, 0, 0, 0.707)))
+        pick_up_object.set_initial_pose(Pose(position_xyz=(0.5, 0, 0.055), rotation_wxyz=(1, 0, 0, 0)))
+        ground_plane.set_initial_pose(Pose(position_xyz=(0.0, 0.0, -1.05)))
 
         embodiment_information = {
             "body_name": "panda_hand",
@@ -59,8 +60,7 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
             pick_up_object,
             background,
             embodiment_information,
-            minimum_height_to_lift=0.3,
-            maximum_height_to_lift=0.5,
+            minimum_height_to_lift=0.04,
             episode_length_s=5.0,
         )
 

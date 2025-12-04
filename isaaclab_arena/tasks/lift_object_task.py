@@ -21,7 +21,6 @@ from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
 from isaaclab_arena.tasks.rewards import general_rewards
 from isaaclab_arena.tasks.task_base import TaskBase
-from isaaclab_arena.tasks.terminations import object_lifted
 from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
 
 
@@ -30,15 +29,13 @@ class LiftObjectTask(TaskBase):
         self,
         lift_object: Asset,
         background_scene: Asset,
-        minimum_height_to_lift: float = 1.5,
-        maximum_height_to_lift: float = 2,
-        episode_length_s: float | None = None,
+        minimum_height_to_lift: float = 0.04,
+        episode_length_s: float = 5.0,
     ):
         super().__init__(episode_length_s=episode_length_s)
         self.lift_object = lift_object
         self.background_scene = background_scene
         self.minimum_height_to_lift = minimum_height_to_lift
-        self.maximum_height_to_lift = maximum_height_to_lift
         self.scene_config = None
         self.events_cfg = LiftObjectEventsCfg(lift_object=self.lift_object)
         self.termination_cfg = self.make_termination_cfg()
@@ -53,13 +50,6 @@ class LiftObjectTask(TaskBase):
         return self.termination_cfg
 
     def make_termination_cfg(self):
-        success = TerminationTermCfg(
-            func=object_lifted,
-            params={
-                "object_cfg": SceneEntityCfg(self.lift_object.name),
-                "maximum_height": self.maximum_height_to_lift,
-            },
-        )
         object_dropped = TerminationTermCfg(
             func=mdp_isaac_lab.root_height_below_minimum,
             params={
@@ -67,7 +57,7 @@ class LiftObjectTask(TaskBase):
                 "asset_cfg": SceneEntityCfg(self.lift_object.name),
             },
         )
-        return LiftObjectTerminationsCfg(success=success, object_dropped=object_dropped)
+        return LiftObjectTerminationsCfg(object_dropped=object_dropped)
 
     def get_events_cfg(self):
         return self.events_cfg
@@ -95,18 +85,18 @@ class LiftObjectEventsCfg:
     reset_lift_object_pose: EventTermCfg = MISSING
 
     def __init__(self, lift_object: Asset):
-        initial_pose = lift_object.get_initial_pose()
-        inital_pose_x = initial_pose.position_xyz[0]
-        inital_pose_y = initial_pose.position_xyz[1]
-        inital_pose_z = initial_pose.position_xyz[2]
+        # initial_pose = lift_object.get_initial_pose()
+        # inital_pose_x = initial_pose.position_xyz[0]
+        # inital_pose_y = initial_pose.position_xyz[1]
+        # inital_pose_z = initial_pose.position_xyz[2]
         self.reset_lift_object_pose = EventTermCfg(
             func=mdp_isaac_lab.reset_root_state_uniform,
             mode="reset",
             params={
                 "pose_range": {
-                    "x": (inital_pose_x - 0.1, inital_pose_x + 0.1),
-                    "y": (inital_pose_y - 0.25, inital_pose_y + 0.25),
-                    "z": (inital_pose_z, inital_pose_z),
+                    "x": (-0.1, 0.1),
+                    "y": (-0.25, 0.25),
+                    "z": (0.0, 0.0),
                 },
                 "velocity_range": {},
                 "asset_cfg": SceneEntityCfg(lift_object.name),
@@ -119,7 +109,6 @@ class LiftObjectTerminationsCfg:
     """Termination terms for the Lift Object task."""
 
     time_out: TerminationTermCfg = TerminationTermCfg(func=mdp_isaac_lab.time_out)
-    success: TerminationTermCfg = MISSING
     object_dropped: TerminationTermCfg = MISSING
 
 
@@ -130,14 +119,12 @@ class LiftObjectTaskRL(LiftObjectTask):
         background_scene: Asset,
         embodiment_information: dict[str, Any],
         minimum_height_to_lift: float = 0.04,
-        maximum_height_to_lift: float = 0.1,
-        episode_length_s: float | None = None,
+        episode_length_s: float = 5.0,
     ):
         super().__init__(
             lift_object=lift_object,
             background_scene=background_scene,
             minimum_height_to_lift=minimum_height_to_lift,
-            maximum_height_to_lift=maximum_height_to_lift,
             episode_length_s=episode_length_s,
         )
         self.embodiment_information = embodiment_information
@@ -184,19 +171,19 @@ class LiftObjectCommandsCfg:
     object_pose: CommandTermCfg = MISSING
 
     def __init__(self, embodiment_information: dict[str, Any], lift_object: Asset):
-        initial_pose = lift_object.get_initial_pose()
-        inital_pose_x = initial_pose.position_xyz[0]
-        inital_pose_y = initial_pose.position_xyz[1]
-        inital_pose_z = initial_pose.position_xyz[2]
+        # initial_pose = lift_object.get_initial_pose()
+        # inital_pose_x = initial_pose.position_xyz[0]
+        # inital_pose_y = initial_pose.position_xyz[1]
+        # inital_pose_z = initial_pose.position_xyz[2]
         self.object_pose = mdp_isaac_lab.UniformPoseCommandCfg(
             asset_name="robot",
             body_name=embodiment_information["body_name"],
             resampling_time_range=(5.0, 5.0),
             debug_vis=True,
             ranges=mdp_isaac_lab.UniformPoseCommandCfg.Ranges(
-                pos_x=(inital_pose_x - 0.1, inital_pose_x + 0.1),
-                pos_y=(inital_pose_y - 0.25, inital_pose_y + 0.25),
-                pos_z=(inital_pose_z, inital_pose_z + 0.2),
+                pos_x=(0.4, 0.6),
+                pos_y=(-0.25, 0.25),
+                pos_z=(0.25, 0.5),
                 roll=(0.0, 0.0),
                 pitch=(0.0, 0.0),
                 yaw=(0.0, 0.0),
