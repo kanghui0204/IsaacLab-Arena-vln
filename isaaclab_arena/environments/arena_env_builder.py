@@ -26,11 +26,12 @@ from isaaclab_arena.utils.configclass import combine_configclass_instances
 class ArenaEnvBuilder:
     """Compose IsaacLab Arena → IsaacLab configs"""
 
-    DEFAULT_SCENE_CFG = InteractiveSceneCfg(num_envs=4096, env_spacing=30.0, replicate_physics=False)
-
     def __init__(self, arena_env: IsaacLabArenaEnvironment, args: argparse.Namespace):
         self.arena_env = arena_env
         self.args = args
+        self.DEFAULT_SCENE_CFG = InteractiveSceneCfg(
+            num_envs=args.num_envs, env_spacing=args.env_spacing, replicate_physics=False
+        )
 
     def orchestrate(self) -> None:
         """Orchestrate the environment member interaction"""
@@ -60,7 +61,6 @@ class ArenaEnvBuilder:
             self.arena_env.scene.get_scene_cfg(),
             self.arena_env.embodiment.get_scene_cfg(),
             self.arena_env.task.get_scene_cfg(),
-            bases=(InteractiveSceneCfg,),
         )
         observation_cfg = combine_configclass_instances(
             "ObservationCfg",
