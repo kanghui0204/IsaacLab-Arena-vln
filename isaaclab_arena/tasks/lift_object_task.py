@@ -18,6 +18,7 @@ from isaaclab.utils import configclass
 
 from isaaclab_arena.assets.asset import Asset
 from isaaclab_arena.metrics.metric_base import MetricBase
+from isaaclab_arena.tasks.observations import general_observations
 from isaaclab_arena.tasks.rewards import general_rewards
 from isaaclab_arena.tasks.task_base import TaskBase
 from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
@@ -156,7 +157,7 @@ class LiftObjectObservationsCfg:
                 func=mdp_isaac_lab.generated_commands, params={"command_name": "object_pose"}
             )
             object_position = ObsTerm(
-                func=mdp_isaac_lab.object_position_in_robot_root_frame,
+                func=general_observations.object_position_in_robot_root_frame,
                 params={"object_cfg": SceneEntityCfg(lift_object.name)},
             )
 
