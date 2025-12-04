@@ -169,13 +169,38 @@ jobs:
         # find isaaclab_arena/tests/test_data/test_gr1_manip_lerobot/ -type f -print0 | xargs -0 du -h
         # run: find isaaclab_arena/tests/test_data/test_gr1_manip_lerobot/
 
-      # Run the policy (GR00T) related tests.
-      - name: Run policy-related pytest
-        run: |
-          sudo apt-get update && sudo apt-get install time
-          /usr/bin/time -f 'Peak memory: %M KB' /isaac-sim/python.sh -m pytest -s isaaclab_arena/tests/policy/test_replay_lerobot_action_policy.py
-        # run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
+      # # Run the policy (GR00T) related tests.
+      # - name: Run policy-related pytest
+      #   run: |
+      #     sudo apt-get update && sudo apt-get install time
+      #     /usr/bin/time -f 'Peak memory: %M KB' /isaac-sim/python.sh -m pytest -s isaaclab_arena/tests/policy/test_replay_lerobot_action_policy.py
+      #   # run: /isaac-sim/python.sh -m pytest -sv isaaclab_arena/tests/policy/
 
+      - name: Run command while tracking system memory
+        run: |
+          # Start memory sampling in the background
+          (
+            peak=0
+            while true; do
+              used=$(free -m | awk '/Mem:/ {print $3}')
+              if [ "$used" -gt "$peak" ]; then peak=$used; fi
+              echo $peak > peak_mem.txt
+              sleep 1
+            done
+          ) &
+          sampler_pid=$!
+
+          # Run your command
+          /isaac-sim/python.sh -m pytest -s isaaclab_arena/tests/policy/test_replay_lerobot_action_policy.py
+          exit_code=$?
+
+          # Stop the sampler
+          kill $sampler_pid || true
+
+          # Print peak system memory used (in MB)
+          echo "Peak system memory: $(cat peak_mem.txt) MB"
+
+          exit $exit_code
 
   build_docs_pre_merge:
     name: Build the docs (pre-merge)
