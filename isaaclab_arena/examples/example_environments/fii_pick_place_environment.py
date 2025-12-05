@@ -1,6 +1,7 @@
 import argparse
 
 from isaaclab_arena.examples.example_environments.example_environment_base import ExampleEnvironmentBase
+from isaaclab_arena.utils.pose import Pose
 
 class FiiPickPlaceEnvironment(ExampleEnvironmentBase):
     name: str = "fii_pick_place"
@@ -11,8 +12,8 @@ class FiiPickPlaceEnvironment(ExampleEnvironmentBase):
         from isaaclab_arena.tasks.fii_pick_and_place_task import FiiPickAndPlaceTask
         from isaaclab.assets import AssetBaseCfg
         import isaaclab.sim as sim_utils
-        pick_up_object = self.asset_registry.get_asset_by_name("object")()
-        packing_table = self.asset_registry.get_asset_by_name("packing_table")()
+        pick_up_object = self.asset_registry.get_asset_by_name("object")(initial_pose=Pose(position_xyz=(0.0, 0.75, 1.0)))
+        packing_table = self.asset_registry.get_asset_by_name("packing_table")(initial_pose=Pose(position_xyz=(0.0, 0.85, 0.)))
         embodiment = self.asset_registry.get_asset_by_name("fii")()
         ground = self.asset_registry.get_asset_by_name("ground_plane")()
         dome_light = self.asset_registry.get_asset_by_name("dome_light")()
