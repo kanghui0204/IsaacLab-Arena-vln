@@ -31,9 +31,7 @@ class OpenXRTeleopDevice(TeleopDeviceBase):
 
     name = "openxr"
 
-    def __init__(
-        self, sim_device: str | None = None
-    ):
+    def __init__(self, sim_device: str | None = None):
         super().__init__(sim_device=sim_device)
 
     def get_teleop_device_cfg(self, embodiment: object | None = None):
