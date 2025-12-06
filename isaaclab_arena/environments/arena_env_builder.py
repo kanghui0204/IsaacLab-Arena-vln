@@ -12,6 +12,7 @@ from isaaclab.envs import ManagerBasedRLMimicEnv
 from isaaclab.envs.manager_based_env import ManagerBasedEnv
 from isaaclab.managers.recorder_manager import RecorderManagerBaseCfg
 from isaaclab.scene import InteractiveSceneCfg
+from isaaclab.utils.io import dump_yaml, load_yaml
 from isaaclab_tasks.utils import parse_env_cfg
 
 from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
@@ -184,7 +185,7 @@ class ArenaEnvBuilder:
             return "isaaclab.envs:ManagerBasedRLEnv"
 
     def build_registered(
-        self, env_cfg: None | IsaacLabArenaManagerBasedRLEnvCfg = None
+        self, env_cfg: None | IsaacLabArenaManagerBasedRLEnvCfg = None, serialize: bool = False
     ) -> tuple[str, IsaacLabArenaManagerBasedRLEnvCfg]:
         """Register Gym env and parse runtime cfg."""
         name = self.arena_env.name
@@ -194,6 +195,8 @@ class ArenaEnvBuilder:
         # THIS IS A WORKAROUND TO ALLOW USER TO GRADUALLY MOVE TO THE NEW CONFIGURATION SYSTEM.
         # THIS WILL BE REMOVED IN THE FUTURE.
         cfg_entry = self.modify_env_cfg(cfg_entry)
+        if serialize:
+            dump_yaml(f"/tmp/{name}_cfg_entry.yaml", cfg_entry)
         entry_point = self.get_entry_point()
         gym.register(
             id=name,
@@ -209,12 +212,16 @@ class ArenaEnvBuilder:
         )
         return name, cfg
 
-    def make_registered(self, env_cfg: None | IsaacLabArenaManagerBasedRLEnvCfg = None) -> ManagerBasedEnv:
-        env, _ = self.make_registered_and_return_cfg(env_cfg)
+    def make_registered(self, env_cfg: None | IsaacLabArenaManagerBasedRLEnvCfg = None, serialize: bool = False) -> ManagerBasedEnv:
+        env, _ = self.make_registered_and_return_cfg(env_cfg, serialize=serialize)
         return env
 
     def make_registered_and_return_cfg(
-        self, env_cfg: None | IsaacLabArenaManagerBasedRLEnvCfg = None
+        self, env_cfg: None | IsaacLabArenaManagerBasedRLEnvCfg = None, serialize: bool = False
     ) -> tuple[ManagerBasedEnv, IsaacLabArenaManagerBasedRLEnvCfg]:
-        name, cfg = self.build_registered(env_cfg)
+        name, cfg = self.build_registered(env_cfg, serialize=serialize)
         return gym.make(name, cfg=cfg).unwrapped, cfg
+
+    def return_cfg(self, env_cfg: None | IsaacLabArenaManagerBasedRLEnvCfg = None) -> IsaacLabArenaManagerBasedRLEnvCfg:
+        name, cfg = self.build_registered(env_cfg)
+        return cfg
