@@ -5,16 +5,14 @@
 
 """Utilities for serializing and deserializing IsaacLab Arena environment configs."""
 
-# Standard library
 import builtins
 from dataclasses import fields
+from typing import Any
 
-# Third party
 import numpy as np
 import yaml
 
-# IsaacLab imports
-from isaaclab.assets import AssetBaseCfg
+from isaaclab.assets import AssetBaseCfg, RigidObjectCfg, ArticulationCfg
 from isaaclab.devices.openxr import XrCfg
 from isaaclab.managers import (
     CommandTermCfg,
@@ -34,6 +32,7 @@ from isaaclab.sim.schemas import (
     MassPropertiesCfg,
     RigidBodyPropertiesCfg,
 )
+
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 from isaaclab.sim.spawners.materials import PreviewSurfaceCfg, VisualMaterialCfg
 from isaaclab.sim.spawners.shapes.shapes_cfg import CapsuleCfg, ConeCfg, CuboidCfg, CylinderCfg, SphereCfg
@@ -737,47 +736,60 @@ def _create_config_from_class_type(item_name, item_dict, context='item'):
     )
 
 
-def _create_asset_config(asset_name, asset_dict):
+def _create_asset_config(asset_name: str, asset_dict: dict[str, Any]) -> AssetBaseCfg | RigidObjectCfg | ArticulationCfg:
     """Create a single asset config object from dictionary.
-    
+
+    If no class_type, it's a AssetBaseCfg. If class_type is provided, it could be RigidObjectCfg, ArticulationCfg, AssetBaseCfg. Assets all come with
+    spawn configuration, which is converted to proper config objects in the _convert_spawn_to_config function.
+
     Args:
         asset_name: Name of the asset
         asset_dict: Dictionary containing asset configuration
-    
+
     Returns:
         Configured asset object (RigidObjectCfg, ArticulationCfg, or AssetBaseCfg)
     """
     # Convert funcs and spawn to proper configs
+    # With conversion: spawn_cfg.func = <function spawn_from_usd>
     asset_dict = _convert_funcs_in_dict(asset_dict)
+    # The spawn field has a known, specific structure with standard sub-properties (rigid_props, articulation_props, etc.) that need specific config classes.
     asset_dict = _convert_spawn_to_config(asset_dict)
-    
+
     # If no class_type, it's a BASE asset
     if asset_dict.get('class_type') is None:
         asset_cfg = AssetBaseCfg()
+        # string callables have been converted to callables by now, only poulating the items
         _populate_from_dict(asset_cfg, asset_dict, skip_conversion=True)
         return asset_cfg
-    
+
     # Otherwise, use class_type to create the appropriate config
     return _create_config_from_class_type(asset_name, asset_dict, 'asset')
 
 
-def _create_scene_config(scene_dict):
+def _create_scene_config(scene_dict: dict[str, Any]):
     """Create scene config with dynamic assets.
-    
+
+    If no assets are listed, a default InteractiveSceneCfg is returned.
+    If assets are listed, an InteractiveSceneCfg is returned with those dynamically created assets added to the scene.
+
     Args:
         scene_dict: Dictionary containing scene configuration
-    
+
     Returns:
         Dynamic SceneCfg with all assets properly configured
     """
+    # Default scene config
+    scene_cfg = InteractiveSceneCfg()
     if not scene_dict:
-        return InteractiveSceneCfg()
-    
+        return scene_cfg
+
     # Separate base fields from dynamic assets
+    # e.g. num_envs, env_spacing, replicate_physics, filter_collisions, clone_in_fabric, etc.
     base_scene_fields = {f.name for f in fields(InteractiveSceneCfg)}
     base_fields_dict = {k: v for k, v in scene_dict.items() if k in base_scene_fields}
+    # background/objects/destinations/robots/sensors etc. are added dynamically to the scene
     dynamic_assets_dict = {k: v for k, v in scene_dict.items() if k not in base_scene_fields}
-    
+
     # Create asset instances
     asset_instances = {}
     for asset_name, asset_dict in dynamic_assets_dict.items():
@@ -785,64 +797,64 @@ def _create_scene_config(scene_dict):
             asset_instances[asset_name] = _create_asset_config(asset_name, asset_dict)
         else:
             asset_instances[asset_name] = asset_dict
-    
+
     # Create dynamic SceneCfg
     if asset_instances:
         asset_fields = [(name, type(inst), inst) for name, inst in asset_instances.items()]
         SceneCfg = make_configclass('SceneCfg', asset_fields, bases=(InteractiveSceneCfg,))
         scene_cfg = SceneCfg()
-    else:
-        scene_cfg = InteractiveSceneCfg()
-    
+
     # Populate base fields
     if base_fields_dict:
         _populate_from_dict(scene_cfg, base_fields_dict)
-    
+
     return scene_cfg
 
 
-def _create_recorders_config(recorders_dict):
-    """Create recorders config with dynamic terms.
-    
+def _create_recorders_config(recorders_dict: dict[str, Any]):
+    """Create recorders config with dynamic terms. If no metrics are listed, a default
+    RecorderManagerCfg is returned. If metrics are listed, a RecorderManagerCfg is returned with
+    those metrics recorder. Recorder terms are added dynamically to the recorder manager config.
+
     Args:
         recorders_dict: Dictionary containing recorder configuration
-    
+
     Returns:
-        Dynamic RecorderManagerCfg with all terms properly configured
+        Dynamic RecorderManagerCfg with metircs recorder terms added if any
     """
+    recorder_cfg = RecorderManagerBaseCfg()
     if not recorders_dict:
-        return RecorderManagerBaseCfg()
-    
+        return recorder_cfg
+
     # Separate base fields from dynamic terms
     base_recorder_fields = {f.name for f in fields(RecorderManagerBaseCfg)}
     base_fields_dict = {k: v for k, v in recorders_dict.items() if k in base_recorder_fields}
     dynamic_terms_dict = {k: v for k, v in recorders_dict.items() if k not in base_recorder_fields}
-    
+
     # Create recorder term configs using class_type
     recorder_term_instances = {}
+    # recorder manager config contains metrics listed in the recorder manager config if any
     for term_name, term_dict in dynamic_terms_dict.items():
         if isinstance(term_dict, dict) and 'class_type' in term_dict and term_dict['class_type'] is not None:
             term_dict = _convert_funcs_in_dict(term_dict)
             recorder_term_instances[term_name] = _create_config_from_class_type(term_name, term_dict, 'recorder term')
         else:
-            recorder_term_instances[term_name] = term_dict
-    
+            raise ValueError(f"Recorder term '{term_name}' is not a dictionary with a 'class_type' field")
+
     # Create dynamic RecorderManagerCfg
     if recorder_term_instances:
         recorder_fields = [(name, type(inst), inst) for name, inst in recorder_term_instances.items()]
         RecorderManagerCfg = make_configclass('RecorderManagerCfg', recorder_fields, bases=(RecorderManagerBaseCfg,))
         recorder_cfg = RecorderManagerCfg()
-    else:
-        recorder_cfg = RecorderManagerBaseCfg()
-    
+
     # Populate base fields
     if base_fields_dict:
         _populate_from_dict(recorder_cfg, base_fields_dict)
-    
+
     return recorder_cfg
 
 
-def _create_actions_config(actions_dict):
+def _create_actions_config(actions_dict: dict[str, Any]):
     """Create actions config with dynamic terms.
     
     Args:
