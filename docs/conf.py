@@ -66,6 +66,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_design",
     "sphinx_copybutton",
+    "sphinx_multiversion",
     "isaaclab_arena_doc_tools",
 ]
 
@@ -87,7 +88,7 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "venv_docs"]
+exclude_patterns = ["_build", "_templates", "Thumbs.db", ".DS_Store", "venv_docs"]
 
 # Be picky about missing references
 nitpicky = True  # warns on broken references
@@ -123,6 +124,14 @@ html_theme_options = {
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 
+# Versioning
+smv_branch_whitelist = r"^(main|release/.*)$"
+smv_tag_whitelist = r"^v.*$"
+html_sidebars = {
+    # "**": ["navbar-logo.html", "versioning.html", "icon-links.html", "search-field.html", "sbt-sidebar-nav.html"]
+    "**": ["versioning.html"]
+}
+
 # Todos
 todo_include_todos = True
 
@@ -130,9 +139,7 @@ todo_include_todos = True
 # NOTE(alexmillane, 2025-05-09): The links in the main example page are relative links
 # which are only valid post-build. linkcheck doesn't like this. So here we ignore
 # links to the example pages via html.
-linkcheck_ignore = [
-    # r'pages/torch_examples_.*\.html',    # Ignore all pages/torch_examples_*.html links
-]
+linkcheck_ignore = []
 
 temporary_linkcheck_ignore = [
     # TemporaryLinkcheckIgnore(
