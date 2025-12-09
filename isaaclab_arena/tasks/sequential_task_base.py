@@ -38,7 +38,7 @@ class SequentialTaskBase(TaskBase):
     """
     A base class for tasks composed sequentially from multiple subtasks.
     The sequential task takes a list of TaskBase instances (subtasks),
-    and automatically collects configs to form a composite.
+    and automatically collects configs to form a composite task.
     """
 
     def __init__(self, subtasks: list[TaskBase], episode_length_s: float | None = None):
@@ -69,11 +69,6 @@ class SequentialTaskBase(TaskBase):
 
     @staticmethod
     def _remove_configclass_fields(cfg_instance: Any, exclude_fields: set[str]) -> Any:
-        """Create a copy of a configclass instance, excluding specified fields.
-        
-        This creates a new configclass type without the excluded fields and copies
-        values from the original. The original instance is not modified.
-        """
         if cfg_instance is None:
             return None
         
