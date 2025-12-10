@@ -64,8 +64,8 @@ class Gr00tClosedloopPolicy(PolicyBase):
 
         self.current_action_index = torch.zeros(num_envs, dtype=torch.int32, device=device)
 
-        # language instruction of task being evaluated. It will be set by the task being evaluated.
-        self.language_instruction: str | None = None
+        # task description of task being evaluated. It will be set by the task being evaluated.
+        self.task_description: str | None = None
 
     def load_policy_joints_config(self, policy_config_path: Path) -> dict[str, Any]:
         """Load the GR00T policy joint config from the data config."""
@@ -107,7 +107,7 @@ class Gr00tClosedloopPolicy(PolicyBase):
     def set_task_description(self, task_description: str | None) -> str:
         """Set the language instruction of the task being evaluated."""
         if task_description is None:
-            task_description = self.policy_config.task_description
+            task_description = self.policy_config.language_instruction
         self.task_description = task_description
         return self.task_description
 

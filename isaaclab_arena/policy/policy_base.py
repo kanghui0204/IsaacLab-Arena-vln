@@ -35,7 +35,7 @@ class PolicyBase(ABC):
         """
         pass
 
-    def set_language_instruction(self, language_instruction: str | None) -> str:
-        """Set the language instruction of the task being evaluated."""
-        self.language_instruction = language_instruction
-        return self.language_instruction
+    def set_task_description(self, task_description: str | None) -> str:
+        """Set the task description of the task being evaluated."""
+        self.task_description = task_description
+        return self.task_description
