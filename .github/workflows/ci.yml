@@ -178,21 +178,31 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch all branches and tags
-        run: git fetch --prune --all --tags
+      # - name: Fetch all branches and tags
+      #   run: git fetch --prune --all --tags
 
-      - name: Debug
-        run: |
-          git branch -a
-          git tag -l
+      # - name: Debug
+      #   run: |
+      #     git branch -a
+      #     git tag -l
+
 
       # Build docs
       - name: Build docs
+        working-directory: ./docs
         run: |
-          cd docs
           pip3 install -r requirements.txt
+          git fetch --prune --unshallow --tags
           make SPHINXOPTS=-W multi-docs
           touch ./_build/.nojekyll
+
+      # # Build docs
+      # - name: Build docs
+      #   run: |
+      #     cd docs
+      #     pip3 install -r requirements.txt
+      #     make SPHINXOPTS=-W multi-docs
+      #     touch ./_build/.nojekyll
 
 
   build_and_push_image_post_merge:
