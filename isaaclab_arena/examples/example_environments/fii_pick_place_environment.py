@@ -12,7 +12,7 @@ class FiiPickPlaceEnvironment(ExampleEnvironmentBase):
         from isaaclab_arena.tasks.fii_pick_and_place_task import FiiPickAndPlaceTask
         from isaaclab.assets import AssetBaseCfg
         import isaaclab.sim as sim_utils
-        pick_up_object = self.asset_registry.get_asset_by_name("object")(initial_pose=Pose(position_xyz=(0.0, 0.75, 1.0)))
+        object = self.asset_registry.get_asset_by_name("object")(initial_pose=Pose(position_xyz=(0.0, 0.75, 1.0)))
         packing_table = self.asset_registry.get_asset_by_name("packing_table")(initial_pose=Pose(position_xyz=(0.0, 0.85, 0.)))
         embodiment = self.asset_registry.get_asset_by_name("fii")()
         ground = self.asset_registry.get_asset_by_name("ground_plane")()
@@ -23,12 +23,13 @@ class FiiPickPlaceEnvironment(ExampleEnvironmentBase):
         else:
             teleop_device = None
         
-        scene = Scene(assets=[pick_up_object, packing_table, ground, dome_light])
+        scene = Scene(assets=[object, packing_table, ground, dome_light])
+
         isaaclab_arena_environment = IsaacLabArenaEnvironment(
             name=self.name,
             embodiment=embodiment,
             scene=scene,
-            task=FiiPickAndPlaceTask(pick_up_object, packing_table, episode_length_s=20.0),
+            task=FiiPickAndPlaceTask(object, packing_table, episode_length_s=20.0),
             teleop_device=teleop_device,
         )
         return isaaclab_arena_environment

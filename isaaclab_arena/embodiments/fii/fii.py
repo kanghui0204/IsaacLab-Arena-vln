@@ -47,6 +47,60 @@ from isaaclab.utils import configclass
 from isaaclab.assets import ArticulationCfg
 from isaaclab.utils import configclass
 
+from isaaclab.sensors import FrameTransformer, FrameTransformerCfg, OffsetCfg
+from isaaclab.markers.config import FRAME_MARKER_CFG
+from isaaclab.assets import Articulation, RigidObject, RigidObjectCollection
+
+def object_grasped(
+    env,
+    robot_cfg: SceneEntityCfg,
+    ee_frame_cfg: SceneEntityCfg,
+    object_cfg: SceneEntityCfg,
+    diff_threshold: float = 0.06,
+    gripper_open_val: float = 0.04,      # 4cm open (adjust after testing)
+    gripper_threshold = 0.015 
+) -> torch.Tensor:
+    """Check if an object is grasped by the specified robot."""
+
+    robot: Articulation = env.scene[robot_cfg.name]
+    ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
+    object: RigidObject = env.scene[object_cfg.name]
+
+    object_pos = object.data.root_pos_w
+
+
+    any_grasped = torch.zeros(env.num_envs, device=env.device, dtype=torch.bool)
+    if hasattr(env.cfg.actions.upper_body_ik, "hand_joint_names"):
+        for i in range(len(env.cfg.actions.upper_body_ik.hand_joint_names)//2):
+            gripper_joint_ids, _ = robot.find_joints(env.cfg.actions.upper_body_ik.hand_joint_names[i*2:i*2+2])
+            assert len(gripper_joint_ids) == 2, "Observations only support parallel gripper for now"
+            end_effector_pos = ee_frame.data.target_pos_w[:, i*2, :]
+            pose_diff = torch.linalg.vector_norm(object_pos - end_effector_pos, dim=1)
+            grasped = torch.logical_and(
+                pose_diff < diff_threshold,
+                torch.abs(
+                    robot.data.joint_pos[:, gripper_joint_ids[0]]
+                    - torch.tensor(gripper_open_val, dtype=torch.float32).to(env.device)
+                )
+                > gripper_threshold,
+            )
+            end_effector_pos = ee_frame.data.target_pos_w[:, i*2+1, :]
+            pose_diff = torch.linalg.vector_norm(object_pos - end_effector_pos, dim=1)
+            grasped = torch.logical_and(
+                grasped,
+                pose_diff < diff_threshold,
+            )
+            grasped = torch.logical_and(
+                grasped,
+                torch.abs(
+                    robot.data.joint_pos[:, gripper_joint_ids[1]]
+                    - torch.tensor(gripper_open_val, dtype=torch.float32).to(env.device)
+                )
+                > gripper_threshold,
+            )
+            any_grasped = any_grasped or grasped
+    return any_grasped
+
 @register_asset
 class FiiEmbodiment(EmbodimentBase):
     """
@@ -60,6 +114,7 @@ class FiiEmbodiment(EmbodimentBase):
         self.scene_config = FiiSceneCfg()
         self.action_config = FiiActionsCfg()
         self.observation_config = FiiObservationsCfg()
+        self.mimic_env = FiiMimicEnv
         
         # Convert USD to URDF for Pink IK controller
         self.temp_urdf_dir = tempfile.gettempdir()
@@ -126,6 +181,36 @@ class FiiSceneCfg:
             ),
         },
     )
+
+    ee_frame: FrameTransformerCfg = FrameTransformerCfg(
+        prim_path="{ENV_REGEX_NS}/robot/Fiibot_W_2_V2/base_link",
+        debug_vis=False,
+        target_frames=[
+            # Left hand end-effector
+            FrameTransformerCfg.FrameCfg(
+                prim_path="{ENV_REGEX_NS}/robot/Fiibot_W_2_V2/left_hand_grip1_link",
+                name="left_hand_grip1",
+                offset=OffsetCfg(pos=[0.0, 0.0, 0.0]),
+            ),
+            FrameTransformerCfg.FrameCfg(
+                prim_path="{ENV_REGEX_NS}/robot/Fiibot_W_2_V2/left_hand_grip2_link",
+                name="left_hand_grip2",
+                offset=OffsetCfg(pos=[0.0, 0.0, 0.0]),
+            ),
+            # Right end-effector
+            FrameTransformerCfg.FrameCfg(
+                prim_path="{ENV_REGEX_NS}/robot/Fiibot_W_2_V2/right_hand_grip1_link",
+                name="right_hand_grip1",
+                offset=OffsetCfg(pos=[0.0, 0.0, 0.0]),
+            ),
+            FrameTransformerCfg.FrameCfg(
+                prim_path="{ENV_REGEX_NS}/robot/Fiibot_W_2_V2/right_hand_grip2_link",
+                name="right_hand_grip2",
+                offset=OffsetCfg(pos=[0.0, 0.0, 0.0]),
+            ),
+        ],
+    )
+
 #=======================================================================
 #   ACTIONS
 #=======================================================================
@@ -323,6 +408,224 @@ class FiiObservationsCfg:
             self.enable_corruption = False
             self.concatenate_terms = False
 
+    @configclass
+    class SubtaskCfg(ObsGroup):
+        """Observations for subtask group."""
 
+        grasp = ObsTerm(
+            func=object_grasped,
+            params={
+                "robot_cfg": SceneEntityCfg("robot"),
+                "ee_frame_cfg": SceneEntityCfg("ee_frame"),  # ← Now this works!
+                "object_cfg": SceneEntityCfg("object"),
+                "gripper_open_val": 0.04,
+                "gripper_threshold": 0.015,
+            },
+        )
+        
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
+    
     policy: PolicyCfg = PolicyCfg()
+    subtask_terms: SubtaskCfg = SubtaskCfg()
 
+class FiiMimicEnv(ManagerBasedRLMimicEnv):
+    """Configuration for Fii Mimic."""
+    def get_robot_eef_pose(self, eef_name: str, env_ids: Sequence[int] | None = None) -> torch.Tensor:
+        """
+        Get current robot end effector pose. Should be the same frame as used by the robot end-effector controller.
+
+        Args:
+            eef_name: Name of the end effector.
+            env_ids: Environment indices to get the pose for. If None, all envs are considered.
+
+        Returns:
+            A torch.Tensor eef pose matrix. Shape is (len(env_ids), 4, 4)
+        """
+        if env_ids is None:
+            env_ids = slice(None)
+
+        eef_pos_name = f"{eef_name}_eef_pos"
+        eef_quat_name = f"{eef_name}_eef_quat"
+
+        target_wrist_position = self.obs_buf["policy"][eef_pos_name][env_ids]
+        target_rot_mat = PoseUtils.matrix_from_quat(self.obs_buf["policy"][eef_quat_name][env_ids])
+
+        return PoseUtils.make_pose(target_wrist_position, target_rot_mat)
+
+    def target_eef_pose_to_action(
+        self,
+        target_eef_pose_dict: dict,
+        gripper_action_dict: dict,
+        action_noise_dict: dict | None = None,
+        env_id: int = 0,
+    ) -> torch.Tensor:
+        """
+        Takes a target pose and gripper action for the end effector controller and returns
+        an environment action to try and achieve that target pose.
+        Noise is added to the target pose action if specified.
+
+        Args:
+            target_eef_pose_dict: Dictionary of 4x4 target eef pose for each end-effector.
+            gripper_action_dict: Dictionary of gripper actions for each end-effector.
+            noise: Noise to add to the action. If None, no noise is added.
+            env_id: Environment index to get the action for.
+
+        Returns:
+            An action torch.Tensor that's compatible with env.step().
+        """
+        target_left_eef_pos, left_target_rot = PoseUtils.unmake_pose(target_eef_pose_dict["left"].clone())
+        target_right_eef_pos, right_target_rot = PoseUtils.unmake_pose(target_eef_pose_dict["right"].clone())
+
+        target_left_eef_rot_quat = PoseUtils.quat_from_matrix(left_target_rot)
+        target_right_eef_rot_quat = PoseUtils.quat_from_matrix(right_target_rot)
+
+        # gripper actions
+        left_gripper_action = gripper_action_dict["left"].unsqueeze(0)
+        right_gripper_action = gripper_action_dict["right"].unsqueeze(0)
+
+        # body gripper action is lower body control commands (nav_cmd, base_height_cmd, torso_orientation_rpy_cmd)
+        body_gripper_action = gripper_action_dict["body"]
+
+        if action_noise_dict is not None:
+            pos_noise_left = action_noise_dict["left"] * torch.randn_like(target_left_eef_pos)
+            pos_noise_right = action_noise_dict["right"] * torch.randn_like(target_right_eef_pos)
+            quat_noise_left = action_noise_dict["left"] * torch.randn_like(target_left_eef_rot_quat)
+            quat_noise_right = action_noise_dict["right"] * torch.randn_like(target_right_eef_rot_quat)
+
+            target_left_eef_pos += pos_noise_left
+            target_right_eef_pos += pos_noise_right
+            target_left_eef_rot_quat += quat_noise_left
+            target_right_eef_rot_quat += quat_noise_right
+
+        return torch.cat(
+            (
+                left_gripper_action,
+                right_gripper_action,
+                target_left_eef_pos,
+                target_left_eef_rot_quat,
+                target_right_eef_pos,
+                target_right_eef_rot_quat,
+                body_gripper_action,
+            ),
+            dim=0,
+        )
+
+    def action_to_target_eef_pose(self, action: torch.Tensor) -> dict[str, torch.Tensor]:
+        """
+        Converts action (compatible with env.step) to a target pose for the end effector controller.
+        Inverse of @target_eef_pose_to_action. Usually used to infer a sequence of target controller poses
+        from a demonstration trajectory using the recorded actions.
+
+        Args:
+            action: Environment action. Shape is (num_envs, action_dim).
+
+        Returns:
+            A dictionary of eef pose torch.Tensor that @action corresponds to.
+        """
+
+        target_poses = {}
+
+        target_left_wrist_position = action[:, 2:5]
+        target_left_rot_mat = PoseUtils.matrix_from_quat(action[:, 5:9])
+        target_pose_left = PoseUtils.make_pose(target_left_wrist_position, target_left_rot_mat)
+        target_poses["left"] = target_pose_left
+
+        target_right_wrist_position = action[:, 9:12]
+        target_right_rot_mat = PoseUtils.matrix_from_quat(action[:, 12:16])
+        target_pose_right = PoseUtils.make_pose(target_right_wrist_position, target_right_rot_mat)
+        target_poses["right"] = target_pose_right
+
+        target_poses["body"] = torch.zeros_like(target_pose_left)
+
+        return target_poses
+
+    def actions_to_gripper_actions(self, actions: torch.Tensor) -> dict[str, torch.Tensor]:
+        """
+        Extracts the gripper actuation part from a sequence of env actions (compatible with env.step).
+
+        Args:
+            actions: environment actions. The shape is (num_envs, num steps in a demo, action_dim).
+
+        Returns:
+            A dictionary of torch.Tensor gripper actions. Key to each dict is an eef_name.
+        """
+
+        """
+        Shape of actions:
+            left_gripper_action shape: (1,)
+            right_gripper_action shape: (1,)
+            left_wrist_pos shape: (3,)
+            left_wrist_quat shape: (4,)
+            right_wrist_pos shape: (3,)
+            right_wrist_quat shape: (4,)
+            navigate_cmd shape: (3,)
+            base_height_cmd shape: (1,)
+            torso_orientation_rpy_cmd shape: (3,)
+        """
+        return {"left": actions[:, 0], "right": actions[:, 1], "body": actions[:, -7:]}
+
+    def get_object_poses(self, env_ids: Sequence[int] | None = None):
+        """
+        Gets the pose of each object relevant to Isaac Lab Mimic data generation in the current scene.
+
+        Args:
+            env_ids: Environment indices to get the pose for. If None, all envs are considered.
+
+        Returns:
+            A dictionary that maps object names to object pose matrix in pelvis frame (4x4 torch.Tensor)
+        """
+        if env_ids is None:
+            env_ids = slice(None)
+
+        # Get base link inverse transform to convert from world to base link frame
+        base_link_pose_w = self.scene["robot"].data.body_link_state_w[
+            :, self.scene["robot"].data.body_names.index("base_link"), :
+        ]
+        base_link_position_w = base_link_pose_w[:, :3] - self.scene.env_origins
+        base_link_rot_mat_w = PoseUtils.matrix_from_quat(base_link_pose_w[:, 3:7])
+        base_link_pose_mat_w = PoseUtils.make_pose(base_link_position_w, base_link_rot_mat_w)
+        base_link_pose_inv = PoseUtils.pose_inv(base_link_pose_mat_w)
+
+        rigid_object_states = self.scene.get_state(is_relative=True)["rigid_object"]
+        object_pose_matrix = dict()
+        for obj_name, obj_state in rigid_object_states.items():
+            object_pose_mat_w = PoseUtils.make_pose(
+                obj_state["root_pose"][env_ids, :3], PoseUtils.matrix_from_quat(obj_state["root_pose"][env_ids, 3:7])
+            )
+            object_pose_base_link_frame = torch.matmul(base_link_pose_inv, object_pose_mat_w)
+            object_pose_matrix[obj_name] = object_pose_base_link_frame
+
+        return object_pose_matrix
+
+    def get_subtask_term_signals(self, env_ids: Sequence[int] | None = None) -> dict[str, torch.Tensor]:
+        """
+        Gets a dictionary of termination signal flags for each subtask in a task. The flag is 1
+        when the subtask has been completed and 0 otherwise. The implementation of this method is
+        required if intending to enable automatic subtask term signal annotation when running the
+        dataset annotation tool. This method can be kept unimplemented if intending to use manual
+        subtask term signal annotation.
+
+        Args:
+            env_ids: Environment indices to get the termination signals for. If None, all envs are considered.
+
+        Returns:
+            A dictionary termination signal flags (False or True) for each subtask.
+        """
+        if env_ids is None:
+            env_ids = slice(None)
+
+        signals = dict()
+
+        subtask_terms = self.obs_buf["subtask_terms"]
+        if "grasp" in subtask_terms:
+            signals["grasp"] = subtask_terms["grasp"][env_ids]
+
+        # Handle multiple grasp signals
+        for i in range(0, len(self.cfg.subtask_configs)):
+            grasp_key = f"grasp_{i + 1}"
+            if grasp_key in subtask_terms:
+                signals[grasp_key] = subtask_terms[grasp_key][env_ids]
+        # final subtask signal is not needed
+        return signals
