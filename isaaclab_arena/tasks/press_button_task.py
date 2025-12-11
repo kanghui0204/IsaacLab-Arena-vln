@@ -5,13 +5,14 @@
 
 import numpy as np
 from dataclasses import MISSING
-from typing import Literal
+
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.common import ViewerCfg
 from isaaclab.managers import EventTermCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.affordances.pressable import Pressable
+from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
 from isaaclab_arena.tasks.task_base import TaskBase
@@ -51,7 +52,7 @@ class PressButtonTask(TaskBase):
     def get_prompt(self):
         raise NotImplementedError("Function not implemented yet.")
 
-    def get_mimic_env_cfg(self, arm_mode: Literal["single_arm", "left", "right"]):
+    def get_mimic_env_cfg(self, arm_mode: MimicArmMode):
         raise NotImplementedError("Function not implemented yet.")
 
     def get_metrics(self) -> list[MetricBase]:

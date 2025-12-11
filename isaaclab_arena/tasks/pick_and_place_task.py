@@ -5,7 +5,7 @@
 
 import numpy as np
 from dataclasses import MISSING
-from typing import Literal
+
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.common import ViewerCfg
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg, SubTaskConfig
@@ -14,6 +14,7 @@ from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.assets.asset import Asset
+from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.object_moved import ObjectMovedRateMetric
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
@@ -78,7 +79,7 @@ class PickAndPlaceTask(TaskBase):
     def get_prompt(self):
         raise NotImplementedError("Function not implemented yet.")
 
-    def get_mimic_env_cfg(self, arm_mode: Literal["single_arm", "left", "right"]):
+    def get_mimic_env_cfg(self, arm_mode: MimicArmMode):
         return PickPlaceMimicEnvCfg(
             arm_mode=arm_mode,
             pick_up_object_name=self.pick_up_object.name,
@@ -144,7 +145,7 @@ class PickPlaceMimicEnvCfg(MimicEnvCfg):
     Isaac Lab Mimic environment config class for Pick and Place env.
     """
 
-    arm_mode: Literal["single_arm", "left", "right"] = "single_arm"
+    arm_mode: MimicArmMode = MimicArmMode.SINGLE_ARM
 
     pick_up_object_name: str = "pick_up_object"
 

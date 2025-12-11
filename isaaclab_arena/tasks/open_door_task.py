@@ -5,7 +5,7 @@
 
 import numpy as np
 from dataclasses import MISSING
-from typing import Literal
+
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.common import ViewerCfg
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg, SubTaskConfig
@@ -13,6 +13,7 @@ from isaaclab.managers import EventTermCfg, SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.affordances.openable import Openable
+from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
 from isaaclab_arena.metrics.door_moved_rate import DoorMovedRateMetric
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
@@ -60,7 +61,7 @@ class OpenDoorTask(TaskBase):
     def get_prompt(self):
         raise NotImplementedError("Function not implemented yet.")
 
-    def get_mimic_env_cfg(self, arm_mode: Literal["single_arm", "left", "right"]):
+    def get_mimic_env_cfg(self, arm_mode: MimicArmMode):
         return OpenDoorMimicEnvCfg(
             arm_mode=arm_mode,
             openable_object_name=self.openable_object.name,
@@ -126,7 +127,7 @@ class OpenDoorMimicEnvCfg(MimicEnvCfg):
     Isaac Lab Mimic environment config class for Open Door env.
     """
 
-    arm_mode: Literal["single_arm", "left", "right"] = "single_arm"
+    arm_mode: MimicArmMode.SINGLE_ARM
 
     openable_object_name: str = "openable_object"
 

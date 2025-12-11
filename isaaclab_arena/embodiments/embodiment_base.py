@@ -3,12 +3,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Literal
+from typing import Any
 
 from isaaclab.envs import ManagerBasedRLMimicEnv
 from isaaclab.managers.recorder_manager import RecorderManagerBaseCfg
 
 from isaaclab_arena.assets.asset import Asset
+from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
 from isaaclab_arena.environments.isaaclab_arena_manager_based_env import IsaacLabArenaManagerBasedRLEnvCfg
 from isaaclab_arena.utils.cameras import make_camera_observation_cfg
 from isaaclab_arena.utils.configclass import combine_configclass_instances
@@ -19,11 +20,14 @@ class EmbodimentBase(Asset):
 
     name: str | None = None
     tags: list[str] = ["embodiment"]
-    arm_mode: Literal["single_arm", "left", "right"] = "single_arm"
+    mimic_arm_mode: MimicArmMode | None = None
 
-    def __init__(self, enable_cameras: bool = False, initial_pose: Pose | None = None):
+    def __init__(
+        self, enable_cameras: bool = False, initial_pose: Pose | None = None, mimic_arm_mode: MimicArmMode | None = None
+    ):
         self.enable_cameras = enable_cameras
         self.initial_pose = initial_pose
+        self.mimic_arm_mode = mimic_arm_mode or type(self).mimic_arm_mode
         # These should be filled by the subclass
         self.scene_config: Any | None = None
         self.camera_config: Any | None = None
@@ -103,5 +107,5 @@ class EmbodimentBase(Asset):
     def modify_env_cfg(self, env_cfg: IsaacLabArenaManagerBasedRLEnvCfg) -> IsaacLabArenaManagerBasedRLEnvCfg:
         return env_cfg
 
-    def get_arm_mode(self) -> Literal["single_arm", "left", "right"]:
-        return self.arm_mode
+    def get_mimic_arm_mode(self) -> MimicArmMode:
+        return self.mimic_arm_mode
