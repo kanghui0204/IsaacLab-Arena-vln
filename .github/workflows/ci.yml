@@ -169,6 +169,7 @@ jobs:
     steps:
       # Setup.
       - *install_git_step
+      - *mark_repo_safe_step
       - *cleanup_step
       - *checkout_step
 
