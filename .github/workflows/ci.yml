@@ -181,18 +181,30 @@ jobs:
       # - name: Fetch all branches and tags
       #   run: git fetch --prune --all --tags
 
-      # - name: Debug
-      #   run: |
-      #     git branch -a
-      #     git tag -l
+      - name: Debug
+        run: |
+          git branch -a
 
+      - name: Create local branches for remote branches
+        run: |
+          for remote_branch in $(git for-each-ref --format='%(refname:strip=3)' refs/remotes/origin/); do
+            if [[ "$remote_branch" == *release* || "$remote_branch" == *main* ]]; then
+              # Create a local branch only if it doesn't exist already
+              if ! git show-ref --verify --quiet "refs/heads/$remote_branch"; then
+                git branch --track "$remote_branch" "origin/$remote_branch"
+              fi
+            fi
+          done
+
+      - name: Debug
+        run: |
+          git branch -a
 
       # Build docs
       - name: Build docs
         working-directory: ./docs
         run: |
           pip3 install -r requirements.txt
-          git fetch --prune --unshallow --tags
           make SPHINXOPTS=-W multi-docs
           touch ./_build/.nojekyll
 
