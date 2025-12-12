@@ -33,7 +33,7 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
 
         assets = [background, pick_up_object, ground_plane, light]
 
-        embodiment = self.asset_registry.get_asset_by_name(args_cli.embodiment)()
+        embodiment = self.asset_registry.get_asset_by_name(args_cli.embodiment)(concatenate_observation_terms=True)
 
         if args_cli.teleop_device is not None:
             teleop_device = self.device_registry.get_device_by_name(args_cli.teleop_device)()
