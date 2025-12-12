@@ -30,7 +30,7 @@ class SequentialTaskBase(TaskBase):
     """
     A base class for tasks composed sequentially from multiple subtasks.
     The sequential task takes a list of TaskBase instances (subtasks),
-    and collects configs to form a composite task.
+    and automatically collects configs to form a composite task.
     """
 
     def __init__(self, subtasks: list[TaskBase], episode_length_s: float | None = None):
@@ -125,13 +125,15 @@ class SequentialTaskBase(TaskBase):
         if not hasattr(env, "_subtask_success_state"):
             env._subtask_success_state = [[False for _ in task_instance.subtasks] for _ in range(env.num_envs)]
         else:
-            env._subtask_success_state[env_ids] = [False for _ in task_instance.subtasks]
+            for env_id in env_ids:
+                env._subtask_success_state[env_id] = [False for _ in task_instance.subtasks]
 
         # Initialize each env's current subtask index (state machine) to 0
         if not hasattr(env, "_current_subtask_idx"):
             env._current_subtask_idx = [0 for _ in range(env.num_envs)]
         else:
-            env._current_subtask_idx[env_ids] = 0
+            for env_id in env_ids:
+                env._current_subtask_idx[env_id] = 0
 
     def get_scene_cfg(self) -> configclass:
         "Make combined scene cfg from all subtasks."
