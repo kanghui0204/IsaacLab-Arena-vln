@@ -124,11 +124,12 @@ class DeviceRegistry(Registry):
         ensure_assets_registered()
         return self.get_component_by_name(name)
 
-    def get_teleop_device_cfg(self, device: TeleopDeviceBase, embodiment: object | None = None):
+    def get_teleop_device_cfg(self, device: type["TeleopDeviceBase"], embodiment: object | None = None):
         from isaaclab.devices.device_base import DevicesCfg
 
-        retargeter = self.get_component_by_name((device.name, embodiment.name))
-        retargeter_cfg = retargeter.get_retargeter_cfg(embodiment, device.sim_device)
+        retargeter_registry = RetargeterRegistry()
+        retargeter = retargeter_registry.get_component_by_name((device.name, embodiment.name))()
+        retargeter_cfg = retargeter.get_retargeter_cfg(embodiment, sim_device=device.sim_device)
         retargeters = [retargeter_cfg] if retargeter_cfg is not None else []
         device_cfg = device.get_device_cfg(retargeters=retargeters, embodiment=embodiment)
         return DevicesCfg(

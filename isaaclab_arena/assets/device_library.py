@@ -16,13 +16,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import ABC, abstractmethod
+
 from isaaclab.devices.keyboard import Se3KeyboardCfg
 from isaaclab.devices.openxr import OpenXRDeviceCfg
 from isaaclab.devices.retargeter_base import RetargeterCfg
 from isaaclab.devices.spacemouse import Se3SpaceMouseCfg
 
 from isaaclab_arena.assets.register import register_device
-from isaaclab_arena.assets.teleop_device_base import TeleopDeviceBase
+
+
+class TeleopDeviceBase(ABC):
+
+    name: str | None = None
+
+    def __init__(self, sim_device: str | None = None):
+        self.sim_device = sim_device
+
+    @abstractmethod
+    def get_device_cfg(self, retargeters: list[RetargeterCfg] | None = None, embodiment: object | None = None):
+        raise NotImplementedError
+
 
 @register_device
 class OpenXRCfg(TeleopDeviceBase):

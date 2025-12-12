@@ -18,7 +18,7 @@ DEVICE_NAMES = ["openxr", "spacemouse", "keyboard"]
 def _test_all_devices_and_retargeters_in_registry(simulation_app):
     # Import the necessary classes.
 
-    from isaaclab_arena.assets.asset_registry import AssetRegistry, DeviceRegistry
+    from isaaclab_arena.assets.asset_registry import AssetRegistry, DeviceRegistry, RetargeterRegistry
     from isaaclab_arena.environments.arena_env_builder import ArenaEnvBuilder
     from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
@@ -27,9 +27,8 @@ def _test_all_devices_and_retargeters_in_registry(simulation_app):
     # Base Environment
     asset_registry = AssetRegistry()
     device_registry = DeviceRegistry()
-    all_asset_keys = asset_registry.get_all_keys()
-    # Filter our the retargeter keys
-    retargeter_keys = [key for key in all_asset_keys if isinstance(key, tuple)]
+    retargeter_registry = RetargeterRegistry()
+    retargeter_keys = retargeter_registry.get_all_keys()
     # Make this a dictionary of device names to list of embodiment names
     retargeter_keys_dict = {}
     for key in retargeter_keys:
@@ -37,6 +36,7 @@ def _test_all_devices_and_retargeters_in_registry(simulation_app):
         if device_name not in retargeter_keys_dict:
             retargeter_keys_dict[device_name] = []
         retargeter_keys_dict[device_name].append(embodiment_name)
+    print(f"Retargeter keys dictionary: {retargeter_keys_dict}")
     background = asset_registry.get_asset_by_name("packing_table")()
     asset = asset_registry.get_asset_by_name("cracker_box")()
 
