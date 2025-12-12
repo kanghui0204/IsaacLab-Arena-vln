@@ -5,21 +5,17 @@
 
 import numpy as np
 from dataclasses import MISSING
-from typing import Any
 
 import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.common import ViewerCfg
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg, SubTaskConfig
-from isaaclab.managers import EventTermCfg, RewardTermCfg, SceneEntityCfg, TerminationTermCfg
-from isaaclab.sensors.frame_transformer.frame_transformer_cfg import FrameTransformerCfg, OffsetCfg
+from isaaclab.managers import EventTermCfg, SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.affordances.openable import Openable
-from isaaclab_arena.assets.asset import Asset
 from isaaclab_arena.metrics.door_moved_rate import DoorMovedRateMetric
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
-from isaaclab_arena.tasks.rewards import general_rewards
 from isaaclab_arena.tasks.task_base import TaskBase
 from isaaclab_arena.terms.events import set_object_pose
 from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
@@ -237,66 +233,3 @@ class OpenDoorMimicEnvCfg(MimicEnvCfg):
 
         else:
             raise ValueError(f"Embodiment name {self.embodiment_name} not supported")
-
-
-class OpenDoorTaskRL(OpenDoorTask):
-    def __init__(
-        self,
-        openable_object: Openable,
-        openable_object_prim: Asset,
-        embodiment_information: dict[str, Any],
-        openness_threshold: float | None = None,
-        reset_openness: float | None = None,
-        episode_length_s: float | None = None,
-    ):
-        super().__init__(openable_object, openness_threshold, reset_openness, episode_length_s)
-        self.embodiment_information = embodiment_information
-        self.openable_object_prim = openable_object_prim
-
-    def get_scene_cfg(self):
-        return OpenDoorSceneCfg(embodiment_information=self.embodiment_information)
-
-    def get_rewards_cfg(self):
-        return OpenDoorRewardCfg(openable_object_prim=self.openable_object_prim)
-
-
-@configclass
-class OpenDoorSceneCfg:
-    """Configuration for Pressable object."""
-
-    embodiment_end_effector_frame: SceneEntityCfg = MISSING
-
-    def __init__(self, embodiment_information: dict[str, Any]):
-
-        self.embodiment_end_effector_frame = FrameTransformerCfg(
-            prim_path=embodiment_information["eef_prim_path"],
-            debug_vis=False,
-            target_frames=[
-                FrameTransformerCfg.FrameCfg(
-                    prim_path=embodiment_information["target_prim_path"],
-                    name=embodiment_information["target_frame_name"],
-                    offset=OffsetCfg(
-                        pos=embodiment_information["target_offset"],
-                    ),
-                ),
-            ],
-        )
-
-
-@configclass
-class OpenDoorRewardCfg:
-    """Reward terms for the MDP."""
-
-    reaching_openable_object: RewardTermCfg = MISSING
-    # pressing_button = RewardTermCfg(func=mdp.object_is_pressed, params={"threshold": 0.5}, weight=1.0)
-
-    def __init__(self, openable_object_prim: Asset):
-        self.reaching_openable_object = RewardTermCfg(
-            func=general_rewards.object_ee_distance,
-            params={
-                "std": 0.1,
-                "object_cfg": SceneEntityCfg(openable_object_prim.name),
-                "ee_frame_cfg": SceneEntityCfg("embodiment_end_effector_frame"),
-            },
-            weight=1.0,
-        )

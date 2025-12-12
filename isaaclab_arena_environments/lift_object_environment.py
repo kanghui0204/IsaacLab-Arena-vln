@@ -25,7 +25,7 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
         from isaaclab_arena.utils.pose import Pose
 
         background = self.asset_registry.get_asset_by_name("table")()
-        pick_up_object = self.asset_registry.get_asset_by_name("dex_cube")()
+        pick_up_object = self.asset_registry.get_asset_by_name(args_cli.object)()
 
         # Add ground plane and light to the scene
         ground_plane = self.asset_registry.get_asset_by_name("ground_plane")()
@@ -33,7 +33,7 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
 
         assets = [background, pick_up_object, ground_plane, light]
 
-        embodiment = self.asset_registry.get_asset_by_name("franka")()
+        embodiment = self.asset_registry.get_asset_by_name(args_cli.embodiment)()
 
         if args_cli.teleop_device is not None:
             teleop_device = self.device_registry.get_device_by_name(args_cli.teleop_device)()
@@ -45,21 +45,13 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
         pick_up_object.set_initial_pose(Pose(position_xyz=(0.5, 0, 0.055), rotation_wxyz=(1, 0, 0, 0)))
         ground_plane.set_initial_pose(Pose(position_xyz=(0.0, 0.0, -1.05)))
 
-        embodiment_information = {
-            "body_name": "panda_hand",
-            "eef_prim_path": "{ENV_REGEX_NS}/Robot/panda_link0",
-            "target_prim_path": "{ENV_REGEX_NS}/Robot/panda_hand",
-            "target_frame_name": "end_effector",
-            "target_offset": (0.0, 0.0, 0.1034),
-        }
-
         # Compose the scene
         scene = Scene(assets=assets)
 
         task = LiftObjectTaskRL(
             pick_up_object,
             background,
-            embodiment_information,
+            embodiment.get_rl_information(),
             minimum_height_to_lift=0.04,
             episode_length_s=5.0,
         )
@@ -76,9 +68,9 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
 
     @staticmethod
     def add_cli_args(parser: argparse.ArgumentParser) -> None:
-        parser.add_argument("--object", type=str, default=None)
+        parser.add_argument("--object", type=str, default="dex_cube")
         # NOTE(alexmillane, 2025.09.04): We need a teleop device argument in order
         # to be used in the record_demos.py script.
         parser.add_argument("--teleop_device", type=str, default=None)
         # Note (xinjieyao, 2025.10.06): Add the embodiment argument for PINK IK EEF control or Joint positional control
-        parser.add_argument("--embodiment", type=str, default="gr1_pink")
+        parser.add_argument("--embodiment", type=str, default="franka")

@@ -131,9 +131,6 @@ class Microwave(LibraryObject, Openable):
     openable_joint_name = "microjoint"
     openable_open_threshold = 0.5
 
-    # Handle name
-    handle_name = "Microwave039_door"
-
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(
             prim_path=prim_path,
@@ -163,9 +160,6 @@ class CoffeeMachine(LibraryObject, Pressable):
     # Openable affordance parameters
     pressable_joint_name = "CoffeeMachine108_Button002_joint"
     pressedness_threshold = 0.5
-
-    # Pressable prim path
-    pressable_prim_path = "CoffeeMachine108_Button002"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(

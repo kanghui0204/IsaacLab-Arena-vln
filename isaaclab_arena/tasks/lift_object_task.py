@@ -18,7 +18,7 @@ from isaaclab_arena.assets.asset import Asset
 from isaaclab_arena.embodiments.embodiment_base import EmbodimentBase
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.tasks.observations import general_observations
-from isaaclab_arena.tasks.rewards import general_rewards
+from isaaclab_arena.tasks.rewards import general_rewards, lift_object_rewards
 from isaaclab_arena.tasks.task_base import TaskBase
 from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
 
@@ -206,7 +206,7 @@ class LiftObjectRewardCfg:
             weight=1.0,
         )
         self.lifting_object = RewardTermCfg(
-            func=general_rewards.object_is_lifted,
+            func=lift_object_rewards.object_is_lifted,
             params={
                 "object_cfg": SceneEntityCfg(lift_object.name),
                 "minimal_height": minimum_height_to_lift,
@@ -214,7 +214,7 @@ class LiftObjectRewardCfg:
             weight=15.0,
         )
         self.object_goal_tracking = RewardTermCfg(
-            func=general_rewards.object_goal_distance,
+            func=lift_object_rewards.object_goal_distance,
             params={
                 "std": 0.3,
                 "minimal_height": minimum_height_to_lift,
@@ -225,7 +225,7 @@ class LiftObjectRewardCfg:
             weight=16.0,
         )
         self.object_goal_tracking_fine_grained = RewardTermCfg(
-            func=general_rewards.object_goal_distance,
+            func=lift_object_rewards.object_goal_distance,
             params={
                 "std": 0.05,
                 "minimal_height": minimum_height_to_lift,
