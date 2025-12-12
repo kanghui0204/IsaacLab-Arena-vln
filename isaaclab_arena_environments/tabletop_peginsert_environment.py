@@ -1,3 +1,8 @@
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +18,7 @@
 # limitations under the License.
 
 import argparse
-import numpy as np
+
 from isaaclab_arena_environments.example_environment_base import ExampleEnvironmentBase
 
 
@@ -22,28 +27,26 @@ class FactoryPegInsertEnvironment(ExampleEnvironmentBase):
     name: str = "factory_peg_insert"
 
     def get_env(self, args_cli: argparse.Namespace):  # -> IsaacLabArenaEnvironment:
-        from isaaclab_arena.assets.object_base import ObjectType
-        from isaaclab_arena.assets.object_reference import ObjectReference
-        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
-        from isaaclab_arena.scene.scene import Scene
-        from isaaclab_arena.utils.pose import Pose
+        import isaaclab.sim as sim_utils
         from isaaclab.managers import EventTermCfg as EventTerm
         from isaaclab.managers import SceneEntityCfg
         from isaaclab.utils import configclass
-        import isaaclab.sim as sim_utils
-        from isaaclab_arena_environments import mdp
         from isaaclab_tasks.manager_based.manipulation.stack.mdp.franka_stack_events import randomize_object_pose
-        from isaaclab_arena.tasks.factory_assembly_task import FactoryAssemblyTask
 
         from isaaclab_arena.assets.background_library import FactoryTableBackground
-        from isaaclab_arena.assets.object_library import Peg, Hole
-        from isaaclab_arena.assets.object_library import Light
+        from isaaclab_arena.assets.object_base import ObjectType
+        from isaaclab_arena.assets.object_library import Hole, Light, Peg
         from isaaclab_arena.embodiments.franka.franka import FrankaEmbodiment
-        from isaaclab_arena.tasks.factory_assembly_task import FRANKA_PANDA_FACTORY_HIGH_PD_CFG
+        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
+        from isaaclab_arena.scene.scene import Scene
+        from isaaclab_arena.tasks.factory_assembly_task import FRANKA_PANDA_FACTORY_HIGH_PD_CFG, FactoryAssemblyTask
+        from isaaclab_arena.utils.pose import Pose
+        from isaaclab_arena_environments import mdp
 
         @configclass
         class EventCfgPegInsert:
             """Configuration for events."""
+
             reset_all = EventTerm(func=mdp.reset_scene_to_default, mode="reset", params={"reset_joint_targets": True})
 
             randomize_peg_hole_positions = EventTerm(
@@ -61,9 +64,8 @@ class FactoryPegInsertEnvironment(ExampleEnvironmentBase):
                 },
             )
 
-
         pick_up_object = self.asset_registry.get_asset_by_name(args_cli.object)()
-        destination_object = self.asset_registry.get_asset_by_name(args_cli.destination_object)()       
+        destination_object = self.asset_registry.get_asset_by_name(args_cli.destination_object)()
         background = self.asset_registry.get_asset_by_name(args_cli.background)()
         light_spawner_cfg = sim_utils.DomeLightCfg(color=(0.75, 0.75, 0.75), intensity=1500.0)
         light = self.asset_registry.get_asset_by_name("light")(spawner_cfg=light_spawner_cfg)
@@ -82,7 +84,7 @@ class FactoryPegInsertEnvironment(ExampleEnvironmentBase):
             )
         )
 
-        destination_object.set_initial_pose(            
+        destination_object.set_initial_pose(
             Pose(
                 position_xyz=(0.45, 0.1, 0.0),
                 rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
@@ -91,7 +93,7 @@ class FactoryPegInsertEnvironment(ExampleEnvironmentBase):
 
         scene = Scene(assets=[background, pick_up_object, destination_object, light])
 
-        task=FactoryAssemblyTask(
+        task = FactoryAssemblyTask(
             fixed_asset=pick_up_object,
             held_asset=destination_object,
             assist_asset_list=[],

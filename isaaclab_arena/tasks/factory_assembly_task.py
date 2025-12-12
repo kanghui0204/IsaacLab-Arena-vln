@@ -10,21 +10,22 @@ import isaaclab.envs.mdp as mdp_isaac_lab
 from isaaclab.envs.common import ViewerCfg
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg
 from isaaclab.managers import EventTermCfg, SceneEntityCfg, TerminationTermCfg
-from isaaclab.utils import configclass
-
-from isaaclab_arena.assets.asset import Asset
-from isaaclab_arena.metrics.metric_base import MetricBase
-from isaaclab_arena.metrics.success_rate import SuccessRateMetric
-from isaaclab_arena.metrics.object_moved import ObjectMovedRateMetric
-from isaaclab_arena.tasks.task_base import TaskBase
-from isaaclab_arena.tasks.terminations import objects_in_proximity
-from isaaclab_arena.terms.events import set_object_pose
-from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
 from isaaclab.scene import InteractiveSceneCfg
+from isaaclab.utils import configclass
 
 # Create a custom Franka configuration for factory tasks
 # This is defined at module level to avoid being treated as a config field
 from isaaclab_assets.robots.franka import FRANKA_PANDA_HIGH_PD_CFG
+
+from isaaclab_arena.assets.asset import Asset
+from isaaclab_arena.metrics.metric_base import MetricBase
+from isaaclab_arena.metrics.object_moved import ObjectMovedRateMetric
+from isaaclab_arena.metrics.success_rate import SuccessRateMetric
+from isaaclab_arena.tasks.task_base import TaskBase
+from isaaclab_arena.tasks.terminations import objects_in_proximity
+from isaaclab_arena.terms.events import set_object_pose
+from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
+
 FRANKA_PANDA_FACTORY_HIGH_PD_CFG = FRANKA_PANDA_HIGH_PD_CFG.copy()
 FRANKA_PANDA_FACTORY_HIGH_PD_CFG.spawn.activate_contact_sensors = True
 FRANKA_PANDA_FACTORY_HIGH_PD_CFG.spawn.rigid_props.disable_gravity = True
@@ -41,6 +42,7 @@ class FactoryAssemblyTask(TaskBase):
     """
     Factory assembly task where an object needs to be assembled with a base object, like peg insert, gear mesh, etc.
     """
+
     def __init__(
         self,
         fixed_asset: Asset,
@@ -101,21 +103,19 @@ class FactoryAssemblyTask(TaskBase):
     def get_metrics(self) -> list[MetricBase]:
         return [
             SuccessRateMetric(),
-            ObjectMovedRateMetric(
-                self.held_asset
-            ),
+            ObjectMovedRateMetric(self.held_asset),
         ]
 
     def get_viewer_cfg(self) -> ViewerCfg:
         """Get viewer configuration to look at the held asset.
-        
+
         Camera is positioned at right-back-top of the object for better view of assembly operations.
         """
         return get_viewer_cfg_look_at_object(
             lookat_object=self.held_asset,
             offset=np.array([1.5, -0.5, 1.0]),  # Rotated 180° around z-axis from original view
         )
-    
+
 
 @configclass
 class TerminationsCfg:
@@ -131,7 +131,7 @@ class TerminationsCfg:
 @configclass
 class EventsCfg:
     """Configuration for factory assembly task events.
-    
+
     Note:
         Additional event terms will be dynamically created for each assist asset
         with the naming pattern: reset_{asset_name}_pose
@@ -158,9 +158,7 @@ class EventsCfg:
                 },
             )
         else:
-            print(
-                f"Fixed asset {fixed_asset.name} has no initial pose. Not setting reset fixed asset pose event."
-            )
+            print(f"Fixed asset {fixed_asset.name} has no initial pose. Not setting reset fixed asset pose event.")
             self.reset_fixed_asset_pose = None
 
         # Reset held asset pose
@@ -175,9 +173,7 @@ class EventsCfg:
                 },
             )
         else:
-            print(
-                f"Held asset {held_asset.name} has no initial pose. Not setting reset held asset pose event."
-            )
+            print(f"Held asset {held_asset.name} has no initial pose. Not setting reset held asset pose event.")
             self.reset_held_asset_pose = None
 
         # Reset each assist asset pose individually
@@ -199,20 +195,19 @@ class EventsCfg:
                     ),
                 )
             else:
-                print(
-                    f"Assist asset {assist_asset.name} has no initial pose. Skipping this asset."
-                )
+                print(f"Assist asset {assist_asset.name} has no initial pose. Skipping this asset.")
 
 
 class FactoryAssemblyMimicEnvCfg(MimicEnvCfg):
     """
     Isaac Lab Mimic environment config class for factory assembly task.
-    
+
     Note:
         This is a base configuration class. Specific factory assembly tasks
         (e.g., PegInsert, GearMesh) should create their own subclasses with
         appropriate asset names.
     """
+
     embodiment_name: str = MISSING
     fixed_asset_name: str = MISSING
     held_asset_name: str = MISSING

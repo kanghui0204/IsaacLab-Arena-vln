@@ -4,21 +4,21 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import isaaclab.sim as sim_utils
+from isaaclab.sim.schemas.schemas_cfg import RigidBodyPropertiesCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import GroundPlaneCfg
 from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
-from isaaclab.sim.schemas.schemas_cfg import RigidBodyPropertiesCfg
 
 from isaaclab_arena.affordances.openable import Openable
 from isaaclab_arena.affordances.pressable import Pressable
 from isaaclab_arena.assets.object import Object
 from isaaclab_arena.assets.object_base import ObjectType
-from isaaclab_arena.assets.register import register_asset
-from isaaclab_arena.utils.pose import Pose
 from isaaclab_arena.assets.object_utils import (
-    create_factory_articulation_cfg,
     RIGID_BODY_PROPS_HIGH_PRECISION,
     RIGID_BODY_PROPS_STANDARD,
+    create_factory_articulation_cfg,
 )
+from isaaclab_arena.assets.register import register_asset
+from isaaclab_arena.utils.pose import Pose
 
 
 class LibraryObject(Object):
@@ -289,10 +289,10 @@ class Light(LibraryObject):
 class FactoryObject(LibraryObject):
     """
     Base class for Factory assembly task objects.
-    
+
     This class handles the common initialization logic for all factory objects,
     including creating the articulation configuration and applying initial pose.
-    
+
     Subclasses must define:
         - name: str
         - tags: list[str]
@@ -301,14 +301,14 @@ class FactoryObject(LibraryObject):
         - mass: float
         - rigid_props: RigidBodyPropertiesCfg (class attribute)
     """
-    
+
     # Class attributes that must be overridden by subclasses
     mass: float
     rigid_props: RigidBodyPropertiesCfg
-    
+
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
-        
+
         # Create factory-specific articulation configuration
         self.object_cfg = create_factory_articulation_cfg(
             prim_path=self.prim_path,
@@ -317,7 +317,7 @@ class FactoryObject(LibraryObject):
             mass=self.mass,
             rigid_props=self.rigid_props,
         )
-        
+
         # Apply initial pose if provided
         self.object_cfg = self._add_initial_pose_to_cfg(self.object_cfg)
 
@@ -335,6 +335,7 @@ class Peg(FactoryObject):
     scale = (3.0, 3.0, 3.0)
     mass = 0.019
     rigid_props = RIGID_BODY_PROPS_HIGH_PRECISION
+
 
 @register_asset
 class Hole(FactoryObject):

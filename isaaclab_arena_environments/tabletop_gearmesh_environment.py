@@ -1,3 +1,8 @@
+# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
+# All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,24 +34,24 @@ class FactoryGearMeshEnvironment(ExampleEnvironmentBase):
     name: str = "factory_gear_mesh"
 
     def get_env(self, args_cli: argparse.Namespace):  # -> IsaacLabArenaEnvironment:
-        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
-        from isaaclab_arena.scene.scene import Scene
-        from isaaclab_arena.utils.pose import Pose
+        import isaaclab.sim as sim_utils
         from isaaclab.managers import EventTermCfg as EventTerm
         from isaaclab.managers import SceneEntityCfg
         from isaaclab.utils import configclass
-        import isaaclab.sim as sim_utils
-        from isaaclab_arena.tasks.factory_assembly_task import FactoryAssemblyTask
+
         from isaaclab_arena.assets.background_library import FactoryTableBackground
-        from isaaclab_arena.assets.object_library import GearBase, MediumGear, SmallGear, LargeGear
-        from isaaclab_arena.assets.object_library import Light
+        from isaaclab_arena.assets.object_library import GearBase, LargeGear, Light, MediumGear, SmallGear
+        from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
+        from isaaclab_arena.scene.scene import Scene
+        from isaaclab_arena.tasks.factory_assembly_task import FRANKA_PANDA_FACTORY_HIGH_PD_CFG, FactoryAssemblyTask
+        from isaaclab_arena.utils.pose import Pose
         from isaaclab_arena_environments import mdp
         from isaaclab_arena_environments.mdp.events import randomize_object_serials_pose
-        from isaaclab_arena.tasks.factory_assembly_task import FRANKA_PANDA_FACTORY_HIGH_PD_CFG
-        
+
         @configclass
         class EventCfgGearMesh:
             """Configuration for events."""
+
             reset_all = EventTerm(func=mdp.reset_scene_to_default, mode="reset", params={"reset_joint_targets": True})
 
             randomize_gear_positions = EventTerm(
@@ -66,7 +71,7 @@ class FactoryGearMeshEnvironment(ExampleEnvironmentBase):
         small_gear = self.asset_registry.get_asset_by_name("small_gear")()
         large_gear = self.asset_registry.get_asset_by_name("large_gear")()
         background = self.asset_registry.get_asset_by_name(args_cli.background)()
-        light_spawner_cfg = sim_utils.DomeLightCfg(color=(0.75, 0.75, 0.75), intensity=1500.0)
+        light_spawner_cfg = sim_utils.DomeLightCfg(color=(0.75, 0.75, 0.75), intensity=500.0)
         light = self.asset_registry.get_asset_by_name("light")(spawner_cfg=light_spawner_cfg)
         embodiment = self.asset_registry.get_asset_by_name(args_cli.embodiment)(enable_cameras=args_cli.enable_cameras)
         embodiment.scene_config.robot = FRANKA_PANDA_FACTORY_HIGH_PD_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
@@ -133,4 +138,6 @@ class FactoryGearMeshEnvironment(ExampleEnvironmentBase):
         """Add CLI arguments for gear mesh environment."""
         parser.add_argument("--background", type=str, default="factory_table", help="Background scene (table)")
         parser.add_argument("--embodiment", type=str, default="franka", help="Robot embodiment")
-        parser.add_argument("--teleop_device", type=str, default=None, help="Teleoperation device (e.g., keyboard, spacemouse)")
+        parser.add_argument(
+            "--teleop_device", type=str, default=None, help="Teleoperation device (e.g., keyboard, spacemouse)"
+        )

@@ -3,10 +3,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from pxr import Usd
-from isaaclab.assets import ArticulationCfg
 import isaaclab.sim as sim_utils
+from isaaclab.assets import ArticulationCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
+from pxr import Usd
 
 from isaaclab_arena.assets.object_base import ObjectType
 from isaaclab_arena.utils.usd_helpers import get_prim_depth, is_articulation_root, is_rigid_body
@@ -105,7 +105,7 @@ def create_factory_articulation_cfg(
 ) -> ArticulationCfg:
     """
     Create a standard factory articulation configuration.
-    
+
     Args:
         prim_path: USD prim path for the articulation
         usd_path: Path to USD file
@@ -114,7 +114,7 @@ def create_factory_articulation_cfg(
         rigid_props: Rigid body properties configuration
         contact_offset: Contact offset for collision
         rest_offset: Rest offset for collision
-    
+
     Returns:
         ArticulationCfg: Configured articulation
     """
@@ -138,4 +138,3 @@ def create_factory_articulation_cfg(
         ),
         actuators={},
     )
-
