@@ -23,36 +23,36 @@ def _test_add_suffix_to_configclass_fields(simulation_app) -> bool:
         bool_field: bool = True
 
     try:
-        original = FooCfg()
-        result = SequentialTaskBase._add_suffix_to_configclass_fields(original, "_suffix")
+        original_cfg = FooCfg()
+        edited_cfg = SequentialTaskBase._add_suffix_to_configclass_fields(original_cfg, "_suffix")
 
         # Check that new fields exist with suffix
-        assert hasattr(result, "int_field_suffix")
-        assert hasattr(result, "str_field_suffix")
-        assert hasattr(result, "float_field_suffix")
-        assert hasattr(result, "bool_field_suffix")
+        assert hasattr(edited_cfg, "int_field_suffix")
+        assert hasattr(edited_cfg, "str_field_suffix")
+        assert hasattr(edited_cfg, "float_field_suffix")
+        assert hasattr(edited_cfg, "bool_field_suffix")
 
         # Check that values are preserved
-        assert result.int_field_suffix == 123
-        assert result.str_field_suffix == "123"
-        assert result.float_field_suffix == 1.23
-        assert result.bool_field_suffix is True
+        assert edited_cfg.int_field_suffix == 123
+        assert edited_cfg.str_field_suffix == "123"
+        assert edited_cfg.float_field_suffix == 1.23
+        assert edited_cfg.bool_field_suffix is True
 
         # Check types are preserved
-        assert isinstance(result.int_field_suffix, int)
-        assert isinstance(result.str_field_suffix, str)
-        assert isinstance(result.float_field_suffix, float)
-        assert isinstance(result.bool_field_suffix, bool)
+        assert isinstance(edited_cfg.int_field_suffix, int)
+        assert isinstance(edited_cfg.str_field_suffix, str)
+        assert isinstance(edited_cfg.float_field_suffix, float)
+        assert isinstance(edited_cfg.bool_field_suffix, bool)
 
         # Check that old field names don't exist
-        assert not hasattr(result, "int_field")
-        assert not hasattr(result, "str_field")
-        assert not hasattr(result, "float_field")
-        assert not hasattr(result, "bool_field")
+        assert not hasattr(edited_cfg, "int_field")
+        assert not hasattr(edited_cfg, "str_field")
+        assert not hasattr(edited_cfg, "float_field")
+        assert not hasattr(edited_cfg, "bool_field")
 
         # Test None input
-        result_none = SequentialTaskBase._add_suffix_to_configclass_fields(None, "_suffix")
-        assert result_none is None
+        edited_cfg = SequentialTaskBase._add_suffix_to_configclass_fields(None, "_suffix")
+        assert edited_cfg is None
 
     except Exception as e:
         print(f"Error: {e}")
@@ -75,33 +75,33 @@ def _test_remove_configclass_fields(simulation_app) -> bool:
         field_c: float = 1.23
 
     try:
-        original = FooCfg()
-        result = SequentialTaskBase._remove_configclass_fields(original, {"field_b"})
+        original_cfg = FooCfg()
+        edited_cfg = SequentialTaskBase._remove_configclass_fields(original_cfg, {"field_b"})
 
         # Check that remaining fields exist
-        assert hasattr(result, "field_a")
-        assert hasattr(result, "field_c")
+        assert hasattr(edited_cfg, "field_a")
+        assert hasattr(edited_cfg, "field_c")
 
         # Check that values are preserved
-        assert result.field_a == 123
-        assert result.field_c == 1.23
+        assert edited_cfg.field_a == 123
+        assert edited_cfg.field_c == 1.23
 
         # Check that removed field doesn't exist
-        assert not hasattr(result, "field_b")
+        assert not hasattr(edited_cfg, "field_b")
 
         # Test removing multiple fields
-        original = FooCfg()
-        result2 = SequentialTaskBase._remove_configclass_fields(original, {"field_a", "field_c"})
+        original_cfg = FooCfg()
+        edited_cfg = SequentialTaskBase._remove_configclass_fields(original_cfg, {"field_a", "field_c"})
 
         # Check that only field_b remains
-        assert hasattr(result2, "field_b")
-        assert result2.field_b == "123"
-        assert not hasattr(result2, "field_a")
-        assert not hasattr(result2, "field_c")
+        assert hasattr(edited_cfg, "field_b")
+        assert edited_cfg.field_b == "123"
+        assert not hasattr(edited_cfg, "field_a")
+        assert not hasattr(edited_cfg, "field_c")
 
         # Test None input
-        result_none = SequentialTaskBase._remove_configclass_fields(None, set())
-        assert result_none is None
+        edited_cfg = SequentialTaskBase._remove_configclass_fields(None, set())
+        assert edited_cfg is None
 
     except Exception as e:
         print(f"Error: {e}")
