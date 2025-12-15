@@ -32,6 +32,7 @@ class PickAndPlaceTask(TaskBase):
         destination_location: Asset,
         background_scene: Asset,
         episode_length_s: float | None = None,
+        task_description: str | None = None,
     ):
         super().__init__(episode_length_s=episode_length_s)
         self.pick_up_object = pick_up_object
@@ -44,6 +45,11 @@ class PickAndPlaceTask(TaskBase):
         )
         self.events_cfg = EventsCfg(pick_up_object=self.pick_up_object)
         self.termination_cfg = self.make_termination_cfg()
+        self.task_description = (
+            f"Pick up the {pick_up_object.name}, and place it into the {destination_location.name}"
+            if task_description is None
+            else task_description
+        )
 
     def get_scene_cfg(self):
         return self.scene_config
