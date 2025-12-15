@@ -14,6 +14,7 @@ from pxr import Gf, Usd, UsdGeom
 from isaaclab_arena.assets.asset import Asset
 from isaaclab_arena.assets.object import Object
 from isaaclab_arena.assets.object_base import ObjectType
+from isaaclab_arena.assets.object_set import RigidObjectSet
 from isaaclab_arena.environments.isaaclab_arena_manager_based_env import IsaacLabArenaManagerBasedRLEnvCfg
 from isaaclab_arena.utils.configclass import make_configclass
 from isaaclab_arena.utils.phyx_utils import add_contact_report
@@ -35,31 +36,25 @@ class Scene:
         if assets is not None:
             self.add_assets(assets)
 
-    def _check_asset_name_is_valid(self, name: str) -> bool:
-        """Check if the asset name is valid.
-
-        Args:
-            name: The name of the asset to check.
-        """
-        if name is None:
-            raise ValueError("Asset name is None")
-        if name in self.assets:
-            raise ValueError(f"Asset with name '{name}' already exists")
-        return True
-
-    def add_asset(self, asset: Asset | dict[str, list[Asset]]):
+    def add_asset(self, asset: Asset | RigidObjectSet):
         """Add an asset to the scene.
 
         Args:
             asset: An Asset instance or a dictionary of Assets. If a dictionary is provided,
                    the keys will be used as the names of the assets and the values will be the list of assets.
         """
-        self._check_asset_name_is_valid(asset.name)
+        if asset.name is None:
+            print("Asset name is None. Skipping asset.")
+            return
+        # if name already exists, overwrite
         self.assets[asset.name] = asset
 
-    def add_assets(self, assets: list[Asset]):
+    def add_assets(self, assets: list[Asset | RigidObjectSet]):
         for asset in assets:
-            self.add_asset(asset)
+            if isinstance(asset, Asset | RigidObjectSet):
+                self.add_asset(asset)
+            else:
+                raise ValueError(f"Invalid asset type: {type(asset)}")
 
     def get_scene_cfg(self) -> Any:
         """Returns a configclass containing all the scene elements."""

@@ -20,8 +20,8 @@ class KitchenPickAndPlaceEnvironment(ExampleEnvironmentBase):
 
     def get_env(self, args_cli: argparse.Namespace):  # -> IsaacLabArenaEnvironment:
         from isaaclab_arena.assets.object_base import ObjectType
-        from isaaclab_arena.assets.object_library import LibraryObjectSet
         from isaaclab_arena.assets.object_reference import ObjectReference
+        from isaaclab_arena.assets.object_set import RigidObjectSet
         from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
         from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
@@ -55,7 +55,7 @@ class KitchenPickAndPlaceEnvironment(ExampleEnvironmentBase):
             for obj in args_cli.object_set:
                 obj_from_set = self.asset_registry.get_asset_by_name(obj)()
                 objects.append(obj_from_set)
-            object_set = LibraryObjectSet(name="object_set", objects=objects)
+            object_set = RigidObjectSet(name="object_set", objects=objects)
             object_set.set_initial_pose(Pose(position_xyz=(0.4, 0.2, 0.1), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
             scene = Scene(assets=[background, pick_up_object, destination_location, object_set])
 

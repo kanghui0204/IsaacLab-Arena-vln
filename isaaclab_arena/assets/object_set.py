@@ -21,17 +21,33 @@ class RigidObjectSet(Object):
         self,
         name: str,
         objects: list[Object],
-        prim_path: str | None = "/World/envs/env_.*/Object",
+        prim_path: str | None = None,
         scale: tuple[float, float, float] = (1.0, 1.0, 1.0),
         random_choice: bool = False,
         initial_pose: Pose | None = None,
         **kwargs,
     ):
-        if not self._examine_objects_type_are_rigid(objects):
-            raise ValueError(f"Object set {name} must contain at least 1 rigid object.")
+        """
+        Args:
+            name: The name of the object set.
+            objects: The list of objects to be included in the object set.
+            prim_path: The prim path of the object set. Note that for all environments, the object set
+                prim path must be the same.
+            scale: The scale of the object set. Note all objects can only have the same scale, if
+                different scales are needed, considering scaling the object USD file.
+            random_choice: Whether to randomly choose an object from the object set to spawn in
+                each environment. If False, object is spawned based on the order of objects in the list.
+            initial_pose: The initial pose of the object from this object set.
+        """
+        if not self._are_all_objects_type_rigid(objects):
+            raise ValueError(f"Object set {name} must contain only rigid objects.")
 
         self.object_usd_paths = [object.usd_path for object in objects]
         self.random_choice = random_choice
+
+        # Set default prim_path if not provided
+        if prim_path is None:
+            prim_path = f"{{ENV_REGEX_NS}}/{name}"
 
         super().__init__(
             name=name,
@@ -43,9 +59,9 @@ class RigidObjectSet(Object):
             **kwargs,
         )
 
-    def _examine_objects_type_are_rigid(self, objects: list[ObjectBase]) -> bool:
+    def _are_all_objects_type_rigid(self, objects: list[ObjectBase]) -> bool:
         if objects is None or len(objects) == 0:
-            return False
+            raise ValueError(f"Object set {self.name} must contain at least 1 object.")
         return all(detect_object_type(usd_path=object.usd_path) == ObjectType.RIGID for object in objects)
 
     def _generate_rigid_cfg(self) -> RigidObjectCfg:
@@ -55,6 +71,7 @@ class RigidObjectSet(Object):
             spawn=sim_utils.MultiUsdFileCfg(
                 usd_path=self.object_usd_paths,
                 random_choice=self.random_choice,
+                activate_contact_sensors=True,
             ),
         )
         object_cfg = self._add_initial_pose_to_cfg(object_cfg)
