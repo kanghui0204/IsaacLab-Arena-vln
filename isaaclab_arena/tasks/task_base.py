@@ -9,7 +9,7 @@ from typing import Any
 from isaaclab.envs.common import ViewerCfg
 from isaaclab.managers.recorder_manager import RecorderManagerBaseCfg
 
-from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
+from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
 from isaaclab_arena.environments.isaaclab_arena_manager_based_env import IsaacLabArenaManagerBasedRLEnvCfg
 from isaaclab_arena.metrics.metric_base import MetricBase
 

@@ -59,7 +59,7 @@ Embodiments in Detail
 **Mimic Arm Mode**
     Embodiments expose an ``mimic_arm_mode`` attribute that declares which arms are
     movable for demonstration playback. This attribute uses the
-    ``MimicArmMode`` enum from ``isaaclab_arena.embodiments.common.mimic_utils``:
+    ``MimicArmMode`` enum from ``isaaclab_arena.embodiments.common.mimic_arm_mode``:
 
     - **SINGLE_ARM** – the robot has only one arm.
     - **DUAL_ARM** – bimanual robot, task is performed with both arms in the demonstration.

@@ -12,7 +12,7 @@ from isaaclab.managers import EventTermCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.affordances.pressable import Pressable
-from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
+from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
 from isaaclab_arena.tasks.task_base import TaskBase

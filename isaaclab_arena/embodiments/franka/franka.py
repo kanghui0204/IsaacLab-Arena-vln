@@ -28,7 +28,8 @@ from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_eve
 from isaaclab_tasks.manager_based.manipulation.stack.mdp.observations import ee_frame_pos, ee_frame_quat
 
 from isaaclab_arena.assets.register import register_asset
-from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode, get_rigid_and_articulated_object_poses
+from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
+from isaaclab_arena.embodiments.common.mimic_utils import get_rigid_and_articulated_object_poses
 from isaaclab_arena.embodiments.embodiment_base import EmbodimentBase
 from isaaclab_arena.embodiments.franka.observations import gripper_pos
 from isaaclab_arena.utils.pose import Pose
@@ -39,7 +40,7 @@ class FrankaEmbodiment(EmbodimentBase):
     """Embodiment for the Franka robot."""
 
     name = "franka"
-    mimic_arm_mode = MimicArmMode.SINGLE_ARM
+    default_mimic_arm_mode = MimicArmMode.SINGLE_ARM
 
     def __init__(
         self, enable_cameras: bool = False, initial_pose: Pose | None = None, mimic_arm_mode: MimicArmMode | None = None

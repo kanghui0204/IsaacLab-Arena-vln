@@ -16,7 +16,7 @@ from isaaclab.utils.math import euler_xyz_from_quat
 from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_events
 
 from isaaclab_arena.assets.asset import Asset
-from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
+from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
 from isaaclab_arena.tasks.task_base import TaskBase

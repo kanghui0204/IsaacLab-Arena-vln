@@ -5,7 +5,7 @@
 
 from isaaclab.envs.common import ViewerCfg
 
-from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
+from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
 from isaaclab_arena.tasks.task_base import TaskBase
 
 

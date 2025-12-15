@@ -14,7 +14,7 @@ from isaaclab.sensors.contact_sensor.contact_sensor_cfg import ContactSensorCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.assets.asset import Asset
-from isaaclab_arena.embodiments.common.mimic_utils import MimicArmMode
+from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.object_moved import ObjectMovedRateMetric
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
@@ -220,11 +220,10 @@ class PickPlaceMimicEnvCfg(MimicEnvCfg):
                 apply_noise_during_interpolation=False,
             )
         )
-        if self.arm_mode == "single_arm":
+        if self.arm_mode == MimicArmMode.SINGLE_ARM:
             self.subtask_configs["robot"] = subtask_configs
         # We need to add the left and right subtasks for GR1.
-        elif self.arm_mode in ["left", "right"]:
-            self.another_arm_mode = "left" if self.arm_mode == "right" else "right"
+        elif self.arm_mode in [MimicArmMode.LEFT, MimicArmMode.RIGHT]:
             self.subtask_configs[self.arm_mode] = subtask_configs
             # EEF on opposite side (arm is static)
             subtask_configs = []
@@ -250,7 +249,7 @@ class PickPlaceMimicEnvCfg(MimicEnvCfg):
                     apply_noise_during_interpolation=False,
                 )
             )
-            self.subtask_configs[self.another_arm_mode] = subtask_configs
+            self.subtask_configs[self.arm_mode.get_other_arm()] = subtask_configs
 
         else:
             raise ValueError(f"Embodiment arm mode {self.arm_mode} not supported")
