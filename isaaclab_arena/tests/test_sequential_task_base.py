@@ -8,12 +8,15 @@ from isaaclab_arena.tests.utils.subprocess import run_simulation_app_function
 HEADLESS = True
 
 
-def _test_add_suffix_to_configclass_fields(simulation_app) -> bool:
-    """Test that _add_suffix_to_configclass_fields correctly renames fields with suffix."""
+def _test_add_suffix_configclass_transform(simulation_app) -> bool:
+    """Test that add_suffix_configclass_transform correctly renames fields with suffix."""
+
+    from functools import partial
 
     from isaaclab.utils import configclass
 
     from isaaclab_arena.tasks.sequential_task_base import SequentialTaskBase
+    from isaaclab_arena.utils.configclass import transform_configclass_instance
 
     @configclass
     class FooCfg:
@@ -24,7 +27,10 @@ def _test_add_suffix_to_configclass_fields(simulation_app) -> bool:
 
     try:
         original_cfg = FooCfg()
-        edited_cfg = SequentialTaskBase._add_suffix_to_configclass_fields(original_cfg, "_suffix")
+        edited_cfg = transform_configclass_instance(
+            original_cfg,
+            partial(SequentialTaskBase.add_suffix_configclass_transform, suffix="_suffix"),
+        )
 
         # Check that new fields exist with suffix
         assert hasattr(edited_cfg, "int_field_suffix")
@@ -51,7 +57,10 @@ def _test_add_suffix_to_configclass_fields(simulation_app) -> bool:
         assert not hasattr(edited_cfg, "bool_field")
 
         # Test None input
-        edited_cfg = SequentialTaskBase._add_suffix_to_configclass_fields(None, "_suffix")
+        edited_cfg = transform_configclass_instance(
+            None,
+            partial(SequentialTaskBase.add_suffix_configclass_transform, suffix="_suffix"),
+        )
         assert edited_cfg is None
 
     except Exception as e:
@@ -61,12 +70,15 @@ def _test_add_suffix_to_configclass_fields(simulation_app) -> bool:
     return True
 
 
-def _test_remove_configclass_fields(simulation_app) -> bool:
-    """Test that _remove_configclass_fields correctly removes specified fields."""
+def _test_remove_configclass_transform(simulation_app) -> bool:
+    """Test that remove_configclass_transform correctly removes specified fields."""
+
+    from functools import partial
 
     from isaaclab.utils import configclass
 
     from isaaclab_arena.tasks.sequential_task_base import SequentialTaskBase
+    from isaaclab_arena.utils.configclass import transform_configclass_instance
 
     @configclass
     class FooCfg:
@@ -76,7 +88,10 @@ def _test_remove_configclass_fields(simulation_app) -> bool:
 
     try:
         original_cfg = FooCfg()
-        edited_cfg = SequentialTaskBase._remove_configclass_fields(original_cfg, {"field_b"})
+        edited_cfg = transform_configclass_instance(
+            original_cfg,
+            partial(SequentialTaskBase.remove_configclass_transform, exclude_fields={"field_b"}),
+        )
 
         # Check that remaining fields exist
         assert hasattr(edited_cfg, "field_a")
@@ -91,7 +106,10 @@ def _test_remove_configclass_fields(simulation_app) -> bool:
 
         # Test removing multiple fields
         original_cfg = FooCfg()
-        edited_cfg = SequentialTaskBase._remove_configclass_fields(original_cfg, {"field_a", "field_c"})
+        edited_cfg = transform_configclass_instance(
+            original_cfg,
+            partial(SequentialTaskBase.remove_configclass_transform, exclude_fields={"field_a", "field_c"}),
+        )
 
         # Check that only field_b remains
         assert hasattr(edited_cfg, "field_b")
@@ -100,7 +118,18 @@ def _test_remove_configclass_fields(simulation_app) -> bool:
         assert not hasattr(edited_cfg, "field_c")
 
         # Test None input
-        edited_cfg = SequentialTaskBase._remove_configclass_fields(None, set())
+        edited_cfg = transform_configclass_instance(
+            None,
+            partial(SequentialTaskBase.remove_configclass_transform, exclude_fields=set()),
+        )
+        assert edited_cfg is None
+
+        # Test removing all fields returns None
+        original_cfg = FooCfg()
+        edited_cfg = transform_configclass_instance(
+            original_cfg,
+            partial(SequentialTaskBase.remove_configclass_transform, exclude_fields={"field_a", "field_b", "field_c"}),
+        )
         assert edited_cfg is None
 
     except Exception as e:
@@ -110,22 +139,22 @@ def _test_remove_configclass_fields(simulation_app) -> bool:
     return True
 
 
-def test_add_suffix_to_configclass_fields():
+def test_add_suffix_configclass_transform():
     result = run_simulation_app_function(
-        _test_add_suffix_to_configclass_fields,
+        _test_add_suffix_configclass_transform,
         headless=HEADLESS,
     )
-    assert result, f"Test {_test_add_suffix_to_configclass_fields.__name__} failed"
+    assert result, f"Test {_test_add_suffix_configclass_transform.__name__} failed"
 
 
-def test_remove_configclass_fields():
+def test_remove_configclass_transform():
     result = run_simulation_app_function(
-        _test_remove_configclass_fields,
+        _test_remove_configclass_transform,
         headless=HEADLESS,
     )
-    assert result, f"Test {_test_remove_configclass_fields.__name__} failed"
+    assert result, f"Test {_test_remove_configclass_transform.__name__} failed"
 
 
 if __name__ == "__main__":
-    test_add_suffix_to_configclass_fields()
-    test_remove_configclass_fields()
+    test_add_suffix_configclass_transform()
+    test_remove_configclass_transform()

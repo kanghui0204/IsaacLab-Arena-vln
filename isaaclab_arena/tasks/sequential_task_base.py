@@ -4,16 +4,20 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-import dataclasses
 import torch
 from dataclasses import MISSING
+from functools import partial
 from typing import Any
 
 from isaaclab.managers import EventTermCfg, TerminationTermCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.tasks.task_base import TaskBase
-from isaaclab_arena.utils.configclass import combine_configclass_instances, make_configclass
+from isaaclab_arena.utils.configclass import (
+    check_configclass_field_duplicates,
+    combine_configclass_instances,
+    transform_configclass_instance,
+)
 
 
 @configclass
@@ -28,9 +32,14 @@ class TerminationsCfg:
 
 class SequentialTaskBase(TaskBase):
     """
-    A base class for tasks composed sequentially from multiple subtasks.
+    A base class for composite tasks composed sequentially from multiple subtasks.
     The sequential task takes a list of TaskBase instances (subtasks),
     and automatically collects configs to form a composite task.
+
+    The sequential task satisfies the following properties:
+        - Made up of atomic tasks that must be completed in order.
+        - Once a subtask is complete once (success = True), it's success state can go back to False 
+          without affecting the completeness of the overall sequential task. 
     """
 
     def __init__(self, subtasks: list[TaskBase], episode_length_s: float | None = None):
@@ -39,71 +48,35 @@ class SequentialTaskBase(TaskBase):
         self.subtasks = subtasks
 
     @staticmethod
-    def _add_suffix_to_configclass_fields(cfg_instance: Any, suffix: str) -> Any:
-        """Create a new configclass instance with all field names appended with a suffix."""
-        if cfg_instance is None:
-            return None
-
-        fields = dataclasses.fields(cfg_instance)
-        new_fields = []
-        field_values = {}
-
-        # Rename the fields with suffix
-        for field in fields:
-            new_name = f"{field.name}{suffix}"
-            value = getattr(cfg_instance, field.name)
-            new_fields.append((new_name, field.type, value))
-            field_values[new_name] = value
-
-        # Create a new configclass with renamed fields
-        new_cfg_class = make_configclass(type(cfg_instance).__name__, new_fields)
-        return new_cfg_class(**field_values)
+    def add_suffix_configclass_transform(fields: list[tuple], suffix: str) -> list[tuple]:
+        "Config transformation to add a suffix to all field names."
+        return [(f"{name}{suffix}", ftype, value) for name, ftype, value in fields]
 
     @staticmethod
-    def _remove_configclass_fields(cfg_instance: Any, exclude_fields: set[str]) -> Any:
-        "Remove all fields from the configclass instance that are in the exclude_fields set."
-        if cfg_instance is None:
-            return None
-
-        fields = dataclasses.fields(cfg_instance)
-        new_fields = []
-        field_values = {}
-
-        # Remove the fields that are in the exclude_fields set
-        for field in fields:
-            if field.name in exclude_fields:
-                continue
-            value = getattr(cfg_instance, field.name)
-            new_fields.append((field.name, field.type, value))
-            field_values[field.name] = value
-
-        if not new_fields:
-            return None
-
-        # Create a new configclass without the excluded fields
-        new_cfg_class = make_configclass(type(cfg_instance).__name__, new_fields)
-        return new_cfg_class(**field_values)
+    def remove_configclass_transform(fields: list[tuple], exclude_fields: set[str]) -> list[tuple]:
+        "Config transformation to remove all fields in an exclude set."
+        return [(name, ftype, value) for name, ftype, value in fields if name not in exclude_fields]
 
     @staticmethod
     def sequential_task_success_func(
         env,
-        task_instance: "SequentialTaskBase",
+        subtasks: list[TaskBase],
     ) -> torch.Tensor:
-        "Sequential task compositesuccess function."
+        "Sequential task composite success function."
         # Check success of current subtask for each env
         for env_idx in range(env.num_envs):
             current_subtask_idx = env._current_subtask_idx[env_idx]
             current_subtask_success_func = (
-                task_instance.subtasks[current_subtask_idx].get_termination_cfg().success.func
+                subtasks[current_subtask_idx].get_termination_cfg().success.func
             )
             current_subtask_success_params = (
-                task_instance.subtasks[current_subtask_idx].get_termination_cfg().success.params
+                subtasks[current_subtask_idx].get_termination_cfg().success.params
             )
             result = current_subtask_success_func(env, **current_subtask_success_params)[env_idx]
 
             if result:
                 env._subtask_success_state[env_idx][current_subtask_idx] = True
-                if current_subtask_idx < len(task_instance.subtasks) - 1:
+                if current_subtask_idx < len(subtasks) - 1:
                     env._current_subtask_idx[env_idx] += 1
 
         # Compute composite task success state for each env
@@ -118,15 +91,15 @@ class SequentialTaskBase(TaskBase):
     def reset_subtask_success_state(
         env,
         env_ids,
-        task_instance: "SequentialTaskBase",
+        subtasks: list[TaskBase],
     ) -> None:
         "Reset subtask success vector and state machine for each environment."
         # Initialize each env's subtask success state to False
         if not hasattr(env, "_subtask_success_state"):
-            env._subtask_success_state = [[False for _ in task_instance.subtasks] for _ in range(env.num_envs)]
+            env._subtask_success_state = [[False for _ in subtasks] for _ in range(env.num_envs)]
         else:
             for env_id in env_ids:
-                env._subtask_success_state[env_id] = [False for _ in task_instance.subtasks]
+                env._subtask_success_state[env_id] = [False for _ in subtasks]
 
         # Initialize each env's current subtask index (state machine) to 0
         if not hasattr(env, "_current_subtask_idx"):
@@ -137,8 +110,17 @@ class SequentialTaskBase(TaskBase):
 
     def get_scene_cfg(self) -> configclass:
         "Make combined scene cfg from all subtasks."
-        scene_cfg = combine_configclass_instances("SceneCfg", *(subtask.get_scene_cfg() for subtask in self.subtasks))
+        # Check for duplicate fields across subtask scene configs and warn if found
+        duplicates = check_configclass_field_duplicates(*(subtask.get_scene_cfg() for subtask in self.subtasks))
+        if duplicates:
+            import warnings
+            warnings.warn(
+                f"\n[WARNING] Duplicate scene config fields found across subtasks: {duplicates}. "
+                "Duplicates will be ignorned.\n",
+                UserWarning,
+            )
 
+        scene_cfg = combine_configclass_instances("SceneCfg", *(subtask.get_scene_cfg() for subtask in self.subtasks))
         return scene_cfg
 
     def make_sequential_task_events_cfg(self) -> configclass:
@@ -147,9 +129,10 @@ class SequentialTaskBase(TaskBase):
             func=self.reset_subtask_success_state,
             mode="reset",
             params={
-                "task_instance": self,
+                "subtasks": self.subtasks,
             },
         )
+
         return SequentialTaskEventsCfg(
             reset_subtask_success_state=reset_subtask_success_state,
         )
@@ -160,7 +143,7 @@ class SequentialTaskBase(TaskBase):
         renamed_events_cfgs = []
         for i, subtask in enumerate(self.subtasks):
             subtask_events_cfg = subtask.get_events_cfg()
-            renamed_cfg = self._add_suffix_to_configclass_fields(subtask_events_cfg, f"_subtask_{i}")
+            renamed_cfg = transform_configclass_instance(subtask_events_cfg, partial(self.add_suffix_configclass_transform, suffix=f"_subtask_{i}"))
             if renamed_cfg is not None:
                 renamed_events_cfgs.append(renamed_cfg)
 
@@ -176,9 +159,10 @@ class SequentialTaskBase(TaskBase):
         success = TerminationTermCfg(
             func=self.sequential_task_success_func,
             params={
-                "task_instance": self,
+                "subtasks": self.subtasks,
             },
         )
+
         return TerminationsCfg(
             success=success,
         )
@@ -189,8 +173,7 @@ class SequentialTaskBase(TaskBase):
         subtask_termination_cfgs = []
         for subtask in self.subtasks:
             termination_cfg = subtask.get_termination_cfg()
-            # Remove the 'success' field from the subtask termination cfg
-            cleaned_cfg = self._remove_configclass_fields(termination_cfg, {"success"})
+            cleaned_cfg = transform_configclass_instance(termination_cfg, partial(self.remove_configclass_transform, exclude_fields={"success"}))
             if cleaned_cfg is not None:
                 subtask_termination_cfgs.append(cleaned_cfg)
 
@@ -198,5 +181,5 @@ class SequentialTaskBase(TaskBase):
         combined_termination_cfg = combine_configclass_instances(
             "TerminationsCfg", *subtask_termination_cfgs, self.make_sequential_task_termination_cfg()
         )
-
+        
         return combined_termination_cfg

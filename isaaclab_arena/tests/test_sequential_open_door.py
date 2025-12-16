@@ -38,6 +38,9 @@ def get_test_environment(remove_reset_door_state_event: bool, num_envs: int):
         def get_metrics(self):
             return []
 
+        def get_prompt(self):
+            return ""
+
         def get_mimic_env_cfg(self, embodiment_name: str):
             return None
 
