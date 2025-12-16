@@ -104,6 +104,7 @@ def _test_multi_objects_in_one_object_set(simulation_app):
     from isaacsim.core.utils.stage import get_current_stage
 
     from isaaclab_arena.assets.asset_registry import AssetRegistry
+    from isaaclab_arena.assets.object_reference import ObjectReference
     from isaaclab_arena.assets.object_set import RigidObjectSet
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.environments.arena_env_builder import ArenaEnvBuilder
@@ -111,7 +112,6 @@ def _test_multi_objects_in_one_object_set(simulation_app):
     from isaaclab_arena.scene.scene import Scene
     from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
     from isaaclab_arena.utils.usd_helpers import get_asset_usd_path_from_prim_path
-    from isaaclab_arena.assets.object_reference import ObjectReference
 
     asset_registry = AssetRegistry()
     background = asset_registry.get_asset_by_name("kitchen")()
@@ -218,14 +218,20 @@ def _test_multi_object_sets(simulation_app):
                 prim_path=OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
             )
 
-            assert path_1 is not None, "Path_1 from Prim Path " + OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)) + " is None"
-            assert path_2 is not None, "Path_2 from Prim Path " + OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)) + " is None"
+            assert path_1 is not None, (
+                "Path_1 from Prim Path " + OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)) + " is None"
+            )
+            assert path_2 is not None, (
+                "Path_2 from Prim Path " + OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)) + " is None"
+            )
             if i % 2 == 0:
                 assert "cracker_box.usd" in path_1, "Path_1 does not contain cracker_box.usd for env index " + str(i)
                 assert "sugar_box.usd" in path_2, "Path_2 does not contain sugar_box.usd for env index " + str(i)
             else:
                 assert "sugar_box.usd" in path_1, "Path_1 does not contain sugar_box.usd for env index " + str(i)
-                assert "mustard_bottle.usd" in path_2, "Path_2 does not contain mustard_bottle.usd for env index " + str(i)
+                assert (
+                    "mustard_bottle.usd" in path_2
+                ), "Path_2 does not contain mustard_bottle.usd for env index " + str(i)
     except Exception as e:
         print(f"Error: {e}")
         return False
