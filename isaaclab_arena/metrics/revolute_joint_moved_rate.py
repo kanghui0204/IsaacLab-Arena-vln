@@ -41,23 +41,24 @@ class RevoluteJointMovedRateMetric(MetricBase):
     The revolute joint moved rate is the number of episodes in which the revolute joint moved, divided
     by the total number of episodes.
     """
+
     name = "revolute_joint_moved_rate"
     recorder_term_name = RevoluteJointStateRecorder.name
 
-    def __init__(self, object: Openable, reset_joint_state: float, joint_state_delta_threshold: float = 0.05):
+    def __init__(self, object: Openable, reset_joint_percentage: float, joint_percentage_delta_threshold: float = 0.05):
         """Initializes the door-moved rate metric.
 
         Args:
             object(Openable): The door to compute the door-moved rate for.
-            reset_openness(float): The initial openness of the door (what the door resets to).
-            openness_delta_threshold(float): The threshold for the door openness to be considered
-                moved. This is relative to the initial openness of the door.
+            reset_joint_percentage(float): The initial joint position of the door (what the door resets to).
+            joint_percentage_delta_threshold(float): The threshold for the door joint percentage to be considered
+                moved. This is relative to the initial joint position of the door.
         """
         super().__init__()
         assert isinstance(object, Openable), "Object must be Openable"
         self.object = object
-        self.reset_joint_state = reset_joint_state
-        self.joint_state_delta_threshold = joint_state_delta_threshold
+        self.reset_joint_percentage = reset_joint_percentage
+        self.joint_percentage_delta_threshold = joint_percentage_delta_threshold
 
     def get_recorder_term_cfg(self) -> RecorderTermCfg:
         """Return the recorder term configuration for the revolute joint moved rate metric."""
@@ -67,7 +68,7 @@ class RevoluteJointMovedRateMetric(MetricBase):
         """Computes the revolute joint moved rate from the recorded metric data.
 
         Args:
-            recorded_metric_data(list[np.ndarray]): The recorded revolute joint state per simulated
+            recorded_metric_data(list[np.ndarray]): The recorded revolute joint percentage per simulated
                 episode.
 
         Returns:
@@ -78,7 +79,7 @@ class RevoluteJointMovedRateMetric(MetricBase):
             return 0.0
         revolute_joint_moved_per_demo = []
         for episode_data in recorded_metric_data:
-            revolute_joint_state_threshold = self.reset_joint_state + self.joint_state_delta_threshold
-            revolute_joint_moved_per_demo.append(np.any(episode_data > revolute_joint_state_threshold))
+            revolute_joint_percentage_threshold = self.reset_joint_percentage + self.joint_percentage_delta_threshold
+            revolute_joint_moved_per_demo.append(np.any(episode_data > revolute_joint_percentage_threshold))
         revolute_joint_moved_rate = np.mean(revolute_joint_moved_per_demo)
         return revolute_joint_moved_rate

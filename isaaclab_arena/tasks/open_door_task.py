@@ -26,8 +26,8 @@ class OpenDoorTask(RotateRevoluteJointTask):
     ):
         super().__init__(
             openable_object=openable_object,
-            target_joint_state_threshold=openness_threshold,
-            reset_joint_state=reset_openness,
+            target_joint_percentage_threshold=openness_threshold,
+            reset_joint_percentage=reset_openness,
             episode_length_s=episode_length_s,
             task_description=task_description,
         )
@@ -39,8 +39,8 @@ class OpenDoorTask(RotateRevoluteJointTask):
 
     def make_termination_cfg(self):
         params = {}
-        if self.target_joint_state_threshold is not None:
-            params["threshold"] = self.target_joint_state_threshold
+        if self.target_joint_percentage_threshold is not None:
+            params["threshold"] = self.target_joint_percentage_threshold
         success = TerminationTermCfg(
             func=self.openable_object.is_open,
             params=params,

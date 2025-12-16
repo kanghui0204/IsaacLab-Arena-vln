@@ -59,6 +59,21 @@ class Openable(AffordanceBase):
         openness = self.get_openness(env, asset_cfg)
         return openness < openable_close_threshold
 
+    def rotate_revolute_joint(
+        self,
+        env: ManagerBasedEnv,
+        env_ids: torch.Tensor | None,
+        asset_cfg: SceneEntityCfg | None = None,
+        percentage: float = 0.0,
+    ):
+        """Rotate the revolute joint of the object to the given percentage (in all the environments)."""
+        assert percentage >= 0.0 and percentage <= 1.0, "Percentage must be between 0.0 and 1.0"
+        if asset_cfg is None:
+            asset_cfg = SceneEntityCfg(self.name)
+        asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
+        set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
+
+    # keep below for backwards compatibility
     def open(
         self,
         env: ManagerBasedEnv,
@@ -66,12 +81,9 @@ class Openable(AffordanceBase):
         asset_cfg: SceneEntityCfg | None = None,
         percentage: float = 1.0,
     ):
-        """Open the object (in all the environments)."""
-        if asset_cfg is None:
-            asset_cfg = SceneEntityCfg(self.name)
-        asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
-        set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
+        self.rotate_revolute_joint(env, env_ids, asset_cfg, percentage)
 
+    # keep below for backwards compatibility
     def close(
         self,
         env: ManagerBasedEnv,
@@ -79,11 +91,7 @@ class Openable(AffordanceBase):
         asset_cfg: SceneEntityCfg | None = None,
         percentage: float = 0.0,
     ):
-        """Close the object (in all the environments)."""
-        if asset_cfg is None:
-            asset_cfg = SceneEntityCfg(self.name)
-        asset_cfg = self._add_joint_name_to_scene_entity_cfg(asset_cfg)
-        set_normalized_joint_position(env, asset_cfg, percentage, env_ids)
+        self.rotate_revolute_joint(env, env_ids, asset_cfg, percentage)
 
     def _add_joint_name_to_scene_entity_cfg(self, asset_cfg: SceneEntityCfg) -> SceneEntityCfg:
         asset_cfg.joint_names = [self.openable_joint_name]
