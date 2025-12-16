@@ -78,20 +78,25 @@ def _test_single_object_in_one_object_set(simulation_app):
     env = env_builder.make_registered()
     env.reset()
 
-    # replace * in OBJECT_SET_PRIM_PATH with env_index
-    for i in range(NUM_ENVS):
-        # Construct the actual prim path for this environment
-        path = get_asset_usd_path_from_prim_path(
-            prim_path=OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
-        )
-        assert path is not None, "Path is None"
-        assert "cracker_box.usd" in path, "Path does not contain cracker_box.usd"
-        assert obj_set.get_initial_pose() is not None, "Initial pose is None"
+    try:
+        for i in range(NUM_ENVS):
+            # Construct the actual prim path for this environment
+            path = get_asset_usd_path_from_prim_path(
+                prim_path=OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
+            )
+            assert path is not None, "Path is None"
+            assert "cracker_box.usd" in path, "Path does not contain cracker_box.usd"
+            assert obj_set.get_initial_pose() is not None, "Initial pose is None"
 
-    assert env.scene[obj_set.name].data.root_pose_w is not None, "Root pose is None"
-    assert (
-        env.scene.sensors["pick_up_object_contact_sensor"].data.force_matrix_w is not None
-    ), "Contact sensor data is None"
+        assert env.scene[obj_set.name].data.root_pose_w is not None, "Root pose is None"
+        assert (
+            env.scene.sensors["pick_up_object_contact_sensor"].data.force_matrix_w is not None
+        ), "Contact sensor data is None"
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    finally:
+        env.close()
     return True
 
 
@@ -104,15 +109,20 @@ def _test_multi_objects_in_one_object_set(simulation_app):
     from isaaclab_arena.environments.arena_env_builder import ArenaEnvBuilder
     from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
-    from isaaclab_arena.tasks.dummy_task import DummyTask
+    from isaaclab_arena.tasks.pick_and_place_task import PickAndPlaceTask
     from isaaclab_arena.utils.usd_helpers import get_asset_usd_path_from_prim_path
+    from isaaclab_arena.assets.object_reference import ObjectReference
 
     asset_registry = AssetRegistry()
-    background = asset_registry.get_asset_by_name("packing_table")()
+    background = asset_registry.get_asset_by_name("kitchen")()
     embodiment = asset_registry.get_asset_by_name("franka")()
     cracker_box = asset_registry.get_asset_by_name("cracker_box")()
     sugar_box = asset_registry.get_asset_by_name("sugar_box")()
-
+    destination_location = ObjectReference(
+        name="destination_location",
+        prim_path="{ENV_REGEX_NS}/kitchen/Cabinet_B_02",
+        parent_asset=background,
+    )
     obj_set = RigidObjectSet(
         name="multi_object_sets", objects=[cracker_box, sugar_box], prim_path=OBJECT_SET_2_PRIM_PATH
     )
@@ -121,7 +131,9 @@ def _test_multi_objects_in_one_object_set(simulation_app):
         name="multi_objects_in_one_object_set_test",
         embodiment=embodiment,
         scene=scene,
-        task=DummyTask(),
+        task=PickAndPlaceTask(
+            pick_up_object=obj_set, destination_location=destination_location, background_scene=background
+        ),
         teleop_device=None,
     )
     args_cli = get_isaaclab_arena_cli_parser().parse_args([])
@@ -131,17 +143,28 @@ def _test_multi_objects_in_one_object_set(simulation_app):
     env = env_builder.make_registered()
     env.reset()
 
-    # replace * in OBJECT_SET_PRIM_PATH with env_index
-    for i in range(NUM_ENVS):
+    assert env.scene[obj_set.name].data.root_pose_w is not None, "Root pose is None"
+    assert (
+        env.scene.sensors["pick_up_object_contact_sensor"].data.force_matrix_w is not None
+    ), "Contact sensor data is None"
 
-        path = get_asset_usd_path_from_prim_path(
-            prim_path=OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
-        )
-        assert path is not None, "Path is None"
-        if i % 2 == 0:
-            assert "cracker_box.usd" in path, "Path does not contain cracker_box.usd for env index " + str(i)
-        else:
-            assert "sugar_box.usd" in path, "Path does not contain sugar_box.usd for env index " + str(i)
+    # replace * in OBJECT_SET_PRIM_PATH with env_index
+    try:
+        for i in range(NUM_ENVS):
+
+            path = get_asset_usd_path_from_prim_path(
+                prim_path=OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
+            )
+            assert path is not None, "Path is None"
+            if i % 2 == 0:
+                assert "cracker_box.usd" in path, "Path does not contain cracker_box.usd for env index " + str(i)
+            else:
+                assert "sugar_box.usd" in path, "Path does not contain sugar_box.usd for env index " + str(i)
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    finally:
+        env.close()
     return True
 
 
@@ -185,24 +208,29 @@ def _test_multi_object_sets(simulation_app):
     env = env_builder.make_registered()
     env.reset()
 
-    # replace * in OBJECT_SET_PRIM_PATH with env_index
-    for i in range(NUM_ENVS):
+    try:
+        for i in range(NUM_ENVS):
 
-        path_1 = get_asset_usd_path_from_prim_path(
-            prim_path=OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
-        )
-        path_2 = get_asset_usd_path_from_prim_path(
-            prim_path=OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
-        )
+            path_1 = get_asset_usd_path_from_prim_path(
+                prim_path=OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
+            )
+            path_2 = get_asset_usd_path_from_prim_path(
+                prim_path=OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)), stage=get_current_stage()
+            )
 
-        assert path_1 is not None, "Path_1 from Prim Path " + OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)) + " is None"
-        assert path_2 is not None, "Path_2 from Prim Path " + OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)) + " is None"
-        if i % 2 == 0:
-            assert "cracker_box.usd" in path_1, "Path_1 does not contain cracker_box.usd for env index " + str(i)
-            assert "sugar_box.usd" in path_2, "Path_2 does not contain sugar_box.usd for env index " + str(i)
-        else:
-            assert "sugar_box.usd" in path_1, "Path_1 does not contain sugar_box.usd for env index " + str(i)
-            assert "mustard_bottle.usd" in path_2, "Path_2 does not contain mustard_bottle.usd for env index " + str(i)
+            assert path_1 is not None, "Path_1 from Prim Path " + OBJECT_SET_1_PRIM_PATH.replace(".*", str(i)) + " is None"
+            assert path_2 is not None, "Path_2 from Prim Path " + OBJECT_SET_2_PRIM_PATH.replace(".*", str(i)) + " is None"
+            if i % 2 == 0:
+                assert "cracker_box.usd" in path_1, "Path_1 does not contain cracker_box.usd for env index " + str(i)
+                assert "sugar_box.usd" in path_2, "Path_2 does not contain sugar_box.usd for env index " + str(i)
+            else:
+                assert "sugar_box.usd" in path_1, "Path_1 does not contain sugar_box.usd for env index " + str(i)
+                assert "mustard_bottle.usd" in path_2, "Path_2 does not contain mustard_bottle.usd for env index " + str(i)
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    finally:
+        env.close()
     return True
 
 

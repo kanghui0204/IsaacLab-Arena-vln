@@ -24,8 +24,8 @@ AssetCfg = Union[AssetBaseCfg, RigidObjectCfg, ArticulationCfg, ContactSensorCfg
 
 class Scene:
 
-    def __init__(self, assets: list[Asset, dict[str, list[Asset]]] | None = None):
-        self.assets: dict[str, Asset | list[Asset]] = {}
+    def __init__(self, assets: list[Asset, RigidObjectSet] | None = None):
+        self.assets: dict[str, Asset | RigidObjectSet] = {}
         # We add these here so a user can override them if they want.
         self.observation_cfg = None
         self.events_cfg = None
@@ -43,6 +43,9 @@ class Scene:
             asset: An Asset instance or a dictionary of Assets. If a dictionary is provided,
                    the keys will be used as the names of the assets and the values will be the list of assets.
         """
+        if not isinstance(asset, Asset | RigidObjectSet):
+            raise ValueError(f"Invalid asset type: {type(asset)}")
+
         if asset.name is None:
             print("Asset name is None. Skipping asset.")
             return
@@ -51,10 +54,7 @@ class Scene:
 
     def add_assets(self, assets: list[Asset | RigidObjectSet]):
         for asset in assets:
-            if isinstance(asset, Asset | RigidObjectSet):
-                self.add_asset(asset)
-            else:
-                raise ValueError(f"Invalid asset type: {type(asset)}")
+            self.add_asset(asset)
 
     def get_scene_cfg(self) -> Any:
         """Returns a configclass containing all the scene elements."""
