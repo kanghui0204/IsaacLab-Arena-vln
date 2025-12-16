@@ -74,6 +74,7 @@ def get_test_environment(remove_reset_door_state_event: bool, num_envs: int):
     env_builder = ArenaEnvBuilder(isaaclab_arena_environment, args_cli)
     name, cfg = env_builder.build_registered()
     if remove_reset_door_state_event:
+        # Remove the reset door state events to allow us to inspect the scene without having it reset.
         cfg.events.reset_door_state_subtask_0 = None
         cfg.events.reset_door_state_subtask_1 = None
     env = gym.make(name, cfg=cfg).unwrapped
