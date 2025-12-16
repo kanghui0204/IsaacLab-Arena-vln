@@ -269,4 +269,3 @@ def transform_configclass_instance(
     field_values = {name: value for name, _, value in transformed_fields}
     new_cfg_class = make_configclass(type(cfg_instance).__name__, transformed_fields)
     return new_cfg_class(**field_values)
-

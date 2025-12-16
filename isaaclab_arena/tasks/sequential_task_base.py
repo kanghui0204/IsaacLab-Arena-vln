@@ -7,7 +7,6 @@ import copy
 import torch
 from dataclasses import MISSING
 from functools import partial
-from typing import Any
 
 from isaaclab.managers import EventTermCfg, TerminationTermCfg
 from isaaclab.utils import configclass
@@ -38,8 +37,8 @@ class SequentialTaskBase(TaskBase):
 
     The sequential task satisfies the following properties:
         - Made up of atomic tasks that must be completed in order.
-        - Once a subtask is complete once (success = True), it's success state can go back to False 
-          without affecting the completeness of the overall sequential task. 
+        - Once a subtask is complete once (success = True), it's success state can go back to False
+          without affecting the completeness of the overall sequential task.
     """
 
     def __init__(self, subtasks: list[TaskBase], episode_length_s: float | None = None):
@@ -66,12 +65,8 @@ class SequentialTaskBase(TaskBase):
         # Check success of current subtask for each env
         for env_idx in range(env.num_envs):
             current_subtask_idx = env._current_subtask_idx[env_idx]
-            current_subtask_success_func = (
-                subtasks[current_subtask_idx].get_termination_cfg().success.func
-            )
-            current_subtask_success_params = (
-                subtasks[current_subtask_idx].get_termination_cfg().success.params
-            )
+            current_subtask_success_func = subtasks[current_subtask_idx].get_termination_cfg().success.func
+            current_subtask_success_params = subtasks[current_subtask_idx].get_termination_cfg().success.params
             result = current_subtask_success_func(env, **current_subtask_success_params)[env_idx]
 
             if result:
@@ -114,9 +109,10 @@ class SequentialTaskBase(TaskBase):
         duplicates = check_configclass_field_duplicates(*(subtask.get_scene_cfg() for subtask in self.subtasks))
         if duplicates:
             import warnings
+
             warnings.warn(
                 f"\n[WARNING] Duplicate scene config fields found across subtasks: {duplicates}. "
-                "Duplicates will be ignorned.\n",
+                "Duplicates will be ignored.\n",
                 UserWarning,
             )
 
@@ -143,7 +139,9 @@ class SequentialTaskBase(TaskBase):
         renamed_events_cfgs = []
         for i, subtask in enumerate(self.subtasks):
             subtask_events_cfg = subtask.get_events_cfg()
-            renamed_cfg = transform_configclass_instance(subtask_events_cfg, partial(self.add_suffix_configclass_transform, suffix=f"_subtask_{i}"))
+            renamed_cfg = transform_configclass_instance(
+                subtask_events_cfg, partial(self.add_suffix_configclass_transform, suffix=f"_subtask_{i}")
+            )
             if renamed_cfg is not None:
                 renamed_events_cfgs.append(renamed_cfg)
 
@@ -173,7 +171,9 @@ class SequentialTaskBase(TaskBase):
         subtask_termination_cfgs = []
         for subtask in self.subtasks:
             termination_cfg = subtask.get_termination_cfg()
-            cleaned_cfg = transform_configclass_instance(termination_cfg, partial(self.remove_configclass_transform, exclude_fields={"success"}))
+            cleaned_cfg = transform_configclass_instance(
+                termination_cfg, partial(self.remove_configclass_transform, exclude_fields={"success"})
+            )
             if cleaned_cfg is not None:
                 subtask_termination_cfgs.append(cleaned_cfg)
 
@@ -181,5 +181,5 @@ class SequentialTaskBase(TaskBase):
         combined_termination_cfg = combine_configclass_instances(
             "TerminationsCfg", *subtask_termination_cfgs, self.make_sequential_task_termination_cfg()
         )
-        
+
         return combined_termination_cfg
