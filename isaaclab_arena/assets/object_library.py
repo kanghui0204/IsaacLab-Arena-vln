@@ -40,8 +40,6 @@ class LibraryObject(Object):
         )
 
 
-# TODO(peterd, 2025.11.05): Update all OV drive paths to use {ISAACLAB_NUCLEUS_DIR}
-# alias prior to public release once assets are synced to S3
 @register_asset
 class CrackerBox(LibraryObject):
     """
@@ -50,7 +48,7 @@ class CrackerBox(LibraryObject):
 
     name = "cracker_box"
     tags = ["object"]
-    usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/003_cracker_box.usd"
+    usd_path = f"{ISAAC_NUCLEUS_DIR}/Props/YCB/Axis_Aligned_Physics/003_cracker_box.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -64,7 +62,7 @@ class MustardBottle(LibraryObject):
 
     name = "mustard_bottle"
     tags = ["object"]
-    usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/006_mustard_bottle.usd"
+    usd_path = f"{ISAAC_NUCLEUS_DIR}/Props/YCB/Axis_Aligned_Physics/006_mustard_bottle.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -78,7 +76,7 @@ class SugarBox(LibraryObject):
 
     name = "sugar_box"
     tags = ["object"]
-    usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/004_sugar_box.usd"
+    usd_path = f"{ISAAC_NUCLEUS_DIR}/Props/YCB/Axis_Aligned_Physics/004_sugar_box.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
@@ -92,7 +90,7 @@ class TomatoSoupCan(LibraryObject):
 
     name = "tomato_soup_can"
     tags = ["object"]
-    usd_path = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/005_tomato_soup_can.usd"
+    usd_path = f"{ISAAC_NUCLEUS_DIR}/Props/YCB/Axis_Aligned_Physics/005_tomato_soup_can.usd"
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
