@@ -47,7 +47,7 @@ class G1EmbodimentBase(EmbodimentBase):
         enable_cameras: bool = False,
         initial_pose: Pose | None = None,
         concatenate_observation_terms: bool = False,
-        mimic_arm_mode: MimicArmMode | None = None,   
+        mimic_arm_mode: MimicArmMode | None = None,
     ):
         super().__init__(enable_cameras, initial_pose, concatenate_observation_terms, mimic_arm_mode)
         # Configuration structs
