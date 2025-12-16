@@ -67,7 +67,9 @@ class FrankaEmbodiment(EmbodimentBase):
 
     def get_embodiment_metadata(self) -> dict[str, Any]:
         return {
-            "body_name": self.action_config.arm_action.body_name,
+            "robot_name": "robot",
+            "ee_action_body_name": self.action_config.arm_action.body_name,
+            "ee_frame_name": "ee_frame",
         }
 
 

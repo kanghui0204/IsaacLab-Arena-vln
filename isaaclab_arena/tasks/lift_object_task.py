@@ -125,11 +125,16 @@ class LiftObjectTaskRL(LiftObjectTask):
         return LiftObjectObservationsCfg(lift_object=self.lift_object)
 
     def get_rewards_cfg(self):
-        return LiftObjectRewardCfg(lift_object=self.lift_object, minimum_height_to_lift=self.minimum_height_to_lift)
+        return LiftObjectRewardCfg(
+            lift_object=self.lift_object,
+            minimum_height_to_lift=self.minimum_height_to_lift,
+            robot_name=self.embodiment.get_embodiment_metadata()["robot_name"],
+            ee_frame_name=self.embodiment.get_embodiment_metadata()["ee_frame_name"],
+        )
 
     def get_commands_cfg(self):
         return LiftObjectCommandsCfg(
-            body_name=self.embodiment.get_embodiment_metadata()["body_name"], lift_object=self.lift_object
+            body_name=self.embodiment.get_embodiment_metadata()["ee_action_body_name"], lift_object=self.lift_object
         )
 
 
@@ -192,13 +197,13 @@ class LiftObjectRewardCfg:
     object_goal_tracking: RewardTermCfg = MISSING
     object_goal_tracking_fine_grained: RewardTermCfg = MISSING
 
-    def __init__(self, lift_object: Asset, minimum_height_to_lift: float):
+    def __init__(self, lift_object: Asset, minimum_height_to_lift: float, robot_name: str, ee_frame_name: str):
         self.reaching_object = RewardTermCfg(
             func=general_rewards.object_ee_distance,
             params={
                 "std": 0.1,
                 "object_cfg": SceneEntityCfg(lift_object.name),
-                "ee_frame_cfg": SceneEntityCfg("ee_frame"),
+                "ee_frame_cfg": SceneEntityCfg(ee_frame_name),
             },
             weight=1.0,
         )
@@ -216,7 +221,7 @@ class LiftObjectRewardCfg:
                 "std": 0.3,
                 "minimal_height": minimum_height_to_lift,
                 "command_name": "object_pose",
-                "robot_cfg": SceneEntityCfg("robot"),
+                "robot_cfg": SceneEntityCfg(robot_name),
                 "object_cfg": SceneEntityCfg(lift_object.name),
             },
             weight=16.0,
@@ -227,7 +232,7 @@ class LiftObjectRewardCfg:
                 "std": 0.05,
                 "minimal_height": minimum_height_to_lift,
                 "command_name": "object_pose",
-                "robot_cfg": SceneEntityCfg("robot"),
+                "robot_cfg": SceneEntityCfg(robot_name),
                 "object_cfg": SceneEntityCfg(lift_object.name),
             },
             weight=5.0,
