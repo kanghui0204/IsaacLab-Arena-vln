@@ -1,4 +1,5 @@
 {
+    "python.defaultInterpreterPath": "/isaac-sim/python.sh",
     "python.analysis.extraPaths": [
         "${workspaceFolder}",
         "${workspaceFolder}/submodules/IsaacLab/source/isaaclab",
