@@ -9,8 +9,8 @@ from typing import Any
 
 import omni.log
 
-from isaaclab_arena.examples.example_environments.cli import get_arena_builder_from_cli
 from isaaclab_arena.policy.rl_policy.base_rsl_rl_policy import RLPolicyCfg
+from isaaclab_arena_environments.cli import get_arena_builder_from_cli
 
 
 def get_env_and_agent_cfg(args_cli: argparse.Namespace) -> tuple[str, Any, Any]:

@@ -17,8 +17,7 @@ from pathlib import Path
 from isaaclab.app import AppLauncher
 
 from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
-from isaaclab_arena.examples.example_environments.cli import add_example_environments_cli_args
-from isaaclab_arena.scripts.reinforcement_learning.utils import get_env_and_agent_cfg
+from isaaclab_arena_environments.cli import add_example_environments_cli_args
 
 # local imports
 import cli_args  # isort: skip
@@ -59,6 +58,8 @@ if args_cli.enable_pinocchio:
 # launch omniverse app
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
+
+from isaaclab_arena.scripts.reinforcement_learning.utils import get_env_and_agent_cfg
 
 """Check for minimum supported RSL-RL version."""
 
