@@ -89,3 +89,22 @@ def update_rsl_rl_cfg(agent_cfg: RslRlBaseRunnerCfg, args_cli: argparse.Namespac
         agent_cfg.neptune_project = args_cli.log_project_name
 
     return agent_cfg
+
+
+def add_rsl_rl_policy_args(parser: argparse.ArgumentParser):
+    """Add RSL-RL policy arguments to the parser.
+
+    Args:
+        parser: The parser to add the arguments to.
+    """
+    arg_group = parser.add_argument_group("rsl_rl_policy", description="Arguments for RSL-RL policy.")
+    arg_group.add_argument("--num_steps_per_env", type=int, default=24, help="Number of steps per environment.")
+    arg_group.add_argument("--max_iterations", type=int, default=4000, help="Maximum number of iterations.")
+    arg_group.add_argument("--save_interval", type=int, default=200, help="Save interval.")
+    arg_group.add_argument(
+        "--experiment_name",
+        type=str,
+        default="franka_lift",
+        help="Name of the experiment folder where logs will be stored.",
+    )
+    return arg_group

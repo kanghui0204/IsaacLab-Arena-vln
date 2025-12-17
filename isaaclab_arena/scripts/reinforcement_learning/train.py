@@ -40,6 +40,7 @@ parser.add_argument(
 parser.add_argument("--export_io_descriptors", action="store_true", default=False, help="Export IO descriptors.")
 # append RSL-RL cli arguments
 cli_args.add_rsl_rl_args(parser)
+cli_args.add_rsl_rl_policy_args(parser)
 # Add the example environments CLI args
 # NOTE(alexmillane, 2025.09.04): This has to be added last, because
 # of the app specific flags being parsed after the global flags.
@@ -58,8 +59,6 @@ if args_cli.enable_pinocchio:
 # launch omniverse app
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
-
-from isaaclab_arena.scripts.reinforcement_learning.utils import get_env_and_agent_cfg
 
 """Check for minimum supported RSL-RL version."""
 
@@ -98,6 +97,8 @@ from isaaclab.utils.io import dump_yaml
 from isaaclab_rl.rsl_rl import RslRlVecEnvWrapper
 from isaaclab_tasks.utils import get_checkpoint_path
 from rsl_rl.runners import DistillationRunner, OnPolicyRunner
+
+from isaaclab_arena.scripts.reinforcement_learning.utils import get_env_and_agent_cfg
 
 # PLACEHOLDER: Extension template (do not remove this comment)
 

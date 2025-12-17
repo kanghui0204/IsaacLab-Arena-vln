@@ -32,7 +32,14 @@ def get_env_and_agent_cfg(args_cli: argparse.Namespace) -> tuple[str, Any, Any]:
     policy_cfg = agent_cfg_dict["policy_cfg"]
     algorithm_cfg = agent_cfg_dict["algorithm_cfg"]
     obs_groups = agent_cfg_dict["obs_groups"]
+    # Load all other arguments if they are in args_cli as policy arguments
+    num_steps_per_env = args_cli.num_steps_per_env
+    max_iterations = args_cli.max_iterations
+    save_interval = args_cli.save_interval
+    experiment_name = args_cli.experiment_name
 
-    agent_cfg = RLPolicyCfg.update_cfg(policy_cfg, algorithm_cfg, obs_groups)
+    agent_cfg = RLPolicyCfg.update_cfg(
+        policy_cfg, algorithm_cfg, obs_groups, num_steps_per_env, max_iterations, save_interval, experiment_name
+    )
 
     return env_name, env_cfg, agent_cfg

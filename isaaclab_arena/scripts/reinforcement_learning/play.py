@@ -12,8 +12,7 @@ from pathlib import Path
 
 from isaaclab.app import AppLauncher
 
-from isaaclab_arena.examples.example_environments.cli import add_example_environments_cli_args
-from isaaclab_arena.scripts.reinforcement_learning.utils import get_env_and_agent_cfg
+from isaaclab_arena_environments.cli import add_example_environments_cli_args
 
 # local imports
 import cli_args  # isort: skip
@@ -37,6 +36,7 @@ parser.add_argument("--seed", type=int, default=None, help="Seed used for the en
 parser.add_argument("--real-time", action="store_true", default=False, help="Run in real-time, if possible.")
 # append RSL-RL cli arguments
 cli_args.add_rsl_rl_args(parser)
+cli_args.add_rsl_rl_policy_args(parser)
 # Add the example environments CLI args
 # NOTE(alexmillane, 2025.09.04): This has to be added last, because
 # of the app specific flags being parsed after the global flags.
@@ -70,6 +70,8 @@ from isaaclab.utils.dict import print_dict
 from isaaclab_rl.rsl_rl import RslRlBaseRunnerCfg, RslRlVecEnvWrapper, export_policy_as_jit, export_policy_as_onnx
 from isaaclab_tasks.utils import get_checkpoint_path
 from rsl_rl.runners import DistillationRunner, OnPolicyRunner
+
+from isaaclab_arena.scripts.reinforcement_learning.utils import get_env_and_agent_cfg
 
 # PLACEHOLDER: Extension template (do not remove this comment)
 

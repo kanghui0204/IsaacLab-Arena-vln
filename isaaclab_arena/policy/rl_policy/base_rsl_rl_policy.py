@@ -27,10 +27,10 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 @configclass
 class RLPolicyCfg(RslRlOnPolicyRunnerCfg):
 
-    num_steps_per_env = 24
-    max_iterations = 4000
-    save_interval = 200
-    experiment_name = "franka_lift"
+    num_steps_per_env: int = 24
+    max_iterations: int = 4000
+    save_interval: int = 200
+    experiment_name: str = "franka_lift"
     obs_groups = field(
         default_factory=lambda: {
             "policy": ["policy"],
@@ -41,9 +41,22 @@ class RLPolicyCfg(RslRlOnPolicyRunnerCfg):
     algorithm: RslRlPpoAlgorithmCfg = field(default_factory=lambda: RslRlPpoAlgorithmCfg())
 
     @classmethod
-    def update_cfg(cls, policy_cfg: dict[str, Any], algorithm_cfg: dict[str, Any], obs_groups: dict[str, list[str]]):
+    def update_cfg(
+        cls,
+        policy_cfg: dict[str, Any],
+        algorithm_cfg: dict[str, Any],
+        obs_groups: dict[str, list[str]],
+        num_steps_per_env: int,
+        max_iterations: int,
+        save_interval: int,
+        experiment_name: str,
+    ):
         cfg = cls()
         cfg.policy = RslRlPpoActorCriticCfg(**policy_cfg)
         cfg.algorithm = RslRlPpoAlgorithmCfg(**algorithm_cfg)
         cfg.obs_groups = obs_groups
+        cfg.num_steps_per_env = num_steps_per_env
+        cfg.max_iterations = max_iterations
+        cfg.save_interval = save_interval
+        cfg.experiment_name = experiment_name
         return cfg
