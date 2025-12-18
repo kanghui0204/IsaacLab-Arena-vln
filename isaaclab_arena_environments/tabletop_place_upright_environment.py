@@ -22,7 +22,7 @@ class TableTopPlaceUprightEnvironment(ExampleEnvironmentBase):
         from isaaclab.utils import configclass
         from isaaclab_tasks.manager_based.manipulation.stack.mdp.franka_stack_events import randomize_object_pose
 
-        from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
+        from isaaclab_arena.embodiments.common.arm_mode import ArmMode
         from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
         from isaaclab_arena.tasks.place_upright_task import PlaceUprightTask
@@ -56,7 +56,7 @@ class TableTopPlaceUprightEnvironment(ExampleEnvironmentBase):
         )
         if args_cli.embodiment == "agibot":
             embodiment = self.asset_registry.get_asset_by_name(args_cli.embodiment)(
-                enable_cameras=args_cli.enable_cameras, mimic_arm_mode=MimicArmMode.LEFT
+                enable_cameras=args_cli.enable_cameras, arm_mode=ArmMode.LEFT
             )
         else:
             raise NotImplementedError(

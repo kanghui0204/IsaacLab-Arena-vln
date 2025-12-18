@@ -14,7 +14,7 @@ from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.utils import configclass
 
 from isaaclab_arena.affordances.placeable import Placeable
-from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
+from isaaclab_arena.embodiments.common.arm_mode import ArmMode
 from isaaclab_arena.metrics.metric_base import MetricBase
 from isaaclab_arena.metrics.object_moved import ObjectMovedRateMetric
 from isaaclab_arena.metrics.success_rate import SuccessRateMetric
@@ -64,12 +64,9 @@ class PlaceUprightTask(TaskBase):
     def get_events_cfg(self):
         return self.events_cfg
 
-    def get_prompt(self):
-        raise NotImplementedError("Function not implemented yet.")
-
-    def get_mimic_env_cfg(self, embodiment_name: str):
+    def get_mimic_env_cfg(self, arm_mode: ArmMode):
         return PlaceUprightMimicEnvCfg(
-            embodiment_name=embodiment_name,
+            arm_mode=arm_mode,
             placeable_object_name=self.placeable_object.name,
         )
 
@@ -122,7 +119,7 @@ class PlaceUprightMimicEnvCfg(MimicEnvCfg):
     Isaac Lab Mimic environment config class for Place Upright env.
     """
 
-    arm_mode: MimicArmMode = MimicArmMode.SINGLE_ARM
+    arm_mode: ArmMode = ArmMode.SINGLE_ARM
 
     placeable_object_name: str = "placeable_object"
 
@@ -195,11 +192,11 @@ class PlaceUprightMimicEnvCfg(MimicEnvCfg):
                 apply_noise_during_interpolation=False,
             )
         )
-        if self.arm_mode == MimicArmMode.SINGLE_ARM:
+        if self.arm_mode == ArmMode.SINGLE_ARM:
             self.subtask_configs["robot"] = subtask_configs
         # We need to add the left and right subtasks for GR1.
-        elif self.arm_mode in [MimicArmMode.LEFT, MimicArmMode.RIGHT]:
-            self.subtask_configs[self.arm_mode] = subtask_configs
+        elif self.arm_mode in [ArmMode.LEFT, ArmMode.RIGHT]:
+            self.subtask_configs[self.arm_mode.value] = subtask_configs
             # EEF on opposite side (arm is static)
             subtask_configs = []
             subtask_configs.append(
@@ -224,7 +221,7 @@ class PlaceUprightMimicEnvCfg(MimicEnvCfg):
                     apply_noise_during_interpolation=False,
                 )
             )
-            self.subtask_configs[self.arm_mode.get_other_arm()] = subtask_configs
+            self.subtask_configs[self.arm_mode.get_other_arm().value] = subtask_configs
 
         else:
             raise ValueError(f"Embodiment arm mode {self.arm_mode} not supported")

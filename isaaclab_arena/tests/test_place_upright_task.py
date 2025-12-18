@@ -17,7 +17,7 @@ def get_test_environment(remove_randomize_mug_positions_event: bool, num_envs: i
     from isaaclab_arena.assets.asset_registry import AssetRegistry
     from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
     from isaaclab_arena.embodiments.agibot.agibot import AgibotEmbodiment
-    from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
+    from isaaclab_arena.embodiments.common.arm_mode import ArmMode
     from isaaclab_arena.environments.arena_env_builder import ArenaEnvBuilder
     from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
     from isaaclab_arena.scene.scene import Scene
@@ -39,7 +39,7 @@ def get_test_environment(remove_randomize_mug_positions_event: bool, num_envs: i
 
     isaaclab_arena_environment = IsaacLabArenaEnvironment(
         name="place_upright_mug",
-        embodiment=AgibotEmbodiment(mimic_arm_mode=MimicArmMode.LEFT),
+        embodiment=AgibotEmbodiment(arm_mode=ArmMode.LEFT),
         scene=scene,
         task=PlaceUprightTask(mug, mug.orientation_threshold),
     )
