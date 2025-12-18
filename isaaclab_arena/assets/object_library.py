@@ -127,14 +127,14 @@ class Microwave(LibraryObject, Openable):
 
     # Openable affordance parameters
     openable_joint_name = "microjoint"
-    openable_open_threshold = 0.5
+    openable_threshold = 0.5  # Bistate threshold (open > threshold, closed <= threshold)
 
     def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(
             prim_path=prim_path,
             initial_pose=initial_pose,
             openable_joint_name=self.openable_joint_name,
-            openable_open_threshold=self.openable_open_threshold,
+            openable_threshold=self.openable_threshold,
         )
 
 
@@ -275,4 +275,20 @@ class Light(LibraryObject):
         spawner_cfg: sim_utils.LightCfg = default_spawner_cfg,
     ):
         self.spawner_cfg = spawner_cfg
+        super().__init__(prim_path=prim_path, initial_pose=initial_pose)
+
+
+@register_asset
+class DexCube(LibraryObject):
+    """
+    A cube.
+    """
+
+    name = "dex_cube"
+    tags = ["object"]
+    usd_path = f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
+    scale = (0.8, 0.8, 0.8)
+    object_type = ObjectType.RIGID
+
+    def __init__(self, prim_path: str | None = None, initial_pose: Pose | None = None):
         super().__init__(prim_path=prim_path, initial_pose=initial_pose)
