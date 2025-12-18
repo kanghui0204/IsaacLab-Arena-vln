@@ -30,15 +30,15 @@ class RLPolicyCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env: int = 24
     max_iterations: int = 4000
     save_interval: int = 200
-    experiment_name: str = "franka_lift"
+    experiment_name: str = "generic_experiment"
     obs_groups = field(
         default_factory=lambda: {
             "policy": ["policy"],
             "critic": ["policy"],
         }
     )
-    policy: RslRlPpoActorCriticCfg = field(default_factory=lambda: RslRlPpoActorCriticCfg())
-    algorithm: RslRlPpoAlgorithmCfg = field(default_factory=lambda: RslRlPpoAlgorithmCfg())
+    policy: RslRlPpoActorCriticCfg = field(default_factory=RslRlPpoActorCriticCfg)
+    algorithm: RslRlPpoAlgorithmCfg = field(default_factory=RslRlPpoAlgorithmCfg)
 
     @classmethod
     def update_cfg(

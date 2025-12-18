@@ -21,6 +21,7 @@ from isaaclab_arena.tasks.observations import observations
 from isaaclab_arena.tasks.rewards import lift_object_rewards, rewards
 from isaaclab_arena.tasks.task_base import TaskBase
 from isaaclab_arena.utils.cameras import get_viewer_cfg_look_at_object
+from isaaclab_arena.utils.pose import PoseRange
 
 
 class LiftObjectTask(TaskBase):
@@ -30,13 +31,14 @@ class LiftObjectTask(TaskBase):
         background_scene: Asset,
         minimum_height_to_lift: float = 0.04,
         episode_length_s: float = 5.0,
+        reset_pose_range: PoseRange = PoseRange(),
     ):
         super().__init__(episode_length_s=episode_length_s)
         self.lift_object = lift_object
         self.background_scene = background_scene
         self.minimum_height_to_lift = minimum_height_to_lift
         self.scene_config = None
-        self.events_cfg = LiftObjectEventsCfg(lift_object=self.lift_object)
+        self.events_cfg = LiftObjectEventsCfg(lift_object=self.lift_object, reset_pose_range=reset_pose_range.to_dict())
         self.termination_cfg = self.make_termination_cfg()
 
     def get_scene_cfg(self):
@@ -77,15 +79,15 @@ class LiftObjectEventsCfg:
 
     reset_lift_object_pose: EventTermCfg = MISSING
 
-    def __init__(self, lift_object: Asset):
+    def __init__(self, lift_object: Asset, reset_pose_range: dict[str, tuple[float, float]]):
         self.reset_lift_object_pose = EventTermCfg(
             func=mdp_isaac_lab.reset_root_state_uniform,
             mode="reset",
             params={
                 "pose_range": {
-                    "x": (-0.1, 0.1),
-                    "y": (-0.25, 0.25),
-                    "z": (0.0, 0.0),
+                    "x": reset_pose_range["x"],
+                    "y": reset_pose_range["y"],
+                    "z": reset_pose_range["z"],
                 },
                 "velocity_range": {},
                 "asset_cfg": SceneEntityCfg(lift_object.name),
@@ -109,32 +111,39 @@ class LiftObjectTaskRL(LiftObjectTask):
         embodiment: EmbodimentBase,
         minimum_height_to_lift: float = 0.04,
         episode_length_s: float = 5.0,
+        reset_pose_range: PoseRange = PoseRange(),
     ):
         super().__init__(
             lift_object=lift_object,
             background_scene=background_scene,
             minimum_height_to_lift=minimum_height_to_lift,
             episode_length_s=episode_length_s,
+            reset_pose_range=reset_pose_range,
         )
         self.embodiment = embodiment
-
-    def get_observation_cfg(self):
-        return LiftObjectObservationsCfg(lift_object=self.lift_object)
-
-    def get_rewards_cfg(self):
-        return LiftObjectRewardCfg(
-            lift_object=self.lift_object,
-            minimum_height_to_lift=self.minimum_height_to_lift,
-            robot_name=self.embodiment.get_embodiment_name_in_scene(),
-            ee_frame_name=self.embodiment.get_ee_frame_name(),
+        self.observation_cfg = LiftObjectObservationsCfg(
+            lift_object=self.lift_object, robot_name=self.embodiment.get_embodiment_name_in_scene()
         )
-
-    def get_commands_cfg(self):
-        return LiftObjectCommandsCfg(
+        self.commands_cfg = LiftObjectCommandsCfg(
             asset_name=self.embodiment.get_embodiment_name_in_scene(),
             body_name=self.embodiment.get_command_body_name(),
             lift_object=self.lift_object,
         )
+        self.rewards_cfg = LiftObjectRewardCfg(
+            lift_object=self.lift_object,
+            minimum_height_to_lift=self.minimum_height_to_lift,
+            robot_name=self.embodiment.get_embodiment_name_in_scene(),
+            ee_frame_name=self.embodiment.get_ee_frame_name(self.embodiment.get_arm_mode()),
+        )
+
+    def get_observation_cfg(self):
+        return self.observation_cfg
+
+    def get_rewards_cfg(self):
+        return self.rewards_cfg
+
+    def get_commands_cfg(self):
+        return self.commands_cfg
 
 
 @configclass
@@ -143,7 +152,7 @@ class LiftObjectObservationsCfg:
 
     task_obs: ObsGroup = MISSING
 
-    def __init__(self, lift_object: Asset):
+    def __init__(self, lift_object: Asset, robot_name: str):
         @configclass
         class TaskObsCfg(ObsGroup):
             """Observations for the Lift Object task."""
@@ -152,8 +161,8 @@ class LiftObjectObservationsCfg:
                 func=mdp_isaac_lab.generated_commands, params={"command_name": "object_pose"}
             )
             object_position = ObsTerm(
-                func=observations.object_position_in_robot_root_frame,
-                params={"object_cfg": SceneEntityCfg(lift_object.name)},
+                func=observations.object_position_in_frame,
+                params={"robot_cfg": SceneEntityCfg(robot_name), "object_cfg": SceneEntityCfg(lift_object.name)},
             )
 
             def __post_init__(self):

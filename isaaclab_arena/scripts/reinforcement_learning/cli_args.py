@@ -104,7 +104,7 @@ def add_rsl_rl_policy_args(parser: argparse.ArgumentParser):
     arg_group.add_argument(
         "--experiment_name",
         type=str,
-        default="franka_lift",
+        default="generic_experiment",
         help="Name of the experiment folder where logs will be stored.",
     )
     return arg_group

@@ -77,7 +77,7 @@ def objects_in_proximity(
     return done
 
 
-def object_lifted(
+def object_above(
     env: ManagerBasedRLEnv,
     object_cfg: SceneEntityCfg,
     maximum_height: float,

@@ -30,7 +30,7 @@ class ArenaEnvBuilder:
     def __init__(self, arena_env: IsaacLabArenaEnvironment, args: argparse.Namespace):
         self.arena_env = arena_env
         self.args = args
-        self.DEFAULT_SCENE_CFG = InteractiveSceneCfg(
+        self.interactive_scene_cfg = InteractiveSceneCfg(
             num_envs=args.num_envs, env_spacing=args.env_spacing, replicate_physics=False
         )
 
@@ -58,7 +58,7 @@ class ArenaEnvBuilder:
         # Constructing the environment by combining inputs from the scene, embodiment, and task.
         scene_cfg = combine_configclass_instances(
             "SceneCfg",
-            self.DEFAULT_SCENE_CFG,
+            self.interactive_scene_cfg,
             self.arena_env.scene.get_scene_cfg(),
             self.arena_env.embodiment.get_scene_cfg(),
             self.arena_env.task.get_scene_cfg(),

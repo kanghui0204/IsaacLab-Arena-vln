@@ -22,7 +22,7 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
         from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
         from isaaclab_arena.scene.scene import Scene
         from isaaclab_arena.tasks.lift_object_task import LiftObjectTaskRL
-        from isaaclab_arena.utils.pose import Pose
+        from isaaclab_arena.utils.pose import Pose, PoseRange
 
         background = self.asset_registry.get_asset_by_name("table")()
         pick_up_object = self.asset_registry.get_asset_by_name(args_cli.object)()
@@ -43,6 +43,7 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
         # Set all positions
         background.set_initial_pose(Pose(position_xyz=(0.5, 0, 0), rotation_wxyz=(0.707, 0, 0, 0.707)))
         pick_up_object.set_initial_pose(Pose(position_xyz=(0.5, 0, 0.055), rotation_wxyz=(1, 0, 0, 0)))
+        reset_pose_range = PoseRange(position_xyz_min=(-0.1, -0.25, 0.0), position_xyz_max=(0.1, 0.25, 0.0))
         ground_plane.set_initial_pose(Pose(position_xyz=(0.0, 0.0, -1.05)))
 
         # Compose the scene
@@ -54,6 +55,7 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
             embodiment,
             minimum_height_to_lift=0.04,
             episode_length_s=5.0,
+            reset_pose_range=reset_pose_range,
         )
 
         isaaclab_arena_environment = IsaacLabArenaEnvironment(
@@ -72,5 +74,4 @@ class LiftObjectEnvironment(ExampleEnvironmentBase):
         # NOTE(alexmillane, 2025.09.04): We need a teleop device argument in order
         # to be used in the record_demos.py script.
         parser.add_argument("--teleop_device", type=str, default=None)
-        # Note (xinjieyao, 2025.10.06): Add the embodiment argument for PINK IK EEF control or Joint positional control
         parser.add_argument("--embodiment", type=str, default="franka")

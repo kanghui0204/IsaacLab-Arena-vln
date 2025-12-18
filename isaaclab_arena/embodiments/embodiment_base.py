@@ -115,7 +115,7 @@ class EmbodimentBase(Asset):
     def get_embodiment_name_in_scene(self) -> str:
         return "robot"
 
-    def get_ee_frame_name(self) -> str:
+    def get_ee_frame_name(self, arm_mode: ArmMode) -> str:
         # In case of multiple ee frames one can use self.mimic_arm_mode to get the correct ee frame name
         return ""
 

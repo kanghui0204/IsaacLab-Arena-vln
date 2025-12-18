@@ -5,7 +5,6 @@
 
 import torch
 from collections.abc import Sequence
-from dataclasses import MISSING
 from typing import Any
 
 import isaaclab.envs.mdp as mdp_isaac_lab
@@ -53,7 +52,8 @@ class FrankaEmbodiment(EmbodimentBase):
         super().__init__(enable_cameras, initial_pose, concatenate_observation_terms, arm_mode)
         self.scene_config = FrankaSceneCfg()
         self.action_config = FrankaActionsCfg()
-        self.observation_config = FrankaObservationsCfg(concatenate_terms=self.concatenate_observation_terms)
+        self.observation_config = FrankaObservationsCfg()
+        self.observation_config.policy.concatenate_terms = self.concatenate_observation_terms
         self.event_config = FrankaEventCfg()
         self.reward_config = FrankaRewardsCfg()
         self.mimic_env = FrankaMimicEnv
@@ -68,7 +68,7 @@ class FrankaEmbodiment(EmbodimentBase):
         scene_config.stand.init_state.rot = pose.rotation_wxyz
         return scene_config
 
-    def get_ee_frame_name(self) -> str:
+    def get_ee_frame_name(self, arm_mode: ArmMode) -> str:
         return "ee_frame"
 
     def get_command_body_name(self) -> str:
@@ -156,25 +156,22 @@ class FrankaActionsCfg:
 class FrankaObservationsCfg:
     """Observation specifications for the MDP."""
 
-    policy: ObsGroup = MISSING
+    @configclass
+    class PolicyCfg(ObsGroup):
+        """Observations for policy group with state values."""
 
-    def __init__(self, concatenate_terms: bool = False):
-        @configclass
-        class PolicyCfg(ObsGroup):
-            """Observations for policy group with state values."""
+        actions = ObsTerm(func=mdp_isaac_lab.last_action)
+        joint_pos = ObsTerm(func=mdp_isaac_lab.joint_pos_rel)
+        joint_vel = ObsTerm(func=mdp_isaac_lab.joint_vel_rel)
+        eef_pos = ObsTerm(func=ee_frame_pos)
+        eef_quat = ObsTerm(func=ee_frame_quat)
+        gripper_pos = ObsTerm(func=gripper_pos)
 
-            actions = ObsTerm(func=mdp_isaac_lab.last_action)
-            joint_pos = ObsTerm(func=mdp_isaac_lab.joint_pos_rel)
-            joint_vel = ObsTerm(func=mdp_isaac_lab.joint_vel_rel)
-            eef_pos = ObsTerm(func=ee_frame_pos)
-            eef_quat = ObsTerm(func=ee_frame_quat)
-            gripper_pos = ObsTerm(func=gripper_pos)
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
 
-            def __post_init__(self):
-                self.enable_corruption = False
-                self.concatenate_terms = concatenate_terms
-
-        self.policy = PolicyCfg()
+    policy: PolicyCfg = PolicyCfg()
 
 
 @configclass

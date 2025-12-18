@@ -91,7 +91,9 @@ class G1WBCJointEmbodiment(G1EmbodimentBase):
     ):
         super().__init__(enable_cameras, initial_pose)
         self.action_config = G1WBCJointActionCfg()
-        self.observation_config = G1WBCJointObservationsCfg(concatenate_terms=self.concatenate_observation_terms)
+        self.observation_config = G1WBCJointObservationsCfg()
+        self.observation_config.policy.concatenate_terms = self.concatenate_observation_terms
+        self.observation_config.wbc.concatenate_terms = self.concatenate_observation_terms
         self.event_config = G1WBCJointEventCfg()
         # Create camera config with private attributes to avoid scene parser issues
         self.camera_config._is_tiled_camera = use_tiled_camera
@@ -116,7 +118,10 @@ class G1WBCPinkEmbodiment(G1EmbodimentBase):
     ):
         super().__init__(enable_cameras, initial_pose)
         self.action_config = G1WBCPinkActionCfg()
-        self.observation_config = G1WBCPinkObservationsCfg(concatenate_terms=self.concatenate_observation_terms)
+        self.observation_config = G1WBCPinkObservationsCfg()
+        self.observation_config.policy.concatenate_terms = self.concatenate_observation_terms
+        self.observation_config.wbc.concatenate_terms = self.concatenate_observation_terms
+        self.observation_config.action.concatenate_terms = self.concatenate_observation_terms
         self.event_config = G1WBCPinkEventCfg()
         # Create camera config with private attributes to avoid scene parser issues
         self.camera_config._is_tiled_camera = use_tiled_camera
@@ -363,238 +368,222 @@ class G1CameraCfg:
 class G1WBCJointObservationsCfg:
     """Observation specifications for the MDP."""
 
-    policy: ObsGroup = MISSING
-    wbc: ObsGroup = MISSING
+    @configclass
+    class PolicyCfg(ObsGroup):
+        """Observations for policy group with state values."""
 
-    def __init__(self, concatenate_terms: bool = False):
-        @configclass
-        class PolicyCfg(ObsGroup):
-            """Observations for policy group with state values."""
+        actions = ObsTerm(func=mdp.last_action)
+        robot_joint_pos = ObsTerm(
+            func=base_mdp.joint_pos,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        robot_joint_vel = ObsTerm(
+            func=base_mdp.joint_vel,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        right_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "right_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        left_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "left_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
 
-            actions = ObsTerm(func=mdp.last_action)
-            robot_joint_pos = ObsTerm(
-                func=base_mdp.joint_pos,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            robot_joint_vel = ObsTerm(
-                func=base_mdp.joint_vel,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            right_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "right_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
-            left_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "left_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
 
-            def __post_init__(self):
-                self.enable_corruption = False
-                self.concatenate_terms = concatenate_terms
+    @configclass
+    class WBCObsCfg(ObsGroup):
+        """Observations for WBC policy group with state values."""
 
-        @configclass
-        class WBCObsCfg(ObsGroup):
-            """Observations for WBC policy group with state values."""
+        robot_joint_pos = ObsTerm(
+            func=base_mdp.joint_pos,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        robot_joint_vel = ObsTerm(
+            func=base_mdp.joint_vel,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        right_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "right_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        left_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "left_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
 
-            robot_joint_pos = ObsTerm(
-                func=base_mdp.joint_pos,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            robot_joint_vel = ObsTerm(
-                func=base_mdp.joint_vel,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            right_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "right_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
-            left_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "left_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
 
-            def __post_init__(self):
-                self.enable_corruption = False
-                self.concatenate_terms = concatenate_terms
-
-        # observation groups
-        self.policy = PolicyCfg()
-        self.wbc = WBCObsCfg()
+    policy: PolicyCfg = PolicyCfg()
+    wbc: WBCObsCfg = WBCObsCfg()
 
 
 @configclass
 class G1WBCPinkObservationsCfg:
     """Observation specifications for the MDP."""
 
-    policy: ObsGroup = MISSING
-    wbc: ObsGroup = MISSING
-    action: ObsGroup = MISSING
+    @configclass
+    class PolicyCfg(ObsGroup):
+        """Observations for policy group with state values."""
 
-    def __init__(self, concatenate_terms: bool = False):
+        actions = ObsTerm(func=mdp.last_action)
+        robot_joint_pos = ObsTerm(
+            func=base_mdp.joint_pos,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        right_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "right_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        left_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "left_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        # Mimic required observations
+        left_eef_pos = ObsTerm(
+            func=transforms_terms.get_target_link_position_in_target_frame,
+            params={"target_link_name": "left_wrist_yaw_link"},
+        )
+        left_eef_quat = ObsTerm(
+            func=transforms_terms.get_target_link_quaternion_in_target_frame,
+            params={"target_link_name": "left_wrist_yaw_link"},
+        )
+        right_eef_pos = ObsTerm(
+            func=transforms_terms.get_target_link_position_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
+        )
+        right_eef_quat = ObsTerm(
+            func=transforms_terms.get_target_link_quaternion_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
+        )
+        # Body eefs are not used for transforms so values are not important,
+        # but they must be present for datagen to run since "body" is considered an eef
+        body_eef_pos = ObsTerm(
+            func=transforms_terms.get_target_link_position_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
+        )
+        body_eef_quat = ObsTerm(
+            func=transforms_terms.get_target_link_quaternion_in_target_frame,
+            params={"target_link_name": "right_wrist_yaw_link"},
+        )
+        robot_pos = ObsTerm(
+            func=transforms_terms.get_asset_position,
+        )
+        robot_quat = ObsTerm(
+            func=transforms_terms.get_asset_quaternion,
+        )
 
-        @configclass
-        class PolicyCfg(ObsGroup):
-            """Observations for policy group with state values."""
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
 
-            actions = ObsTerm(func=mdp.last_action)
-            robot_joint_pos = ObsTerm(
-                func=base_mdp.joint_pos,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            robot_joint_vel = ObsTerm(
-                func=base_mdp.joint_vel,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            right_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "right_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
-            left_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "left_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
-            # Mimic required observations
-            left_eef_pos = ObsTerm(
-                func=transforms_terms.get_target_link_position_in_target_frame,
-                params={"target_link_name": "left_wrist_yaw_link"},
-            )
-            left_eef_quat = ObsTerm(
-                func=transforms_terms.get_target_link_quaternion_in_target_frame,
-                params={"target_link_name": "left_wrist_yaw_link"},
-            )
-            right_eef_pos = ObsTerm(
-                func=transforms_terms.get_target_link_position_in_target_frame,
-                params={"target_link_name": "right_wrist_yaw_link"},
-            )
-            right_eef_quat = ObsTerm(
-                func=transforms_terms.get_target_link_quaternion_in_target_frame,
-                params={"target_link_name": "right_wrist_yaw_link"},
-            )
-            # Body eefs are not used for transforms so values are not important,
-            # but they must be present for datagen to run since "body" is considered an eef
-            body_eef_pos = ObsTerm(
-                func=transforms_terms.get_target_link_position_in_target_frame,
-                params={"target_link_name": "right_wrist_yaw_link"},
-            )
-            body_eef_quat = ObsTerm(
-                func=transforms_terms.get_target_link_quaternion_in_target_frame,
-                params={"target_link_name": "right_wrist_yaw_link"},
-            )
-            robot_pos = ObsTerm(
-                func=transforms_terms.get_asset_position,
-            )
-            robot_quat = ObsTerm(
-                func=transforms_terms.get_asset_quaternion,
-            )
+    @configclass
+    class WBCObsCfg(ObsGroup):
+        """Observations for WBC policy group with state values."""
 
-            def __post_init__(self):
-                self.enable_corruption = False
-                self.concatenate_terms = concatenate_terms
+        robot_joint_pos = ObsTerm(
+            func=base_mdp.joint_pos,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        robot_joint_vel = ObsTerm(
+            func=base_mdp.joint_vel,
+            params={"asset_cfg": SceneEntityCfg("robot")},
+        )
+        right_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "right_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        left_wrist_pose_pelvis_frame = ObsTerm(
+            func=transforms_terms.transform_pose_from_world_to_target_frame,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "target_link_name": "left_wrist_yaw_link",
+                "target_frame_name": "pelvis",
+            },
+        )
+        is_navigating = ObsTerm(
+            func=g1_observations_mdp.is_navigating,
+        )
+        navigation_goal_reached = ObsTerm(
+            func=g1_observations_mdp.navigation_goal_reached,
+        )
 
-        @configclass
-        class WBCObsCfg(ObsGroup):
-            """Observations for WBC policy group with state values."""
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
 
-            robot_joint_pos = ObsTerm(
-                func=base_mdp.joint_pos,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            robot_joint_vel = ObsTerm(
-                func=base_mdp.joint_vel,
-                params={"asset_cfg": SceneEntityCfg("robot")},
-            )
-            right_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "right_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
-            left_wrist_pose_pelvis_frame = ObsTerm(
-                func=transforms_terms.transform_pose_from_world_to_target_frame,
-                params={
-                    "asset_cfg": SceneEntityCfg("robot"),
-                    "target_link_name": "left_wrist_yaw_link",
-                    "target_frame_name": "pelvis",
-                },
-            )
-            is_navigating = ObsTerm(
-                func=g1_observations_mdp.is_navigating,
-            )
-            navigation_goal_reached = ObsTerm(
-                func=g1_observations_mdp.navigation_goal_reached,
-            )
+    @configclass
+    class ActionLowerBodyCfg(ObsGroup):
+        """Observations for post step policy group"""
 
-            def __post_init__(self):
-                self.enable_corruption = False
-                self.concatenate_terms = concatenate_terms
+        left_eef_pos = ObsTerm(
+            func=g1_observations_mdp.extract_action_components,
+            params={"mode": g1_observations_mdp.ActionComponentMode.LEFT_EEF_POS},
+        )
+        left_eef_quat = ObsTerm(
+            func=g1_observations_mdp.extract_action_components,
+            params={"mode": g1_observations_mdp.ActionComponentMode.LEFT_EEF_QUAT},
+        )
+        right_eef_pos = ObsTerm(
+            func=g1_observations_mdp.extract_action_components,
+            params={"mode": g1_observations_mdp.ActionComponentMode.RIGHT_EEF_POS},
+        )
+        right_eef_quat = ObsTerm(
+            func=g1_observations_mdp.extract_action_components,
+            params={"mode": g1_observations_mdp.ActionComponentMode.RIGHT_EEF_QUAT},
+        )
+        navigate_cmd = ObsTerm(
+            func=g1_observations_mdp.get_navigate_cmd,
+        )
+        base_height_cmd = ObsTerm(
+            func=g1_observations_mdp.extract_action_components,
+            params={"mode": g1_observations_mdp.ActionComponentMode.BASE_HEIGHT_CMD},
+        )
+        torso_orientation_rpy_cmd = ObsTerm(
+            func=g1_observations_mdp.extract_action_components,
+            params={"mode": g1_observations_mdp.ActionComponentMode.TORSO_ORIENTATION_RPY_CMD},
+        )
 
-        @configclass
-        class ActionLowerBodyCfg(ObsGroup):
-            """Observations for post step policy group"""
+        def __post_init__(self):
+            self.enable_corruption = False
+            self.concatenate_terms = False
 
-            left_eef_pos = ObsTerm(
-                func=g1_observations_mdp.extract_action_components,
-                params={"mode": g1_observations_mdp.ActionComponentMode.LEFT_EEF_POS},
-            )
-            left_eef_quat = ObsTerm(
-                func=g1_observations_mdp.extract_action_components,
-                params={"mode": g1_observations_mdp.ActionComponentMode.LEFT_EEF_QUAT},
-            )
-            right_eef_pos = ObsTerm(
-                func=g1_observations_mdp.extract_action_components,
-                params={"mode": g1_observations_mdp.ActionComponentMode.RIGHT_EEF_POS},
-            )
-            right_eef_quat = ObsTerm(
-                func=g1_observations_mdp.extract_action_components,
-                params={"mode": g1_observations_mdp.ActionComponentMode.RIGHT_EEF_QUAT},
-            )
-            navigate_cmd = ObsTerm(
-                func=g1_observations_mdp.get_navigate_cmd,
-            )
-            base_height_cmd = ObsTerm(
-                func=g1_observations_mdp.extract_action_components,
-                params={"mode": g1_observations_mdp.ActionComponentMode.BASE_HEIGHT_CMD},
-            )
-            torso_orientation_rpy_cmd = ObsTerm(
-                func=g1_observations_mdp.extract_action_components,
-                params={"mode": g1_observations_mdp.ActionComponentMode.TORSO_ORIENTATION_RPY_CMD},
-            )
-
-            def __post_init__(self):
-                self.enable_corruption = False
-                self.concatenate_terms = concatenate_terms
-
-        # observation groups
-        self.policy = PolicyCfg()
-        self.wbc = WBCObsCfg()
-        self.action = ActionLowerBodyCfg()
+    policy: PolicyCfg = PolicyCfg()
+    wbc: WBCObsCfg = WBCObsCfg()
+    action: ActionLowerBodyCfg = ActionLowerBodyCfg()
 
 
 @configclass
