@@ -19,7 +19,7 @@ class Registry(metaclass=SingletonMeta):
     def __init__(self):
         self._components = {}
 
-    def register(self, component: Any, key: str | tuple[str, str] | None = None):
+    def register(self, component: Any, key: str | None = None):
         """Register an asset with a name.
 
         Args:
@@ -30,7 +30,7 @@ class Registry(metaclass=SingletonMeta):
         assert key is not None, "component name is not set"
         self._components[key] = component
 
-    def is_registered(self, key: str | tuple[str, str]) -> bool:
+    def is_registered(self, key: str) -> bool:
         """Check if an component is registered.
 
         Args:
@@ -41,7 +41,7 @@ class Registry(metaclass=SingletonMeta):
             ensure_assets_registered()
         return key in self._components
 
-    def get_component_by_name(self, key: str | tuple[str, str]) -> Any:
+    def get_component_by_name(self, key: str) -> Any:
         """Get an component by name.
 
         Args:
@@ -56,7 +56,7 @@ class Registry(metaclass=SingletonMeta):
         assert key in self._components, f"component {key} not found, please check if requested component is registered"
         return self._components[key]
 
-    def get_all_keys(self) -> list[str | tuple[str, str]]:
+    def get_all_keys(self) -> list[str]:
         """Get all the keys of the components.
 
         Returns:
@@ -124,11 +124,13 @@ class DeviceRegistry(Registry):
         ensure_assets_registered()
         return self.get_component_by_name(name)
 
-    def get_teleop_device_cfg(self, device: type["TeleopDeviceBase"], embodiment: object | None = None):
+    def get_teleop_device_cfg(self, device: type["TeleopDeviceBase"], embodiment: object):
         from isaaclab.devices.device_base import DevicesCfg
 
         retargeter_registry = RetargeterRegistry()
-        retargeter = retargeter_registry.get_component_by_name((device.name, embodiment.name))()
+        retargeter_key = (device.name, embodiment.name)
+        retargeter_key_str = retargeter_registry.convert_retargeter_key_to_str(retargeter_key)
+        retargeter = retargeter_registry.get_component_by_name(retargeter_key_str)()
         retargeter_cfg = retargeter.get_retargeter_cfg(embodiment, sim_device=device.sim_device)
         retargeters = [retargeter_cfg] if retargeter_cfg is not None else []
         device_cfg = device.get_device_cfg(retargeters=retargeters, embodiment=embodiment)
@@ -142,6 +144,9 @@ class DeviceRegistry(Registry):
 class RetargeterRegistry(Registry):
     def __init__(self):
         super().__init__()
+
+    def convert_retargeter_key_to_str(self, key: tuple[str, str]) -> str:
+        return f"{key[0]}_{key[1]}"
 
 
 # Lazy registration to avoid circular imports

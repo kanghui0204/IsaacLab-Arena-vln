@@ -16,14 +16,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import ABC, abstractmethod
+
 from isaaclab.devices.openxr.retargeters import GR1T2RetargeterCfg
 from isaaclab.devices.retargeter_base import RetargeterCfg
 
 from isaaclab_arena.assets.register import register_retargeter
 
 
+class RetargetterBase(ABC):
+    device: str
+    embodiment: str
+
+    @abstractmethod
+    def get_retargeter_cfg(
+        self, embodiment: object, sim_device: str, enable_visualization: bool = False
+    ) -> RetargeterCfg:
+        raise NotImplementedError
+
+
 @register_retargeter
-class GR1T2PinkOpenXRRetargeter:
+class GR1T2PinkOpenXRRetargeter(RetargetterBase):
 
     device = "openxr"
     embodiment = "gr1_pink"
@@ -45,7 +58,7 @@ class GR1T2PinkOpenXRRetargeter:
 
 
 @register_retargeter
-class FrankaKeyboardRetargeter:
+class FrankaKeyboardRetargeter(RetargetterBase):
     device = "keyboard"
     embodiment = "franka"
 
@@ -59,7 +72,7 @@ class FrankaKeyboardRetargeter:
 
 
 @register_retargeter
-class FrankaSpaceMouseRetargeter:
+class FrankaSpaceMouseRetargeter(RetargetterBase):
     device = "spacemouse"
     embodiment = "franka"
 

@@ -26,8 +26,10 @@ def register_device(cls):
 
 # Decorator to register an retargeter with the RetargeterRegistry.
 def register_retargeter(cls):
-    if RetargeterRegistry().is_registered((cls.device, cls.embodiment)):
+    retargeter_key = (cls.device, cls.embodiment)
+    retargeter_key_str = RetargeterRegistry().convert_retargeter_key_to_str(retargeter_key)
+    if RetargeterRegistry().is_registered(retargeter_key_str):
         print(f"WARNING: Retargeter {cls.device} for {cls.embodiment} is already registered. Doing nothing.")
     else:
-        RetargeterRegistry().register(cls, (cls.device, cls.embodiment))
+        RetargeterRegistry().register(cls, retargeter_key_str)
     return cls
