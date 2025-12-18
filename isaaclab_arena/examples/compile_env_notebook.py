@@ -19,18 +19,20 @@ from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
 from isaaclab_arena.environments.arena_env_builder import ArenaEnvBuilder
 from isaaclab_arena.environments.isaaclab_arena_environment import IsaacLabArenaEnvironment
 from isaaclab_arena.scene.scene import Scene
+from isaaclab_arena.assets.relations import On, NextTo
 from isaaclab_arena.tasks.dummy_task import DummyTask
 from isaaclab_arena.utils.pose import Pose
 
 asset_registry = AssetRegistry()
 
-background = asset_registry.get_asset_by_name("kitchen")()
+background = asset_registry.get_asset_by_name("packing_table")()
 embodiment = asset_registry.get_asset_by_name("franka")()
+
 cracker_box = asset_registry.get_asset_by_name("cracker_box")()
 
 cracker_box.set_initial_pose(Pose(position_xyz=(0.4, 0.0, 0.1), rotation_wxyz=(1.0, 0.0, 0.0, 0.0)))
 
-scene = Scene(assets=[background, cracker_box])
+scene = Scene(assets=[background, cracker_box, microwave])
 isaaclab_arena_environment = IsaacLabArenaEnvironment(
     name="reference_object_test",
     embodiment=embodiment,

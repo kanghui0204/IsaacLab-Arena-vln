@@ -1,14 +1,3 @@
-# Copyright (c) 2025, The Isaac Lab Arena Project Developers (https://github.com/isaac-sim/IsaacLab-Arena/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-
-from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
-from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
-
-from isaaclab_arena.assets.object_base import ObjectBase, ObjectType
-from isaaclab_arena.assets.object_utils import detect_object_type
-from isaaclab_arena.utils.pose import Pose
 from isaaclab_arena.utils.usd_helpers import has_light, open_stage
 
 
@@ -37,6 +26,8 @@ class Object(ObjectBase):
         self.scale = scale
         self.initial_pose = initial_pose
         self.object_cfg = self._init_object_cfg()
+
+        self.relations: list[Relation] = []
 
     def set_initial_pose(self, pose: Pose) -> None:
         self.initial_pose = pose
