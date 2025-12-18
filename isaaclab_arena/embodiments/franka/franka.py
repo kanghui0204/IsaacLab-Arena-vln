@@ -29,7 +29,7 @@ from isaaclab_tasks.manager_based.manipulation.stack.mdp import franka_stack_eve
 from isaaclab_tasks.manager_based.manipulation.stack.mdp.observations import ee_frame_pos, ee_frame_quat
 
 from isaaclab_arena.assets.register import register_asset
-from isaaclab_arena.embodiments.common.mimic_arm_mode import MimicArmMode
+from isaaclab_arena.embodiments.common.arm_mode import ArmMode
 from isaaclab_arena.embodiments.common.mimic_utils import get_rigid_and_articulated_object_poses
 from isaaclab_arena.embodiments.embodiment_base import EmbodimentBase
 from isaaclab_arena.embodiments.franka.observations import gripper_pos
@@ -41,16 +41,16 @@ class FrankaEmbodiment(EmbodimentBase):
     """Embodiment for the Franka robot."""
 
     name = "franka"
-    default_mimic_arm_mode = MimicArmMode.SINGLE_ARM
+    default_arm_mode = ArmMode.SINGLE_ARM
 
     def __init__(
         self,
         enable_cameras: bool = False,
         initial_pose: Pose | None = None,
         concatenate_observation_terms: bool = False,
-        mimic_arm_mode: MimicArmMode | None = None,
+        arm_mode: ArmMode | None = None,
     ):
-        super().__init__(enable_cameras, initial_pose, concatenate_observation_terms, mimic_arm_mode)
+        super().__init__(enable_cameras, initial_pose, concatenate_observation_terms, arm_mode)
         self.scene_config = FrankaSceneCfg()
         self.action_config = FrankaActionsCfg()
         self.observation_config = FrankaObservationsCfg(concatenate_terms=self.concatenate_observation_terms)
