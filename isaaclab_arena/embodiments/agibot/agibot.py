@@ -92,7 +92,7 @@ class AgibotSceneCfg:
                 ],
             )
         else:
-            raise ValueError(f"Arm mode: {self.arm_mode} not supported yet.")
+            raise ValueError(f"Arm mode: {self.arm_mode} is not supported yet.")
         # Add a marker to the end-effector frame
         marker_cfg = FRAME_MARKER_CFG.copy()
         marker_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
