@@ -129,7 +129,7 @@ class DeviceRegistry(Registry):
 
         retargeter_registry = RetargeterRegistry()
         retargeter_key = (device.name, embodiment.name)
-        retargeter_key_str = retargeter_registry.convert_retargeter_key_to_str(retargeter_key)
+        retargeter_key_str = retargeter_registry.convert_tuple_to_str(retargeter_key)
         retargeter = retargeter_registry.get_component_by_name(retargeter_key_str)()
         retargeter_cfg = retargeter.get_retargeter_cfg(embodiment, sim_device=device.sim_device)
         retargeters = [retargeter_cfg] if retargeter_cfg is not None else []
@@ -145,8 +145,13 @@ class RetargeterRegistry(Registry):
     def __init__(self):
         super().__init__()
 
-    def convert_retargeter_key_to_str(self, key: tuple[str, str]) -> str:
-        return f"{key[0]}_{key[1]}"
+    def convert_tuple_to_str(self, key: tuple[str, str]) -> str:
+        # Double underscore is used to separate device and embodiment names.
+        return f"{key[0]}__{key[1]}"
+
+    def convert_str_to_tuple(self, key: str) -> tuple[str, str]:
+        # Double underscore is used to separate device and embodiment names.
+        return (key.split("__")[0], key.split("__")[1])
 
 
 # Lazy registration to avoid circular imports

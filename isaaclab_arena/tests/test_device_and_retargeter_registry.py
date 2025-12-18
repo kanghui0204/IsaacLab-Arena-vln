@@ -30,24 +30,19 @@ def _test_all_devices_and_retargeters_in_registry(simulation_app):
     device_registry = DeviceRegistry()
     retargeter_registry = RetargeterRegistry()
     retargeter_keys = retargeter_registry.get_all_keys()
-    # Make this a dictionary of device names to list of embodiment names
-    retargeter_keys_dict = {}
-    for key in retargeter_keys:
-        device_name, embodiment_name = key
-        if device_name not in retargeter_keys_dict:
-            retargeter_keys_dict[device_name] = []
-        retargeter_keys_dict[device_name].append(embodiment_name)
-    print(f"Retargeter keys dictionary: {retargeter_keys_dict}")
     background = asset_registry.get_asset_by_name("packing_table")()
     asset = asset_registry.get_asset_by_name("cracker_box")()
 
     for device_name in DEVICE_NAMES:
         # Get all available embodiments for this device
-        for embodiment_name in retargeter_keys_dict[device_name]:
+        for retargeter_key in retargeter_keys:
+            if device_name in retargeter_key:
+                continue
+            device_name, embodiment_name = retargeter_registry.convert_str_to_tuple(retargeter_key)
             embodiment = asset_registry.get_asset_by_name(embodiment_name)()
             teleop_device = device_registry.get_device_by_name(device_name)()
             isaaclab_arena_environment = IsaacLabArenaEnvironment(
-                name="kitchen",
+                name=f"{device_name}_{retargeter_key}",
                 embodiment=embodiment,
                 scene=Scene([background, asset]),
                 task=DummyTask(),
