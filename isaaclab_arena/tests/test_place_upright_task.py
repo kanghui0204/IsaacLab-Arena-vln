@@ -8,7 +8,7 @@ import torch
 
 from isaaclab_arena.tests.utils.subprocess import run_simulation_app_function
 
-NUM_STEPS = 10
+NUM_STEPS = 20
 HEADLESS = True
 
 
@@ -28,11 +28,14 @@ def get_test_environment(remove_randomize_mug_positions_event: bool, num_envs: i
     args_cli = args_parser.parse_args(["--num_envs", str(num_envs)])
 
     asset_registry = AssetRegistry()
-    background = asset_registry.get_asset_by_name("place_upright_mug_table")()
+    background = asset_registry.get_asset_by_name("table")()
+    background.set_initial_pose(Pose(position_xyz=(0.50, 0.0, 0.625), rotation_wxyz=(0.7071, 0, 0, 0.7071)))
+    background.object_cfg.spawn.scale = (1.0, 1.0, 0.60)
     # placeable object must have initial pose set
     mug = asset_registry.get_asset_by_name("mug")(
-        initial_pose=Pose(position_xyz=(0.05, 0.0, 0.75), rotation_wxyz=(0.707, 0.707, 0.0, 0.0))
+        initial_pose=Pose(position_xyz=(0.05, 0.0, 0.75), rotation_wxyz=(0.7071, 0.7071, 0.0, 0.0))
     )
+
     light = asset_registry.get_asset_by_name("light")()
 
     scene = Scene(assets=[background, mug, light])
@@ -46,6 +49,7 @@ def get_test_environment(remove_randomize_mug_positions_event: bool, num_envs: i
     env_builder = ArenaEnvBuilder(isaaclab_arena_environment, args_cli)
     name, cfg = env_builder.build_registered()
     if remove_randomize_mug_positions_event:
+        cfg.events.reset_all = None
         cfg.events.randomize_mug_positions = None
         cfg.events.reset_placeable_object_pose = None
 
@@ -188,6 +192,6 @@ def test_place_upright_mug_condition():
 
 
 if __name__ == "__main__":
-    test_place_upright_mug_single()
+    # test_place_upright_mug_single()
     test_place_upright_mug_multi()
-    test_place_upright_mug_condition()
+    # test_place_upright_mug_condition()

@@ -74,6 +74,8 @@ class TableTopPlaceUprightEnvironment(ExampleEnvironmentBase):
                 rotation_wxyz=(1.0, 0.0, 0.0, 0.0),
             )
         )
+        background.set_initial_pose(Pose(position_xyz=(0.50, 0.0, 0.625), rotation_wxyz=(0.7071, 0, 0, 0.7071)))
+        background.object_cfg.spawn.scale = (1.0, 1.0, 0.60)
 
         ground_plane = self.asset_registry.get_asset_by_name("ground_plane")()
         light = self.asset_registry.get_asset_by_name("light")()
@@ -95,7 +97,7 @@ class TableTopPlaceUprightEnvironment(ExampleEnvironmentBase):
     @staticmethod
     def add_cli_args(parser: argparse.ArgumentParser) -> None:
         parser.add_argument("--object", type=str, default="mug")
-        parser.add_argument("--background", type=str, default="place_upright_mug_table")
+        parser.add_argument("--background", type=str, default="table")
         parser.add_argument("--embodiment", type=str, default="agibot")
         parser.add_argument("--enable_cameras", type=bool, default=False)
         parser.add_argument("--teleop_device", type=str, default="keyboard")
