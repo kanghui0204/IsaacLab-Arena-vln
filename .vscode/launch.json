@@ -1,6 +1,10 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
+
+
+
 
         {
             "name": "Attach to debugpy session",
@@ -18,10 +22,22 @@
             ]
         },
         {
-            "name": "Python: Generate Dataset",
+            "name": "Python: Annotate Dataset",
             "type": "python",
             "request": "launch",
             "args" : ["--enable_cameras",
+            "--mimic",
+            "--input_file", "${workspaceFolder}/isaaclab_arena/datasets/dataset_v1.hdf5",
+            "--output_file", "${workspaceFolder}/isaaclab_arena/datasets/dataset_v1_annotated.hdf5",
+            "fii_pick_place"],
+            "program": "${workspaceFolder}/isaaclab_arena/scripts/annotate_demos.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Generate Dataset",
+            "type": "python",
+            "request": "launch",
+            "args" : [
             "--mimic",
             "--input_file", "${workspaceFolder}/isaaclab_arena/datasets/dataset_v1_annotated.hdf5",
             "--output_file", "${workspaceFolder}/isaaclab_arena/datasets/dataset_v1_generated.hdf5",
