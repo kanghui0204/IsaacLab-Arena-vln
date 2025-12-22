@@ -27,10 +27,11 @@ class Object(ObjectBase):
         usd_path: str | None = None,
         scale: tuple[float, float, float] = (1.0, 1.0, 1.0),
         initial_pose: Pose | None = None,
-        spawn_cfg_addon: dict[str, Any] = {},
-        asset_cfg_addon: dict[str, Any] = {},
         **kwargs,
     ):
+        # Pull out addons (and remove them from kwargs before passing to super)
+        spawn_cfg_addon: dict[str, Any] = kwargs.pop("spawn_cfg_addon", {}) or {}
+        asset_cfg_addon: dict[str, Any] = kwargs.pop("asset_cfg_addon", {}) or {}
         if object_type is not ObjectType.SPAWNER:
             assert usd_path is not None
         # Detect object type if not provided
@@ -92,7 +93,11 @@ class Object(ObjectBase):
                 print("WARNING: Base object has lights, this may cause issues when using with multiple environments.")
         object_cfg = AssetBaseCfg(
             prim_path="{ENV_REGEX_NS}/" + self.name,
-            spawn=UsdFileCfg(usd_path=self.usd_path, scale=self.scale, **self.spawn_cfg_addon),
+            spawn=UsdFileCfg(
+                usd_path=self.usd_path,
+                scale=self.scale,
+                **self.spawn_cfg_addon,
+            ),
             **self.asset_cfg_addon,
         )
         object_cfg = self._add_initial_pose_to_cfg(object_cfg)
