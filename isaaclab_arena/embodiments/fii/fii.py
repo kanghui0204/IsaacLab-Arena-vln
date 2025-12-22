@@ -455,7 +455,9 @@ class FiiMimicEnv(ManagerBasedRLMimicEnv):
         """
         if env_ids is None:
             env_ids = slice(None)
-
+        if eef_name == "body":
+            return PoseUtils.make_pose(self.obs_buf["policy"]["robot_root_pos"][env_ids], PoseUtils.matrix_from_quat(self.obs_buf["policy"]["robot_root_rot"][env_ids]))
+            
         eef_pos_name = f"{eef_name}_eef_pos"
         eef_quat_name = f"{eef_name}_eef_quat"
 
@@ -492,10 +494,10 @@ class FiiMimicEnv(ManagerBasedRLMimicEnv):
         target_right_eef_rot_quat = PoseUtils.quat_from_matrix(right_target_rot)
 
         # gripper actions
-        left_gripper_action = gripper_action_dict["left"].unsqueeze(0)
-        right_gripper_action = gripper_action_dict["right"].unsqueeze(0)
+        left_gripper_action = gripper_action_dict["left"]
+        right_gripper_action = gripper_action_dict["right"]
 
-        # body gripper action is lower body control commands (nav_cmd, base_height_cmd, torso_orientation_rpy_cmd)
+        # body gripper action is lower body control commands (nav_cmd, base_height_cmd)
         body_gripper_action = gripper_action_dict["body"]
 
         if action_noise_dict is not None:
@@ -511,12 +513,12 @@ class FiiMimicEnv(ManagerBasedRLMimicEnv):
 
         return torch.cat(
             (
-                left_gripper_action,
-                right_gripper_action,
                 target_left_eef_pos,
                 target_left_eef_rot_quat,
                 target_right_eef_pos,
                 target_right_eef_rot_quat,
+                left_gripper_action,
+                right_gripper_action,
                 body_gripper_action,
             ),
             dim=0,
@@ -537,13 +539,13 @@ class FiiMimicEnv(ManagerBasedRLMimicEnv):
 
         target_poses = {}
 
-        target_left_wrist_position = action[:, 2:5]
-        target_left_rot_mat = PoseUtils.matrix_from_quat(action[:, 5:9])
+        target_left_wrist_position = action[:, 0:3]
+        target_left_rot_mat = PoseUtils.matrix_from_quat(action[:, 3:7])
         target_pose_left = PoseUtils.make_pose(target_left_wrist_position, target_left_rot_mat)
         target_poses["left"] = target_pose_left
 
-        target_right_wrist_position = action[:, 9:12]
-        target_right_rot_mat = PoseUtils.matrix_from_quat(action[:, 12:16])
+        target_right_wrist_position = action[:, 7:10]
+        target_right_rot_mat = PoseUtils.matrix_from_quat(action[:, 10:14])
         target_pose_right = PoseUtils.make_pose(target_right_wrist_position, target_right_rot_mat)
         target_poses["right"] = target_pose_right
 
@@ -564,17 +566,16 @@ class FiiMimicEnv(ManagerBasedRLMimicEnv):
 
         """
         Shape of actions:
-            left_gripper_action shape: (1,)
-            right_gripper_action shape: (1,)
             left_wrist_pos shape: (3,)
             left_wrist_quat shape: (4,)
             right_wrist_pos shape: (3,)
             right_wrist_quat shape: (4,)
+            left_gripper_action shape: (2,)
+            right_gripper_action shape: (2,)
             navigate_cmd shape: (3,)
             base_height_cmd shape: (1,)
-            torso_orientation_rpy_cmd shape: (3,)
         """
-        return {"left": actions[:, 0], "right": actions[:, 1], "body": actions[:, -7:]}
+        return {"left": actions[:, 14:16], "right": actions[:, 16:18], "body": actions[:, -4:]}
 
     def get_object_poses(self, env_ids: Sequence[int] | None = None):
         """
