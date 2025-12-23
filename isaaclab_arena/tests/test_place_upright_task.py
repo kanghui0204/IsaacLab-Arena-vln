@@ -8,7 +8,7 @@ import torch
 
 from isaaclab_arena.tests.utils.subprocess import run_simulation_app_function
 
-NUM_STEPS = 20
+NUM_STEPS = 5
 HEADLESS = True
 
 

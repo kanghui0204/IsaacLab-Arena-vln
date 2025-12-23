@@ -234,6 +234,8 @@ def _compute_target_quaternions(
     horizontal_norm = horizontal.norm(dim=-1, keepdim=True)
     fallback_axis = torch.zeros_like(horizontal)
     fallback_axis[:, 0] = 1.0
+
+    # if current_axis is parallel to world up, use the fallback axis to compute the rotation axis
     needs_fallback = horizontal_norm.squeeze(-1) < 1e-6
     if needs_fallback.any():
         horizontal[needs_fallback] = fallback_axis[needs_fallback]
@@ -251,8 +253,6 @@ def _compute_target_quaternions(
     axis_norm = rotation_axis.norm(dim=-1, keepdim=True)
 
     # if current_axis is parallel to target_axis, use the fallback axis to compute the rotation axis
-    fallback_axis = torch.zeros_like(rotation_axis)
-    fallback_axis[:, 0] = 1.0
     needs_fallback = axis_norm.squeeze(-1) < 1e-6
     if needs_fallback.any():
         current_axis_fb = current_axis[needs_fallback]
