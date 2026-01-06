@@ -9,9 +9,10 @@ import torch
 import tqdm
 
 from isaaclab_arena.cli.isaaclab_arena_cli import get_isaaclab_arena_cli_parser
-from isaaclab_arena.examples.policy_runner_cli import create_policy, setup_policy_argument_parser
+from isaaclab_arena.examples.policy_runner_cli import add_policy_runner_arguments
+from isaaclab_arena.policy.policy_registry import get_policy_cls
 from isaaclab_arena.utils.isaaclab_utils.simulation_app import SimulationAppContext
-from isaaclab_arena_environments.cli import get_arena_builder_from_cli
+from isaaclab_arena_environments.cli import get_arena_builder_from_cli, get_isaaclab_arena_environments_cli_parser
 
 
 def main():
@@ -22,9 +23,20 @@ def main():
 
     # Start the simulation app
     with SimulationAppContext(args_cli):
-        # Add policy-related arguments to the parser
-        args_parser = setup_policy_argument_parser(args_parser)
+
+        # Get the policy-type flag before preceding to other arguments
+        add_policy_runner_arguments(args_parser)
+        args_cli, _ = args_parser.parse_known_args()
+
+        # Get the policy class from the policy type
+        policy_cls = get_policy_cls(args_cli.policy_type)
+        print(f"Requested policy type: {args_cli.policy_type} -> Policy class: {policy_cls}")
+
+        # Add the example environment arguments + policy-related arguments to the parser
+        args_parser = get_isaaclab_arena_environments_cli_parser(args_parser)
+        args_parser = policy_cls.add_args_to_parser(args_parser)
         args_cli = args_parser.parse_args()
+
         # Build scene
         arena_builder = get_arena_builder_from_cli(args_cli)
         env = arena_builder.make_registered()
@@ -37,11 +49,15 @@ def main():
 
         obs, _ = env.reset()
 
-        # NOTE(xinjieyao, 2025-09-29): General rule of thumb is to have as many non-standard python
-        # library imports after app launcher as possible, otherwise they will likely stall the sim
-        # app. Given current SimulationAppContext setup, use lazy import to handle policy-related
-        # deps inside create_policy() function to bringup sim app.
-        policy, num_steps = create_policy(args_cli)
+        # Create the policy from the arguments
+        policy = policy_cls.from_args(args_cli)
+
+        # Simulation length.
+        if policy.has_length():
+            num_steps = policy.length()
+        else:
+            num_steps = args_cli.num_steps
+        print(f"Simulation length: {num_steps}")
         # set task description (could be None) from the task being evaluated
         policy.set_task_description(env.cfg.isaaclab_arena_env.task.get_task_description())
 
